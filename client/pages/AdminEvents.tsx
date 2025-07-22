@@ -216,7 +216,7 @@ export default function AdminEvents() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>رویدادهای ک��ربران</span>
+              <span>رویدادهای کاربران</span>
               {pagination && (
                 <span className="text-sm font-normal text-gray-600">
                   {pagination.total} رویداد
