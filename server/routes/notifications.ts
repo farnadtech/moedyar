@@ -171,4 +171,23 @@ router.post('/test', authenticateToken, async (req: AuthRequest, res: Response) 
   }
 });
 
+// Manual trigger for notification check (admin only)
+router.post('/trigger-check', async (req, res: Response) => {
+  try {
+    await triggerNotificationCheck();
+
+    res.json({
+      success: true,
+      message: 'بررسی دستی یادآوری‌ها آغاز شد'
+    });
+
+  } catch (error) {
+    console.error('Manual trigger error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در اجرای بررسی دستی'
+    });
+  }
+});
+
 export default router;
