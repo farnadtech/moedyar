@@ -38,6 +38,42 @@ export default function AddEvent() {
   });
 
   const [dynamicFields, setDynamicFields] = useState<Record<string, string>>({});
+
+  // Get dynamic fields based on event type
+  const getDynamicFields = (eventType: string) => {
+    switch (eventType) {
+      case 'BIRTHDAY':
+        return [
+          { key: 'person_name', label: 'نام فرد', placeholder: 'نام کامل فرد', required: false },
+          { key: 'relation', label: 'نسبت', placeholder: 'مثال: پدر، مادر، دوست', required: false },
+          { key: 'gift_idea', label: 'ایده کادو', placeholder: 'چه کادویی بخرید؟', required: false }
+        ];
+      case 'INSURANCE':
+        return [
+          { key: 'insurance_type', label: 'نوع بیمه', placeholder: 'مثال: خودرو، درمان، آتش‌سوزی', required: false },
+          { key: 'policy_number', label: 'شماره بیمه‌نامه', placeholder: 'شماره بیمه‌نامه', required: false },
+          { key: 'company_name', label: 'نام شرکت بیمه', placeholder: 'نام شرکت بیمه‌گر', required: false },
+          { key: 'premium_amount', label: 'مبلغ حق بیمه', placeholder: 'مبلغ به تومان', required: false }
+        ];
+      case 'CONTRACT':
+        return [
+          { key: 'contract_type', label: 'نوع قرارداد', placeholder: 'مثال: اجاره، خرید، کاری', required: false },
+          { key: 'other_party', label: 'طرف مقابل', placeholder: 'نام شخص یا شرکت', required: false },
+          { key: 'contract_value', label: 'ارزش قرارداد', placeholder: 'مبلغ به تومان', required: false },
+          { key: 'renewal_terms', label: 'شرایط تمدید', placeholder: 'نحوه تمدید قرارداد', required: false }
+        ];
+      case 'CHECK':
+        return [
+          { key: 'check_number', label: 'شماره چک', placeholder: 'شماره چک', required: false },
+          { key: 'bank_name', label: 'نام بانک', placeholder: 'نام بانک صادرکننده', required: false },
+          { key: 'amount', label: 'مبلغ چک', placeholder: 'مبلغ به تومان', required: false },
+          { key: 'recipient', label: 'گیرنده چک', placeholder: 'نام گیرنده', required: false },
+          { key: 'account_number', label: 'شماره حساب', placeholder: 'شماره حساب', required: false }
+        ];
+      default:
+        return [];
+    }
+  };
   
   const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>([1, 7]);
   const [selectedReminderMethods, setSelectedReminderMethods] = useState<string[]>(['EMAIL']);
@@ -105,7 +141,7 @@ export default function AddEvent() {
       today.setHours(0, 0, 0, 0);
       
       if (selectedDate < today) {
-        newErrors.eventDate = "تاریخ رویداد نمی���تواند در گذشته باشد";
+        newErrors.eventDate = "تاریخ رویداد نمی‌تواند در گذشته باشد";
       }
     }
 
@@ -308,7 +344,7 @@ export default function AddEvent() {
                 {/* Reminder Days */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    زمان‌های یاد��وری *
+                    زمان‌های یادآوری *
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {reminderDaysOptions.map((option) => (
