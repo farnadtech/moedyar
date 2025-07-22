@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum AccountType {
+  PERSONAL
+  BUSINESS
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
+  BUSINESS
+}
+
+enum EventType {
+  BIRTHDAY
+  INSURANCE
+  CONTRACT
+  CHECK
+  CUSTOM
+}
+
+enum ReminderMethod {
+  EMAIL
+  SMS
+  WHATSAPP
+}
+
+model User {
+  id              String           @id @default(uuid())
+  fullName        String
+  email           String           @unique
+  password        String
+  accountType     AccountType      @default(PERSONAL)
+  subscriptionType SubscriptionType @default(FREE)
+  phone           String?
+  isEmailVerified Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relations
+  events          Event[]
+  subscriptions   Subscription[]
+  
+  @@map("users")
+}
+
+model Event {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  eventDate   DateTime
+  eventType   EventType   @default(CUSTOM)
+  userId      String
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  // Relations
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminders   Reminder[]
+  
+  @@map("events")
+}
+
+model Reminder {
+  id              String          @id @default(uuid())
+  eventId         String
+  daysBefore      Int             // چند روز قبل از رویداد
+  method          ReminderMethod
+  isActive        Boolean         @default(true)
+  lastSentAt      DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // Relations
+  event           Event           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  @@map("reminders")
+}
+
+model Subscription {
+  id              String           @id @default(uuid())
+  userId          String
+  type            SubscriptionType
+  startDate       DateTime         @default(now())
+  endDate         DateTime?
+  isActive        Boolean          @default(true)
+  paymentId       String?          // ZarinPal payment ID
+  amount          Float?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relations
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("subscriptions")
+}
