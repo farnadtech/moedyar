@@ -228,8 +228,22 @@ export default function RegisterPersonal() {
                 </label>
               </div>
 
-              <Button type="submit" className="w-full bg-brand-600 hover:bg-brand-700 py-3">
-                ایجاد حساب رایگان
+              <Button
+                type="submit"
+                className="w-full bg-brand-600 hover:bg-brand-700 py-3"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    در حال ایجاد حساب...
+                  </div>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4 ml-1" />
+                    ایجاد حساب رایگان
+                  </>
+                )}
               </Button>
             </form>
 
