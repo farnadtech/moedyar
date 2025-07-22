@@ -42,13 +42,11 @@ export async function requestPayment(
       const mockAuthority = "A" + Date.now().toString();
       const subscriptionId = paymentData.callbackUrl.split("subscription=")[1];
 
-      // In development, simulate immediate success by redirecting to the success page
-      const baseUrl = process.env.APP_URL || "http://localhost:8080";
-
+      // Create a proper sandbox payment URL that will redirect back to verify
       return {
         status: 100,
         authority: mockAuthority,
-        url: `${baseUrl}/premium?payment=success&plan=premium&mock=true`,
+        url: `${paymentData.callbackUrl}&Authority=${mockAuthority}&Status=OK`,
       };
     }
 
