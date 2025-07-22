@@ -325,21 +325,43 @@ export default function AddEvent() {
     }
   };
 
-  // Load user subscription data when component mounts
-  useState(() => {
-    const loadSubscriptionData = async () => {
+  // Load user subscription data and events when component mounts
+  useEffect(() => {
+    const loadData = async () => {
       try {
-        const response = await apiService.getCurrentSubscription();
-        if (response.success) {
-          setUserSubscription(response.data);
+        const [subscriptionResponse, eventsResponse] = await Promise.all([
+          apiService.getCurrentSubscription(),
+          apiService.getEvents()
+        ]);
+
+        if (subscriptionResponse.success) {
+          setUserSubscription(subscriptionResponse.data);
+        }
+
+        if (eventsResponse.success) {
+          setUserEvents(eventsResponse.data.events);
+
+          // Check if user has reached limit
+          const events = eventsResponse.data.events;
+          const currentType = subscriptionResponse.data?.currentType;
+
+          if (currentType === "FREE" && events.length >= 3) {
+            toast({
+              title: "محدودیت رویداد",
+              description: "شما به حداکثر رویداد در پلن رایگان رسیده‌اید. برای افزودن رویداد بیشتر ارتقا دهید.",
+              variant: "destructive",
+            });
+            navigate("/premium");
+            return;
+          }
         }
       } catch (error) {
-        console.error("Error loading subscription:", error);
+        console.error("Error loading data:", error);
       }
     };
 
-    loadSubscriptionData();
-  });
+    loadData();
+  }, [navigate, toast]);
 
   return (
     <div
