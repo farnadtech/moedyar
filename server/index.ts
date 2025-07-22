@@ -1,6 +1,13 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import { handleDemo } from "./routes/demo";
+import authRoutes from "./routes/auth";
+import eventRoutes from "./routes/events";
+import subscriptionRoutes from "./routes/subscriptions";
+
+// Load environment variables
+dotenv.config();
 
 export function createServer() {
   const app = express();
