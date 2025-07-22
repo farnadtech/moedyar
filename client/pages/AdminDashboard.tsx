@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowRight, Users, Crown, DollarSign, Activity, Search, MoreHorizontal, Edit, Trash2, FileText, CreditCard } from "lucide-react";
+import { Calendar, ArrowRight, Users, Crown, DollarSign, Activity, Search, MoreHorizontal, Edit, Trash2, FileText, CreditCard, Settings } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
