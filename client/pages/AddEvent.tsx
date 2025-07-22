@@ -9,7 +9,7 @@ import {
 import { PersianCalendarPicker } from "@/components/ui/persian-calendar-picker";
 import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
 
@@ -84,7 +84,7 @@ export default function AddEvent() {
           {
             key: "policy_number",
             label: "شماره بیمه‌نامه",
-            placeholder: "شماره بیمه‌نامه",
+            placeholder: "شماره ب��مه‌نامه",
             required: false,
           },
           {
@@ -633,7 +633,7 @@ export default function AddEvent() {
                   )}
                   {userSubscription?.currentType === "FREE" && (
                     <p className="text-sm text-gray-600 mt-2">
-                      برای استفاده از پیامک و واتس‌اپ،{" "}
+                      برای اس��فاده از پیامک و واتس‌اپ،{" "}
                       <Link to="/premium" className="text-brand-600">
                         حساب خود را ارتقا دهید
                       </Link>
