@@ -90,7 +90,7 @@ export default function Premium() {
     } catch (error) {
       console.error("Error loading premium data:", error);
       toast({
-        title: "خ��ا در بارگذاری اطلاعات",
+        title: "خطا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
         variant: "destructive",
       });
