@@ -218,7 +218,7 @@ export default function AddEvent() {
       console.error('Create event error:', error);
       toast({
         title: "خطا در ایجاد رویداد",
-        description: "خطا در ارتباط با سرور",
+        description: "خطا ��ر ارتباط با سرور",
         variant: "destructive"
       });
     } finally {
@@ -333,14 +333,14 @@ export default function AddEvent() {
                 {/* Event Type */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    نوع ر��یداد
+                    نوع رویداد
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {eventTypes.map((type) => (
                       <button
                         key={type.value}
                         type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, eventType: type.value }))}
+                        onClick={() => handleEventTypeChange(type.value)}
                         className={`p-3 border-2 rounded-lg text-center transition-colors ${
                           formData.eventType === type.value
                             ? 'border-brand-500 bg-brand-50 text-brand-700'
