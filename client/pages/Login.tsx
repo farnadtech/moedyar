@@ -66,7 +66,7 @@ export default function Login() {
       if (response.success) {
         toast({
           title: "✅ ورود موفق",
-          description: "در حال انتقال به پنل مدیریت...",
+          description: "در حال انتقال به داشبورد...",
         });
 
         // Redirect to dashboard
@@ -76,7 +76,7 @@ export default function Login() {
       } else {
         toast({
           title: "خطا در ورود",
-          description: response.message || "ایمیل یا رمز عبور اشتباه است",
+          description: response.message || "ایمی�� یا رمز عبور اشتباه است",
           variant: "destructive"
         });
       }
