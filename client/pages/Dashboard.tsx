@@ -237,7 +237,7 @@ export default function Dashboard() {
                     className="text-red-600 border-red-600 hover:bg-red-50"
                   >
                     <User className="w-4 h-4 ml-1" />
-                    پنل ادمین
+                    ��نل ادمین
                   </Button>
                 </Link>
               )}
@@ -376,8 +376,8 @@ export default function Dashboard() {
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Bell className="w-4 h-4" />
                             یادآوری:{" "}
-                            {event.reminders
-                              .map((r) => r.daysBefore)
+                            {[...new Set(event.reminders.map((r) => r.daysBefore))]
+                              .sort((a, b) => a - b)
                               .join("، ")}{" "}
                             روز قبل
                           </div>
@@ -408,7 +408,7 @@ export default function Dashboard() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">نوع حساب:</span>
+                    <span className="text-gray-600">ن��ع حساب:</span>
                     <span className="font-medium">
                       {isPremium ? "پرمیوم" : "رایگان"}
                     </span>
