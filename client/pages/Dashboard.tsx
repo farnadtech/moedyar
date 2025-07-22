@@ -198,10 +198,12 @@ export default function Dashboard() {
                   </Button>
                 </Link>
               )}
-              <Button variant="ghost" size="sm">
-                <Settings className="w-4 h-4 ml-1" />
-                تنظیمات
-              </Button>
+              <Link to="/settings">
+                <Button variant="ghost" size="sm">
+                  <Settings className="w-4 h-4 ml-1" />
+                  تنظیمات
+                </Button>
+              </Link>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 ml-1" />
                 خروج
