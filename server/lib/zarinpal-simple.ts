@@ -40,10 +40,15 @@ export async function requestPayment(
       console.log("🧪 ZarinPal sandbox mode - returning mock payment URL");
 
       const mockAuthority = "A" + Date.now().toString();
+      const subscriptionId = paymentData.callbackUrl.split("subscription=")[1];
+
+      // In development, simulate immediate success by redirecting to the success page
+      const baseUrl = process.env.APP_URL || "http://localhost:8080";
+
       return {
         status: 100,
         authority: mockAuthority,
-        url: `${process.env.APP_URL || "http://localhost:8080"}/api/subscriptions/verify-payment?Authority=${mockAuthority}&Status=OK&subscription=${paymentData.callbackUrl.split("subscription=")[1]}`,
+        url: `${baseUrl}/premium?payment=success&plan=premium&mock=true`,
       };
     }
 
