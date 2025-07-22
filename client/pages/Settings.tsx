@@ -118,7 +118,7 @@ export default function Settings() {
       console.error('Profile update error:', error);
       toast({
         title: "خطا در به‌روزرسانی",
-        description: "خطا در ارتباط با سرور",
+        description: "خطا در ارتباط با ��رور",
         variant: "destructive"
       });
     } finally {
@@ -430,7 +430,7 @@ export default function Settings() {
                           <p className="text-sm text-blue-700 mb-3">
                             برای اطمینان از عملکرد سیستم، یادآوری تستی ارسال کنید
                           </p>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 mb-3">
                             <Button
                               variant="outline"
                               size="sm"
@@ -459,6 +459,10 @@ export default function Settings() {
                                 </Button>
                               </>
                             )}
+                          </div>
+                          <div className="text-xs text-blue-600 bg-blue-100 p-2 rounded">
+                            💡 <strong>توجه:</strong> در حال حاضر سیستم در حالت دمو قرار دارد.
+                            برای ارسال واقعی ایمیل، مدیر سیستم باید تنظیمات SMTP را پیکربندی کند.
                           </div>
                         </div>
                       </div>
