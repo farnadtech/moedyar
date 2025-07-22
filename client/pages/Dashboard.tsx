@@ -409,8 +409,37 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
+            {/* Admin Panel Access */}
+            {user?.email === 'farnadadmin@gmail.com' && (
+              <Card className="border-red-200 bg-red-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-red-900">
+                    <Settings className="w-5 h-5" />
+                    پنل مدیریت سیستم
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-red-700 mb-4">
+                    دسترسی ادمین به مدیریت کاربران و تنظیمات سیستم
+                  </p>
+                  <div className="space-y-2">
+                    <Link to="/admin/dashboard" className="block">
+                      <Button variant="outline" className="w-full border-red-600 text-red-600 hover:bg-red-50">
+                        مدیریت کاربران
+                      </Button>
+                    </Link>
+                    <Link to="/admin/settings" className="block">
+                      <Button className="w-full bg-red-600 hover:bg-red-700">
+                        تنظیمات سیستم
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Premium Features Preview */}
-            {!isPremium && (
+            {!isPremium && user?.email !== 'farnadadmin@gmail.com' && (
               <Card className="border-brand-200 bg-brand-50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-brand-900">
