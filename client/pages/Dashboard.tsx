@@ -318,12 +318,12 @@ export default function Dashboard() {
                   </Link>
                 )}
                 {!isPremium && events.length >= maxEvents && (
-                  <p className="text-sm text-gray-500 mt-2">
-                    برای افزودن رویداد بیشتر،{" "}
-                    <Link to="/premium" className="text-brand-600">
-                      ارتقا دهید
-                    </Link>
-                  </p>
+                  <p className="text-sm text-gray-500 mt-2 text-center">
+                  برای افزودن رویداد بیشتر،{" "}
+                  <Link to="/premium" className="text-brand-600 underline">
+                    ارتقا به پرمیوم
+                  </Link>
+                </p>
                 )}
               </CardContent>
             </Card>
