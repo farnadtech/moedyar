@@ -42,7 +42,7 @@ export default function RegisterPersonal() {
     if (!formData.email.trim()) {
       newErrors.email = "ایمیل الزامی است";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "فرمت ایمیل صحیح نیست";
+      newErrors.email = "ف��مت ایمیل صحیح نیست";
     }
 
     if (!formData.password) {
@@ -133,11 +133,16 @@ export default function RegisterPersonal() {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleChange}
-                    className="w-full pr-10 pl-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                    className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
+                      errors.fullName ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
                     placeholder="نام کامل خود را وارد کنید"
                     required
                   />
                 </div>
+                {errors.fullName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                )}
               </div>
 
               <div>
