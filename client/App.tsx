@@ -23,6 +23,7 @@ import AdminSetup from "./pages/AdminSetup";
 import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
 import SandboxPayment from "./pages/SandboxPayment";
+import TeamManagement from "./pages/TeamManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
 
@@ -144,11 +145,19 @@ const App = () => (
             <Route path="/premium" element={<Premium />} />
             <Route path="/sandbox-payment" element={<SandboxPayment />} />
             <Route
+              path="/team"
+              element={
+                <ProtectedRoute>
+                  <TeamManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/demo"
               element={
                 <Placeholder
                   title="نمایش دمو"
-                  description="مشاهده ویدیو�� آموزشی و تست سیستم"
+                  description="مشاهده ویدیوی آموزشی و تست سیستم"
                 />
               }
             />
@@ -175,7 +184,7 @@ const App = () => (
               element={
                 <Placeholder
                   title="شرایط استفاده"
-                  description="قوانین و مقررات استفاده از سرویس"
+                  description="قوانین و مقررات استفاده از ��رویس"
                 />
               }
             />
