@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PersianCalendar } from "@/components/ui/persian-calendar";
+import { PersianDateInput } from "@/components/ui/persian-date-input";
 import { Calendar, ArrowRight, Save, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -412,7 +412,7 @@ export default function EditEvent() {
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">ویرا��ش رویداد</span>
+            <span className="text-xl font-bold text-gray-900">ویرایش رویداد</span>
           </div>
         </nav>
       </header>
@@ -446,7 +446,7 @@ export default function EditEvent() {
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="مث��ل: تمدید بیمه خودرو"
+                    placeholder="مثال: تمدید بیمه خودرو"
                     required
                   />
                   {errors.title && (
