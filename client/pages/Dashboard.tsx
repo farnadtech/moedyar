@@ -9,33 +9,32 @@ import { apiService } from "@/lib/api";
 interface Event {
   id: string;
   title: string;
-  date: string;
-  type: string;
-  reminderDays: number[];
+  eventDate: string;
+  eventType: string;
   description?: string;
+  reminders: Array<{
+    id: string;
+    daysBefore: number;
+    method: string;
+  }>;
+}
+
+interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  subscriptionType: string;
+  accountType: string;
 }
 
 export default function Dashboard() {
-  const [events, setEvents] = useState<Event[]>([
-    {
-      id: "1",
-      title: "تمدید بیمه خودرو",
-      date: "2024-03-15",
-      type: "بیمه",
-      reminderDays: [30, 7, 1],
-      description: "ت��دید بیمه پژو ۲۰۶ پلاک ۱۲ج ۳۴۵"
-    },
-    {
-      id: "2", 
-      title: "تولد مادر",
-      date: "2024-02-20",
-      type: "تولد",
-      reminderDays: [7, 1],
-      description: "خرید کادو و گل"
-    }
-  ]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [subscriptionData, setSubscriptionData] = useState<any>(null);
 
-  const [isPremium] = useState(false); // This would come from user's subscription status
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleDeleteEvent = (id: string) => {
     setEvents(events.filter(e => e.id !== id));
@@ -137,7 +136,7 @@ export default function Dashboard() {
                 </Link>
                 {!isPremium && events.length >= 3 && (
                   <p className="text-sm text-gray-500 mt-2">
-                    برای افزودن رویداد بیشتر، <Link to="/premium" className="text-brand-600">ارتقا دهید</Link>
+                    برای ا��زودن رویداد بیشتر، <Link to="/premium" className="text-brand-600">ارتقا دهید</Link>
                   </p>
                 )}
               </CardContent>
@@ -273,7 +272,7 @@ export default function Dashboard() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">رویدادهای امروز:</span>
+                    <span className="text-gray-600">رویدا��های امروز:</span>
                     <span className="font-medium text-yellow-600">
                       {events.filter(e => getDaysUntil(e.date) === 0).length}
                     </span>
@@ -310,7 +309,7 @@ export default function Dashboard() {
                   <ul className="space-y-2 text-sm text-brand-700">
                     <li>• رویدادهای نامحدود</li>
                     <li>• یادآوری پیامک</li>
-                    <li>• یادآوری و��تس‌اپ</li>
+                    <li>• یادآوری واتس‌اپ</li>
                     <li>• پشتیبانی اولویت‌دار</li>
                     <li>• گزارش‌گیری پیشرفته</li>
                   </ul>
