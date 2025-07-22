@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { db } from '../lib/db';
 import { sendNotification, NotificationData } from '../lib/notifications';
 import { authenticateToken, AuthRequest } from '../lib/auth';
+import { triggerNotificationCheck } from '../lib/scheduler';
 
 const router = Router();
 
