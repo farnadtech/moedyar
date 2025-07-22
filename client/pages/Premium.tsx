@@ -626,7 +626,7 @@ export default function Premium() {
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
             <span>🔒 SSL محافظت شده</span>
-            <span>💳 تمام کارت‌های ��انکی</span>
+            <span>💳 تمام کار��‌های بانکی</span>
             <span>📱 پرداخت موبایلی</span>
           </div>
         </div>
