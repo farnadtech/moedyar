@@ -57,13 +57,7 @@ const App = () => (
               </ProtectedRoute>
             } />
 
-            <Route path="/premium" element={
-              <Placeholder
-                title="ارتقا به پرمیوم"
-                description="دسترسی به تمام امکانات پیشرفته سیستم"
-                suggestion="با درگاه زرین پال، امکان خرید آسان و امن پکیج پرمیوم."
-              />
-            } />
+            <Route path="/premium" element={<Premium />} />
             <Route path="/demo" element={
               <Placeholder
                 title="نمایش دمو"
