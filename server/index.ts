@@ -43,6 +43,9 @@ export function createServer() {
   // Admin routes
   app.use("/api/admin", adminRoutes);
 
+  // Config routes
+  app.use("/api/config", configRoutes);
+
   // Error handling middleware
   app.use((err: any, req: any, res: any, next: any) => {
     console.error('API Error:', err);
