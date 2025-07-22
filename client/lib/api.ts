@@ -240,6 +240,12 @@ class ApiService {
     });
   }
 
+  async cancelSubscription(): Promise<ApiResponse> {
+    return this.request('/subscriptions/cancel', {
+      method: 'POST',
+    });
+  }
+
   // Notification Methods
   async testNotification(method: 'EMAIL' | 'SMS' | 'WHATSAPP' = 'EMAIL'): Promise<ApiResponse> {
     return this.request('/notifications/test', {
