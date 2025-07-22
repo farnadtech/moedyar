@@ -117,7 +117,7 @@ export default function RegisterPersonal() {
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">ثبت نام رایگان</CardTitle>
             <CardDescription>
-              فقط چند قدم تا مد��ریت هوشمند رویدادهایتان
+              فقط چند قدم تا مدیریت هوشمند رویدادهایتان
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -179,12 +179,17 @@ export default function RegisterPersonal() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pr-10 pl-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                    className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
+                      errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
                     placeholder="حداقل ۸ کاراکتر"
                     required
                     minLength={8}
                   />
                 </div>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
 
               <div>
