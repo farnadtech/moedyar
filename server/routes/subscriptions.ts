@@ -197,13 +197,24 @@ router.post('/upgrade', authenticateToken, async (req: AuthRequest, res: Respons
     // Create ZarinPal payment request
     try {
       const callbackUrl = `${process.env.APP_URL || 'http://localhost:8080'}/api/subscriptions/verify-payment?subscription=${subscription.id}`;
-      
+
+      console.log('💳 Creating ZarinPal payment request:', {
+        amount,
+        callbackUrl,
+        merchantId: process.env.ZARINPAL_MERCHANT_ID?.substring(0, 8) + '...'
+      });
+
       const paymentResponse = await requestPayment({
         amount,
         description: `خرید پکیج ${planType === 'PREMIUM' ? 'پرمیوم' : 'کسب‌وکار'} - رویداد یار`,
         callbackUrl,
         email: user.email,
         mobile: user.phone || undefined
+      });
+
+      console.log('✅ ZarinPal response received:', {
+        status: paymentResponse.status,
+        authority: paymentResponse.authority?.substring(0, 10) + '...'
       });
 
       // Store payment authority in subscription
@@ -225,17 +236,30 @@ router.post('/upgrade', authenticateToken, async (req: AuthRequest, res: Respons
         }
       });
 
-    } catch (paymentError) {
-      console.error('ZarinPal payment error:', paymentError);
-      
-      // Delete the subscription if payment request failed
-      await db.subscription.delete({
-        where: { id: subscription.id }
+    } catch (paymentError: any) {
+      console.error('❌ ZarinPal payment error:', {
+        error: paymentError.message,
+        stack: paymentError.stack
       });
+
+      // Delete the subscription if payment request failed
+      try {
+        await db.subscription.delete({
+          where: { id: subscription.id }
+        });
+      } catch (deleteError) {
+        console.error('Error deleting failed subscription:', deleteError);
+      }
+
+      // Return specific error message if available
+      const errorMessage = paymentError.message?.includes('Payment request failed')
+        ? 'خطا در اتصال به درگاه پرداخت - لطفاً دوباره تلاش کنید'
+        : 'خطا در ایجاد درخواست پرداخت - لطفاً چند دقیقه دیگر تلاش کنید';
 
       res.status(500).json({
         success: false,
-        message: 'خطا در ایجاد درخواست پرداخت'
+        message: errorMessage,
+        debug: process.env.NODE_ENV === 'development' ? paymentError.message : undefined
       });
     }
 
