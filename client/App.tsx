@@ -15,6 +15,7 @@ import AddEvent from "./pages/AddEvent";
 import Settings from "./pages/Settings";
 import Premium from "./pages/Premium";
 import AdminDashboard from "./pages/AdminDashboard";
+import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
