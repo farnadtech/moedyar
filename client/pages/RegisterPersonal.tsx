@@ -70,24 +70,45 @@ export default function RegisterPersonal() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Show success message
-      toast({
-        title: "✅ ثبت نام موفق",
-        description: "حساب شما با موفقیت ایجاد شد. در حال انتقال به پنل مدیریت...",
+      const response = await apiService.register({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        accountType: 'PERSONAL'
       });
 
-      // Redirect to dashboard after a brief delay
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
+      if (response.success) {
+        toast({
+          title: "✅ ثبت نام موفق",
+          description: "حساب شما با موفقیت ایجاد شد. در حال انتقال به پنل مدیریت...",
+        });
+
+        // Redirect to dashboard after a brief delay
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
+      } else {
+        // Handle validation errors from server
+        if (response.errors) {
+          const serverErrors: Record<string, string> = {};
+          response.errors.forEach(error => {
+            serverErrors[error.field] = error.message;
+          });
+          setErrors(serverErrors);
+        } else {
+          toast({
+            title: "خطا در ثبت نام",
+            description: response.message || "لطفاً دوباره تلاش کنید",
+            variant: "destructive"
+          });
+        }
+      }
 
     } catch (error) {
+      console.error('Registration error:', error);
       toast({
         title: "خطا در ثبت نام",
-        description: "لطفاً دوباره تلاش کنید",
+        description: "خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.",
         variant: "destructive"
       });
     } finally {
