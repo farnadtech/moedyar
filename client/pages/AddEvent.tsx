@@ -1,0 +1,428 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiService } from "@/lib/api";
+
+const eventTypes = [
+  { value: 'BIRTHDAY', label: 'تولد', icon: '🎂' },
+  { value: 'INSURANCE', label: 'بیمه', icon: '🛡️' },
+  { value: 'CONTRACT', label: 'قرارداد', icon: '📋' },
+  { value: 'CHECK', label: 'چک', icon: '💰' },
+  { value: 'CUSTOM', label: 'سایر', icon: '📅' }
+];
+
+const reminderMethods = [
+  { value: 'EMAIL', label: 'ایمیل', icon: '📧', free: true },
+  { value: 'SMS', label: 'پیامک', icon: '📱', free: false },
+  { value: 'WHATSAPP', label: 'واتس‌اپ', icon: '💬', free: false }
+];
+
+const reminderDaysOptions = [
+  { value: 1, label: '۱ روز قبل' },
+  { value: 3, label: '۳ روز قبل' },
+  { value: 7, label: '۱ هفته قبل' },
+  { value: 14, label: '۲ هفته قبل' },
+  { value: 30, label: '۱ ماه قبل' },
+  { value: 60, label: '۲ ماه قبل' }
+];
+
+export default function AddEvent() {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    eventDate: "",
+    eventType: "CUSTOM"
+  });
+  
+  const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>([1, 7]);
+  const [selectedReminderMethods, setSelectedReminderMethods] = useState<string[]>(['EMAIL']);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [userSubscription, setUserSubscription] = useState<any>(null);
+
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+    
+    if (errors[e.target.name]) {
+      setErrors(prev => ({
+        ...prev,
+        [e.target.name]: ""
+      }));
+    }
+  };
+
+  const handleReminderDayToggle = (days: number) => {
+    setSelectedReminderDays(prev => 
+      prev.includes(days) 
+        ? prev.filter(d => d !== days)
+        : [...prev, days].sort((a, b) => a - b)
+    );
+  };
+
+  const handleReminderMethodToggle = (method: string) => {
+    const methodData = reminderMethods.find(m => m.value === method);
+    
+    // Check if method is premium and user doesn't have premium
+    if (!methodData?.free && userSubscription?.currentType === 'FREE') {
+      toast({
+        title: "نیاز به حساب پرمیوم",
+        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSelectedReminderMethods(prev => 
+      prev.includes(method) 
+        ? prev.filter(m => m !== method)
+        : [...prev, method]
+    );
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = "عنوان رویداد الزامی است";
+    }
+
+    if (!formData.eventDate) {
+      newErrors.eventDate = "تار��خ رویداد الزامی است";
+    } else {
+      const selectedDate = new Date(formData.eventDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (selectedDate < today) {
+        newErrors.eventDate = "تاریخ رویداد نمی‌تواند در گذشته باشد";
+      }
+    }
+
+    if (selectedReminderDays.length === 0) {
+      newErrors.reminderDays = "حداقل یک روز یادآوری انتخاب کنید";
+    }
+
+    if (selectedReminderMethods.length === 0) {
+      newErrors.reminderMethods = "حداقل یک روش یادآوری انتخاب کنید";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await apiService.createEvent({
+        title: formData.title,
+        description: formData.description,
+        eventDate: formData.eventDate,
+        eventType: formData.eventType,
+        reminderDays: selectedReminderDays,
+        reminderMethods: selectedReminderMethods
+      });
+
+      if (response.success) {
+        toast({
+          title: "✅ رویداد ایجاد شد",
+          description: "رویداد با موفقیت ایجاد شد و یادآوری‌ها تنظیم شدند",
+        });
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
+      } else {
+        if (response.upgradeRequired) {
+          toast({
+            title: "نیاز به ارتقا حساب",
+            description: response.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "خطا در ایجاد رویداد",
+            description: response.message || "لطفاً دوباره تلاش کنید",
+            variant: "destructive"
+          });
+        }
+      }
+
+    } catch (error) {
+      console.error('Create event error:', error);
+      toast({
+        title: "خطا در ایجاد رویداد",
+        description: "خطا در ارتباط با سرور",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load user subscription data when component mounts
+  useState(() => {
+    const loadSubscriptionData = async () => {
+      try {
+        const response = await apiService.getCurrentSubscription();
+        if (response.success) {
+          setUserSubscription(response.data);
+        }
+      } catch (error) {
+        console.error('Error loading subscription:', error);
+      }
+    };
+    
+    loadSubscriptionData();
+  });
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white" dir="rtl">
+      {/* Header */}
+      <header className="container mx-auto px-4 py-6">
+        <nav className="flex items-center justify-between">
+          <Link to="/dashboard" className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700">
+            <ArrowRight className="w-4 h-4" />
+            بازگشت به داشبورد
+          </Link>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold text-gray-900">رویداد جدید</span>
+          </div>
+        </nav>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto">
+          <Card className="border-2 border-brand-100">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                <Plus className="w-6 h-6 text-brand-600" />
+                افزودن رویداد جدید
+              </CardTitle>
+              <CardDescription>
+                رویداد جدید خود را ایجاد کنید و یادآوری‌هایتان را تنظیم کنید
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Event Title */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    عنوان رویداد *
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
+                      errors.title ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
+                    placeholder="مثال: تمدید بیمه خودرو"
+                    required
+                  />
+                  {errors.title && (
+                    <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+                  )}
+                </div>
+
+                {/* Event Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    توضیحات (اختیاری)
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                    placeholder="جزئیات بیشتر در مورد رویداد..."
+                    rows={3}
+                  />
+                </div>
+
+                {/* Event Date */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    تاریخ رویداد *
+                  </label>
+                  <input
+                    type="date"
+                    name="eventDate"
+                    value={formData.eventDate}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
+                      errors.eventDate ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {errors.eventDate && (
+                    <p className="text-red-500 text-sm mt-1">{errors.eventDate}</p>
+                  )}
+                </div>
+
+                {/* Event Type */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    نوع رویداد
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {eventTypes.map((type) => (
+                      <button
+                        key={type.value}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, eventType: type.value }))}
+                        className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                          formData.eventType === type.value
+                            ? 'border-brand-500 bg-brand-50 text-brand-700'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="text-2xl mb-1">{type.icon}</div>
+                        <div className="text-sm font-medium">{type.label}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Reminder Days */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    زمان‌های یادآوری *
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {reminderDaysOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleReminderDayToggle(option.value)}
+                        className={`p-3 border-2 rounded-lg text-center transition-colors ${
+                          selectedReminderDays.includes(option.value)
+                            ? 'border-brand-500 bg-brand-50 text-brand-700'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-center mb-1">
+                          {selectedReminderDays.includes(option.value) ? (
+                            <Check className="w-4 h-4 text-brand-600" />
+                          ) : (
+                            <div className="w-4 h-4" />
+                          )}
+                        </div>
+                        <div className="text-sm font-medium">{option.label}</div>
+                      </button>
+                    ))}
+                  </div>
+                  {errors.reminderDays && (
+                    <p className="text-red-500 text-sm mt-1">{errors.reminderDays}</p>
+                  )}
+                </div>
+
+                {/* Reminder Methods */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    روش‌های یادآوری *
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {reminderMethods.map((method) => {
+                      const isSelected = selectedReminderMethods.includes(method.value);
+                      const isPremiumOnly = !method.free;
+                      const hasAccess = method.free || userSubscription?.currentType !== 'FREE';
+                      
+                      return (
+                        <button
+                          key={method.value}
+                          type="button"
+                          onClick={() => handleReminderMethodToggle(method.value)}
+                          disabled={!hasAccess}
+                          className={`p-4 border-2 rounded-lg text-center transition-colors relative ${
+                            isSelected
+                              ? 'border-brand-500 bg-brand-50 text-brand-700'
+                              : hasAccess
+                              ? 'border-gray-200 hover:border-gray-300'
+                              : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                          }`}
+                        >
+                          {isPremiumOnly && !hasAccess && (
+                            <div className="absolute top-1 left-1">
+                              <div className="w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <span className="text-xs text-white">👑</span>
+                              </div>
+                            </div>
+                          )}
+                          <div className="text-2xl mb-2">{method.icon}</div>
+                          <div className="text-sm font-medium">{method.label}</div>
+                          {isPremiumOnly && (
+                            <div className="text-xs text-gray-500 mt-1">پرمیوم</div>
+                          )}
+                          {isSelected && (
+                            <div className="absolute top-1 right-1">
+                              <Check className="w-4 h-4 text-brand-600" />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {errors.reminderMethods && (
+                    <p className="text-red-500 text-sm mt-1">{errors.reminderMethods}</p>
+                  )}
+                  {userSubscription?.currentType === 'FREE' && (
+                    <p className="text-sm text-gray-600 mt-2">
+                      برای استفاده از پیامک و واتس‌اپ، <Link to="/premium" className="text-brand-600">حساب خود را ارتقا دهید</Link>
+                    </p>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex gap-4 pt-4">
+                  <Button 
+                    type="submit" 
+                    className="flex-1 bg-brand-600 hover:bg-brand-700 py-3"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        در حال ایجاد...
+                      </div>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 ml-1" />
+                        ایجاد رویداد
+                      </>
+                    )}
+                  </Button>
+                  <Link to="/dashboard">
+                    <Button type="button" variant="outline" className="px-6 py-3">
+                      <X className="w-4 h-4 ml-1" />
+                      انصراف
+                    </Button>
+                  </Link>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
