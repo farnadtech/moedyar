@@ -115,7 +115,7 @@ export default function Settings() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
-        title: "✅ تنظیمات یادآ��ری به‌روزرسانی شد",
+        title: "✅ تنظیمات یادآوری به‌روزرسانی شد",
         description: "تغییرات با موفقیت ذخیره شد"
       });
 
@@ -132,6 +132,35 @@ export default function Settings() {
 
   const handleLogout = () => {
     apiService.logout();
+  };
+
+  const handleTestNotification = async (method: 'EMAIL' | 'SMS' | 'WHATSAPP') => {
+    try {
+      setSaving(true);
+
+      const response = await apiService.testNotification(method);
+
+      if (response.success) {
+        toast({
+          title: "✅ یادآوری تست ارسال شد",
+          description: `یادآوری تست از طریق ${method === 'EMAIL' ? 'ایمیل' : method === 'SMS' ? 'پیامک' : 'واتساپ'} ارسال شد`
+        });
+      } else {
+        toast({
+          title: "خطا در ارسال تست",
+          description: response.message || "لطفاً دوباره تلاش کنید",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "خطا در ارسال تست",
+        description: "خطا در ارتباط با سرور",
+        variant: "destructive"
+      });
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
@@ -378,7 +407,7 @@ export default function Settings() {
                         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                           <h4 className="font-medium text-blue-900 mb-2">تست یادآوری</h4>
                           <p className="text-sm text-blue-700 mb-3">
-                            برای ��طمینان از عملکرد سیستم، یادآوری تستی ارسال کنید
+                            برای اطمینان از عملکرد سیستم، یادآوری تستی ارسال کنید
                           </p>
                           <div className="flex gap-2">
                             <Button
