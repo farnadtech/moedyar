@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import RegisterPersonal from "./pages/RegisterPersonal";
 import Dashboard from "./pages/Dashboard";
 import AddEvent from "./pages/AddEvent";
+import EditEvent from "./pages/EditEvent";
 import Settings from "./pages/Settings";
 import Premium from "./pages/Premium";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -63,6 +64,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <AddEvent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-event/:id"
+              element={
+                <ProtectedRoute>
+                  <EditEvent />
                 </ProtectedRoute>
               }
             />
@@ -136,7 +145,7 @@ const App = () => (
               path="/demo"
               element={
                 <Placeholder
-                  title="نمایش دمو"
+                  title="نمایش ��مو"
                   description="مشاهده ویدیوی آموزشی و تست سیستم"
                 />
               }
