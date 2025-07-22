@@ -183,8 +183,19 @@ export default function Login() {
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full bg-brand-600 hover:bg-brand-700 py-3">
-                ورود به حساب
+              <Button
+                type="submit"
+                className="w-full bg-brand-600 hover:bg-brand-700 py-3"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    در حال ورود...
+                  </div>
+                ) : (
+                  "ورود به حساب"
+                )}
               </Button>
             </form>
 
