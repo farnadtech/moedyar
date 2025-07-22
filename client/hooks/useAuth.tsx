@@ -41,13 +41,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (response.success && response.data) {
           setUser(response.data.user);
         } else {
-          // Token is invalid, clear it
-          apiService.logout();
+          // Only logout if it's a clear auth failure, not a network error
+          if (!response.message?.includes("خطا در ارتباط")) {
+            apiService.logout();
+          }
         }
       }
     } catch (error) {
-      console.error("Auth check failed:", error);
-      apiService.logout();
+      // Only logout for non-network errors
+      if (!(error instanceof TypeError && error.message.includes("fetch"))) {
+        console.error("Auth check failed:", error);
+        apiService.logout();
+      } else {
+        console.warn("Network error during auth check, keeping user logged in");
+      }
     } finally {
       setIsLoading(false);
     }

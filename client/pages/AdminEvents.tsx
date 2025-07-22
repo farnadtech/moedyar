@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
+import { formatPersianDate } from "@/lib/persian-date";
 
 export default function AdminEvents() {
   const [events, setEvents] = useState<any[]>([]);
@@ -101,7 +102,7 @@ export default function AdminEvents() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("fa-IR");
+    return formatPersianDate(dateString, { format: "long" });
   };
 
   if (loading && events.length === 0) {

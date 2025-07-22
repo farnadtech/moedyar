@@ -122,7 +122,7 @@ export default function AdminSettings() {
         });
       } else {
         toast({
-          title: "خطا در ��خیره تنظیمات",
+          title: "خطا در ذخیره تنظیمات",
           description: response.message,
           variant: "destructive",
         });

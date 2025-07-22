@@ -39,11 +39,18 @@ export async function requestPayment(
     ) {
       console.log("🧪 ZarinPal sandbox mode - returning mock payment URL");
 
-      const mockAuthority = "A" + Date.now().toString();
+      const mockAuthority = "SANDBOX" + Date.now().toString();
+      const subscriptionId = paymentData.callbackUrl.split("subscription=")[1];
+
+      // Get the base URL from callback URL
+      const callbackUrlObj = new URL(paymentData.callbackUrl);
+      const baseUrl = `${callbackUrlObj.protocol}//${callbackUrlObj.host}`;
+
+      // Return a sandbox payment page URL that will simulate payment
       return {
         status: 100,
         authority: mockAuthority,
-        url: `${process.env.APP_URL || "http://localhost:8080"}/api/subscriptions/verify-payment?Authority=${mockAuthority}&Status=OK&subscription=${paymentData.callbackUrl.split("subscription=")[1]}`,
+        url: `${baseUrl}/sandbox-payment?authority=${mockAuthority}&subscription=${subscriptionId}&amount=${paymentData.amount}&description=${encodeURIComponent(paymentData.description)}`,
       };
     }
 
@@ -150,7 +157,7 @@ export function getPaymentStatusMessage(status: number): string {
     "-21": "هیچ نوع عملیات مالی برای این تراکنش تعریف نشده",
     "-22": "تراکنش ناموفق",
     "-33": "رقم تراکنش با رقم پرداخت شده مطابقت ندارد",
-    "-34": "سقف تقسیم تراکنش از لحاظ تعداد یا رقم عبور کرده",
+    "-34": "سقف تقسیم تراکنش از لحاظ تعدا�� یا رقم عبور کرده",
     "-40": "اجازه دسترسی به متد مربوطه وجود ندارد",
     "-41": "اطلاعات ارسال شده مربوط به Additional Data غیر معتبر می‌باشد",
     "-42":

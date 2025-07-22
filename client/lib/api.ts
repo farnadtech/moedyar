@@ -83,6 +83,22 @@ class ApiService {
         };
       }
     } catch (error) {
+      // Check if it's a network/fetch error (often caused by browser extensions)
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        console.warn(
+          "Network fetch error (possibly due to browser extensions):",
+          error.message,
+        );
+        // For auth endpoints, don't treat this as an auth failure
+        if (endpoint.includes("/auth/me")) {
+          return {
+            success: false,
+            message:
+              "خطا در ارتباط با سرور - لطفاً صفحه را مجدداً بارگذاری کنید",
+          };
+        }
+      }
+
       console.error("API Request Error:", error);
       return {
         success: false,
@@ -164,6 +180,7 @@ class ApiService {
     title: string;
     description?: string;
     eventDate: string;
+    eventTime?: string;
     eventType?: string;
     reminderDays?: number[];
     reminderMethods?: string[];
@@ -180,6 +197,7 @@ class ApiService {
       title: string;
       description?: string;
       eventDate: string;
+      eventTime?: string;
       eventType?: string;
       reminderDays?: number[];
       reminderMethods?: string[];
@@ -246,12 +264,6 @@ class ApiService {
     return this.request("/subscriptions/confirm-payment", {
       method: "POST",
       body: JSON.stringify({ subscriptionId, paymentStatus }),
-    });
-  }
-
-  async cancelSubscription(): Promise<ApiResponse> {
-    return this.request("/subscriptions/cancel", {
-      method: "POST",
     });
   }
 

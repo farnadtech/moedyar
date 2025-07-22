@@ -7,8 +7,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PersianCalendarPicker } from "@/components/ui/persian-calendar-picker";
-import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Calendar, ArrowRight, Save, Bell, Check, X } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
@@ -36,7 +36,8 @@ const reminderDaysOptions = [
   { value: 60, label: "۲ ماه قبل" },
 ];
 
-export default function AddEvent() {
+export default function EditEvent() {
+  const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -84,7 +85,7 @@ export default function AddEvent() {
           {
             key: "policy_number",
             label: "شماره بیمه‌نامه",
-            placeholder: "شماره ب��مه‌نامه",
+            placeholder: "شماره بیمه‌نامه",
             required: false,
           },
           {
@@ -165,19 +166,92 @@ export default function AddEvent() {
     }
   };
 
-  const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>([
-    1, 7,
-  ]);
+  const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>(
+    [],
+  );
   const [selectedReminderMethods, setSelectedReminderMethods] = useState<
     string[]
-  >(["EMAIL"]);
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [userSubscription, setUserSubscription] = useState<any>(null);
-  const [userEvents, setUserEvents] = useState<any[]>([]);
 
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (id) {
+      loadEventData();
+      loadSubscriptionData();
+    }
+  }, [id]);
+
+  const loadEventData = async () => {
+    try {
+      setPageLoading(true);
+      const response = await apiService.getEvent(id!);
+
+      if (response.success && response.data) {
+        const event = response.data.event;
+
+        // Extract date and time
+        const eventDateTime = new Date(event.eventDate);
+        const eventDateOnly = eventDateTime.toISOString().split("T")[0];
+        const eventTimeOnly = eventDateTime.toTimeString().slice(0, 5);
+
+        setFormData({
+          title: event.title,
+          description: event.description || "",
+          eventDate: eventDateOnly,
+          eventTime: eventTimeOnly,
+          eventType: event.eventType,
+        });
+
+        // Load dynamic fields if they exist
+        if (event.dynamicFields) {
+          setDynamicFields(event.dynamicFields);
+        }
+
+        // Load reminder settings
+        if (event.reminders && event.reminders.length > 0) {
+          const days = event.reminders.map((r: any) => r.daysBefore);
+          const methods = [
+            ...new Set(event.reminders.map((r: any) => r.method)),
+          ];
+          setSelectedReminderDays(days);
+          setSelectedReminderMethods(methods);
+        }
+      } else {
+        toast({
+          title: "خطا در بارگذاری رویداد",
+          description: response.message || "رویداد یافت نشد",
+          variant: "destructive",
+        });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error loading event:", error);
+      toast({
+        title: "خطا در بارگذاری اطلاعات",
+        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
+        variant: "destructive",
+      });
+    } finally {
+      setPageLoading(false);
+    }
+  };
+
+  const loadSubscriptionData = async () => {
+    try {
+      const response = await apiService.getCurrentSubscription();
+      if (response.success) {
+        setUserSubscription(response.data);
+      }
+    } catch (error) {
+      console.error("Error loading subscription:", error);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -212,7 +286,7 @@ export default function AddEvent() {
     if (!methodData?.free && userSubscription?.currentType === "FREE") {
       toast({
         title: "نیاز به حساب پرمیوم",
-        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
+        description: `برای اس��فاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
         variant: "destructive",
       });
       return;
@@ -247,18 +321,10 @@ export default function AddEvent() {
 
     if (!formData.eventDate) {
       newErrors.eventDate = "تاریخ رویداد الزامی است";
-    } else {
-      const selectedDate = new Date(formData.eventDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (selectedDate < today) {
-        newErrors.eventDate = "تاریخ رویداد نمی‌تواند در گذشته باشد";
-      }
     }
 
     if (selectedReminderDays.length === 0) {
-      newErrors.reminderDays = "حداقل یک روز یادآوری انتخاب کنید";
+      newErrors.reminderDays = "ح��اقل یک روز یادآوری انتخاب کنید";
     }
 
     if (selectedReminderMethods.length === 0) {
@@ -279,7 +345,7 @@ export default function AddEvent() {
     setIsLoading(true);
 
     try {
-      const response = await apiService.createEvent({
+      const response = await apiService.updateEvent(id!, {
         title: formData.title,
         description: formData.description,
         eventDate: formData.eventDate,
@@ -291,32 +357,24 @@ export default function AddEvent() {
 
       if (response.success) {
         toast({
-          title: "✅ رویداد ایجاد شد",
-          description: "رویداد با موفقیت ایجاد شد و یادآوری‌ها تنظیم شدند",
+          title: "✅ رویداد بروزرسانی شد",
+          description: "رویداد با موفقیت بروزرسانی شد",
         });
 
         setTimeout(() => {
           navigate("/dashboard");
         }, 1000);
       } else {
-        if (response.upgradeRequired) {
-          toast({
-            title: "نیاز به ارتقا حساب",
-            description: response.message,
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "خطا در ایجاد رویداد",
-            description: response.message || "لطفاً دوباره تلاش کنید",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "خطا در بروزرسانی رویداد",
+          description: response.message || "لطفاً دوباره تلاش کنید",
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      console.error("Create event error:", error);
+      console.error("Update event error:", error);
       toast({
-        title: "خطا در ایجاد رویداد",
+        title: "خطا در بروزرسانی رویداد",
         description: "خطا در ارتباط با سرور",
         variant: "destructive",
       });
@@ -325,44 +383,19 @@ export default function AddEvent() {
     }
   };
 
-  // Load user subscription data and events when component mounts
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [subscriptionResponse, eventsResponse] = await Promise.all([
-          apiService.getCurrentSubscription(),
-          apiService.getEvents(),
-        ]);
-
-        if (subscriptionResponse.success) {
-          setUserSubscription(subscriptionResponse.data);
-        }
-
-        if (eventsResponse.success) {
-          setUserEvents(eventsResponse.data.events);
-
-          // Check if user has reached limit
-          const events = eventsResponse.data.events;
-          const currentType = subscriptionResponse.data?.currentType;
-
-          if (currentType === "FREE" && events.length >= 3) {
-            toast({
-              title: "محدودیت رویداد",
-              description:
-                "شما به حداکثر رویداد در پلن رایگان رسیده‌اید. برای افزودن رویداد بیشتر ارتقا دهید.",
-              variant: "destructive",
-            });
-            navigate("/premium");
-            return;
-          }
-        }
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    };
-
-    loadData();
-  }, [navigate, toast]);
+  if (pageLoading) {
+    return (
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">در حال بارگذاری رویداد...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -383,7 +416,9 @@ export default function AddEvent() {
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">رویداد جدید</span>
+            <span className="text-xl font-bold text-gray-900">
+              ویرایش رویداد
+            </span>
           </div>
         </nav>
       </header>
@@ -393,11 +428,11 @@ export default function AddEvent() {
           <Card className="border-2 border-brand-100">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                <Plus className="w-6 h-6 text-brand-600" />
-                افزودن رویداد جدید
+                <Save className="w-6 h-6 text-brand-600" />
+                ویرایش رویداد
               </CardTitle>
               <CardDescription>
-                رویداد جدید خود را ایجاد کنید و یادآوری‌هایتان را تنظیم کنید
+                اطلاعات رویداد و یادآوری‌هایتان را ویرایش کنید
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -474,7 +509,7 @@ export default function AddEvent() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      در صورت عدم انتخاب، ساعت ۰۹:۰۰ در نظر گرفته می‌شود
+                      در صورت عدم انتخاب، ساعت فعلی حفظ می‌شود
                     </p>
                   </div>
                 </div>
@@ -636,7 +671,7 @@ export default function AddEvent() {
                   )}
                   {userSubscription?.currentType === "FREE" && (
                     <p className="text-sm text-gray-600 mt-2">
-                      برای اس��فاده از پیامک و واتس‌اپ،{" "}
+                      برای استفاده از پیامک و واتس‌اپ،{" "}
                       <Link to="/premium" className="text-brand-600">
                         حساب خود را ارتقا دهید
                       </Link>
@@ -654,12 +689,12 @@ export default function AddEvent() {
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        در حال ایجاد...
+                        در حال بروزرسانی...
                       </div>
                     ) : (
                       <>
-                        <Plus className="w-4 h-4 ml-1" />
-                        ایجاد رویداد
+                        <Save className="w-4 h-4 ml-1" />
+                        بروزرسانی رویداد
                       </>
                     )}
                   </Button>

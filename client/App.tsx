@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import RegisterPersonal from "./pages/RegisterPersonal";
 import Dashboard from "./pages/Dashboard";
 import AddEvent from "./pages/AddEvent";
+import EditEvent from "./pages/EditEvent";
 import Settings from "./pages/Settings";
 import Premium from "./pages/Premium";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -21,6 +22,8 @@ import AdminSettings from "./pages/AdminSettings";
 import AdminSetup from "./pages/AdminSetup";
 import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
+import SandboxPayment from "./pages/SandboxPayment";
+import TeamManagement from "./pages/TeamManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
 
@@ -63,6 +66,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <AddEvent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-event/:id"
+              element={
+                <ProtectedRoute>
+                  <EditEvent />
                 </ProtectedRoute>
               }
             />
@@ -132,6 +143,15 @@ const App = () => (
             />
 
             <Route path="/premium" element={<Premium />} />
+            <Route path="/sandbox-payment" element={<SandboxPayment />} />
+            <Route
+              path="/team"
+              element={
+                <ProtectedRoute>
+                  <TeamManagement />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/demo"
               element={
@@ -164,7 +184,7 @@ const App = () => (
               element={
                 <Placeholder
                   title="شرایط استفاده"
-                  description="قوانین و مقررات استفاده از سرویس"
+                  description="قوانین و مقررات استفاده از ��رویس"
                 />
               }
             />

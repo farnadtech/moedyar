@@ -13,14 +13,21 @@ import {
   Settings,
   Crown,
   User,
+  Users,
   LogOut,
   Trash2,
   Edit,
+  Eye,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
+import {
+  formatPersianDate,
+  formatPersianRelativeTime,
+  formatPersianTime,
+} from "@/lib/persian-date";
 
 interface Event {
   id: string;
@@ -89,7 +96,7 @@ export default function Dashboard() {
       console.error("Error loading dashboard:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
-        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
+        description: "لطفاً صفحه را مجددا�� بارگذاری کنید",
         variant: "destructive",
       });
     } finally {
@@ -105,7 +112,7 @@ export default function Dashboard() {
         setEvents(events.filter((e) => e.id !== id));
         toast({
           title: "رویداد حذف شد",
-          description: "رویداد با موفقیت حذف شد",
+          description: "رویداد با موفقیت حذف ��د",
         });
       } else {
         toast({
@@ -129,12 +136,19 @@ export default function Dashboard() {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("fa-IR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(date);
+    return formatPersianDate(dateString, { format: "long" });
+  };
+
+  const formatDateTime = (dateString: string) => {
+    return formatPersianDate(dateString, { format: "long", includeTime: true });
+  };
+
+  const formatRelativeDate = (dateString: string) => {
+    const daysUntil = getDaysUntil(dateString);
+    if (daysUntil === 0) return "امروز";
+    if (daysUntil === 1) return "فردا";
+    if (daysUntil === -1) return "دیروز";
+    return formatPersianRelativeTime(dateString);
   };
 
   const getDaysUntil = (dateString: string) => {
@@ -159,6 +173,7 @@ export default function Dashboard() {
   const isPremium =
     user?.subscriptionType === "PREMIUM" ||
     user?.subscriptionType === "BUSINESS";
+  const isBusiness = user?.subscriptionType === "BUSINESS";
   const maxEvents = isPremium ? -1 : 3;
 
   if (loading) {
@@ -241,6 +256,18 @@ export default function Dashboard() {
                   </Button>
                 </Link>
               )}
+              {isBusiness && (
+                <Link to="/team">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                  >
+                    <Users className="w-4 h-4 ml-1" />
+                    مدیریت تیم
+                  </Button>
+                </Link>
+              )}
               <Link to="/settings">
                 <Button variant="ghost" size="sm">
                   <Settings className="w-4 h-4 ml-1" />
@@ -272,22 +299,31 @@ export default function Dashboard() {
                 <p className="text-gray-600 text-center mb-4">
                   {isPremium
                     ? "رویداد نامحدود اضافه کنید و همیشه در جریان باشید"
-                    : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
+                    : events.length >= maxEvents
+                      ? "شما به حداکثر رویداد در پلن رایگان رسیده‌اید"
+                      : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
                 </p>
-                <Link to="/add-event">
+                {!isPremium && events.length >= maxEvents ? (
                   <Button
-                    className="bg-brand-600 hover:bg-brand-700"
-                    disabled={!isPremium && events.length >= maxEvents}
+                    className="bg-gray-400 cursor-not-allowed"
+                    disabled={true}
                   >
                     <Plus className="w-4 h-4 ml-1" />
-                    افزودن رویداد
+                    حداکثر رویداد (3/3)
                   </Button>
-                </Link>
+                ) : (
+                  <Link to="/add-event">
+                    <Button className="bg-brand-600 hover:bg-brand-700">
+                      <Plus className="w-4 h-4 ml-1" />
+                      افزودن رویداد
+                    </Button>
+                  </Link>
+                )}
                 {!isPremium && events.length >= maxEvents && (
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-gray-500 mt-2 text-center">
                     برای افزودن رویداد بیشتر،{" "}
-                    <Link to="/premium" className="text-brand-600">
-                      ارتقا دهید
+                    <Link to="/premium" className="text-brand-600 underline">
+                      ارتقا به پرمیوم
                     </Link>
                   </p>
                 )}
@@ -333,16 +369,23 @@ export default function Dashboard() {
                               <CardTitle className="text-lg">
                                 {event.title}
                               </CardTitle>
-                              <CardDescription>
-                                {formatDate(event.eventDate)} •{" "}
-                                {getEventTypeLabel(event.eventType)}
+                              <CardDescription className="flex flex-col gap-1">
+                                <span>
+                                  {formatDateTime(event.eventDate)} •{" "}
+                                  {getEventTypeLabel(event.eventType)}
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                  {formatRelativeDate(event.eventDate)}
+                                </span>
                               </CardDescription>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm">
-                              <Edit className="w-4 h-4" />
-                            </Button>
+                            <Link to={`/edit-event/${event.id}`}>
+                              <Button variant="ghost" size="sm">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            </Link>
                             <Button
                               variant="ghost"
                               size="sm"
@@ -374,8 +417,12 @@ export default function Dashboard() {
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Bell className="w-4 h-4" />
                             یادآوری:{" "}
-                            {event.reminders
-                              .map((r) => r.daysBefore)
+                            {[
+                              ...new Set(
+                                event.reminders.map((r) => r.daysBefore),
+                              ),
+                            ]
+                              .sort((a, b) => a - b)
                               .join("، ")}{" "}
                             روز قبل
                           </div>
@@ -450,7 +497,10 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای امروز:</span>
                     <span className="font-medium text-yellow-600">
-                      {events.filter((e) => getDaysUntil(e.date) === 0).length}
+                      {
+                        events.filter((e) => getDaysUntil(e.eventDate) === 0)
+                          .length
+                      }
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -458,7 +508,7 @@ export default function Dashboard() {
                     <span className="font-medium text-blue-600">
                       {
                         events.filter((e) => {
-                          const days = getDaysUntil(e.date);
+                          const days = getDaysUntil(e.eventDate);
                           return days >= 0 && days <= 7;
                         }).length
                       }
@@ -467,7 +517,10 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای گذشته:</span>
                     <span className="font-medium text-red-600">
-                      {events.filter((e) => getDaysUntil(e.date) < 0).length}
+                      {
+                        events.filter((e) => getDaysUntil(e.eventDate) < 0)
+                          .length
+                      }
                     </span>
                   </div>
                 </div>
@@ -502,6 +555,60 @@ export default function Dashboard() {
                       </Button>
                     </Link>
                   </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Business Features */}
+            {isBusiness && (
+              <Card className="border-purple-200 bg-purple-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-purple-900">
+                    <Users className="w-5 h-5" />
+                    امکانات کسب‌وکار
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <Link to="/team" className="block">
+                      <Button
+                        variant="outline"
+                        className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      >
+                        <Users className="w-4 h-4 ml-1" />
+                        مدیریت تیم
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="outline"
+                      className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      onClick={() => {
+                        toast({
+                          title: "🔧 در حال توسعه",
+                          description: "تقویم مشترک به زودی اضافه می‌شود",
+                        });
+                      }}
+                    >
+                      <Calendar className="w-4 h-4 ml-1" />
+                      تقویم مشترک
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      onClick={() => {
+                        toast({
+                          title: "🔧 در حال توسعه",
+                          description: "گزارش‌گیری تیم به زودی اضافه می‌شود",
+                        });
+                      }}
+                    >
+                      <Eye className="w-4 h-4 ml-1" />
+                      گزارش‌گیری تیم
+                    </Button>
+                  </div>
+                  <p className="text-xs text-purple-600 mt-4">
+                    ✨ امکانات ویژه حساب کسب‌وکار شما
+                  </p>
                 </CardContent>
               </Card>
             )}

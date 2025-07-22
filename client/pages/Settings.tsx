@@ -133,7 +133,7 @@ export default function Settings() {
       console.error("Profile update error:", error);
       toast({
         title: "خطا در به‌روزرسانی",
-        description: "خطا در ارتباط با ����رور",
+        description: "خطا در ارتباط با سرور",
         variant: "destructive",
       });
     } finally {
@@ -228,6 +228,47 @@ export default function Settings() {
         description: "قابلیت حذف حساب به زودی اضافه خواهد شد",
       });
     }
+  };
+
+  const handleCancelSubscription = async () => {
+    const confirmed = window.confirm(
+      "آیا مطمئن هستید که می‌خواهید اشتراک خود را لغو کنید؟ پس از لغو، به حساب رایگان بازمی‌گردید.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setSaving(true);
+      const response = await apiService.cancelSubscription();
+
+      if (response.success) {
+        toast({
+          title: "✅ اشتراک لغو شد",
+          description: "اشتراک شما با موفقیت لغو شد. به حساب رایگان بازگشتید.",
+        });
+        // Reload user data to reflect changes
+        await loadUserData();
+      } else {
+        toast({
+          title: "خطا در لغو اشتراک",
+          description: response.message || "لطفاً دوباره تلاش کنید",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Cancel subscription error:", error);
+      toast({
+        title: "خطا در لغو اشتراک",
+        description: "خطا در ارتباط با سرور",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleChangeSubscription = () => {
+    navigate("/premium");
   };
 
   if (loading) {
@@ -534,7 +575,7 @@ export default function Settings() {
                             تست یادآوری
                           </h4>
                           <p className="text-sm text-blue-700 mb-3">
-                            برای اطمینان از عملکرد سیستم، یادآوری تستی ارسال
+                            برای اطمینان از عملکرد سیستم، یادآوری تستی ار��ال
                             کنید
                           </p>
                           <div className="flex gap-2 mb-3">
@@ -665,15 +706,22 @@ export default function Settings() {
                           </div>
                         ) : (
                           <div className="flex gap-3">
-                            <Button variant="outline" className="flex-1">
+                            <Button
+                              variant="outline"
+                              className="flex-1"
+                              onClick={handleChangeSubscription}
+                              disabled={saving}
+                            >
                               <Edit2 className="w-4 h-4 ml-1" />
                               تغییر پکیج
                             </Button>
                             <Button
                               variant="outline"
                               className="text-red-600 border-red-200 hover:bg-red-50"
+                              onClick={handleCancelSubscription}
+                              disabled={saving}
                             >
-                              لغو اشتراک
+                              {saving ? "در حال لغو..." : "لغو اشتراک"}
                             </Button>
                           </div>
                         )}

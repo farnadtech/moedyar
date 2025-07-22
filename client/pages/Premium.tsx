@@ -129,7 +129,7 @@ export default function Premium() {
         console.error("❌ Upgrade failed:", errorMessage);
 
         toast({
-          title: "خطا در ایجاد درخواست پرداخت",
+          title: "خطا در ایجاد درخواست پردا��ت",
           description: errorMessage,
           variant: "destructive",
         });
@@ -441,7 +441,7 @@ export default function Premium() {
                   {upgrading === "PREMIUM" ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      در حا�� پردازش...
+                      در حال پردازش...
                     </div>
                   ) : (
                     <>
@@ -469,7 +469,7 @@ export default function Premium() {
               <CardDescription>ماهانه - پیشرفته</CardDescription>
               {currentPlan === "BUSINESS" && (
                 <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                  پکیج فعلی شما
+                  پکیج فعل�� شما
                 </div>
               )}
             </CardHeader>
@@ -481,19 +481,23 @@ export default function Premium() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>مدیریت چند کاربره</span>
+                  <span>مدیریت تیم (تا ۱۰ نفر)</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>تقویم مشترک</span>
+                  <span>تقویم مشترک و هماهنگی</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>گزارش‌گیری پیشرفته</span>
+                  <span>گزارش‌گیری و آنالیز تیم</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>پشتیبانی اختصاصی</span>
+                  <span>نقش‌های دسترسی (مدیر/عضو/بیننده)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span>پشتیبانی اختصاصی ۲۴/۷</span>
                 </li>
               </ul>
 
@@ -594,7 +598,19 @@ export default function Premium() {
                   <td className="px-6 py-4 text-center">✅</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-4 font-medium">مدیریت چند کاربره</td>
+                  <td className="px-6 py-4 font-medium">مدیریت تیم</td>
+                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">✅</td>
+                </tr>
+                <tr className="bg-gray-50">
+                  <td className="px-6 py-4 font-medium">تقویم مشترک</td>
+                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">✅</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 font-medium">نقش‌های دسترسی</td>
                   <td className="px-6 py-4 text-center">❌</td>
                   <td className="px-6 py-4 text-center">❌</td>
                   <td className="px-6 py-4 text-center">✅</td>
