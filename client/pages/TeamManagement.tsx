@@ -25,6 +25,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Calendar,
   ArrowRight,
   Users,
@@ -37,6 +48,8 @@ import {
   UserCheck,
   UserX,
   Mail,
+  Save,
+  RefreshCw,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -53,10 +66,28 @@ interface TeamMember {
   lastActiveAt?: string;
 }
 
+const STORAGE_KEY = "team_members_data";
+
+// Default team members
+const defaultTeamMembers: TeamMember[] = [
+  {
+    id: "1",
+    fullName: "فرناد باباپور",
+    email: "farnadadmin@gmail.com",
+    role: "ADMIN",
+    status: "ACTIVE",
+    joinedAt: "2024-01-01T00:00:00Z",
+    lastActiveAt: "2024-01-20T10:30:00Z",
+  },
+];
+
 export default function TeamManagement() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   const [inviteForm, setInviteForm] = useState({
     email: "",
     fullName: "",
@@ -66,6 +97,29 @@ export default function TeamManagement() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Load team members from localStorage
+  const loadTeamMembersFromStorage = (): TeamMember[] => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+      return defaultTeamMembers;
+    } catch (error) {
+      console.error("Error loading team members from storage:", error);
+      return defaultTeamMembers;
+    }
+  };
+
+  // Save team members to localStorage
+  const saveTeamMembersToStorage = (members: TeamMember[]) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+    } catch (error) {
+      console.error("Error saving team members to storage:", error);
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -81,43 +135,7 @@ export default function TeamManagement() {
         return;
       }
 
-      const [userResponse, teamResponse] = await Promise.all([
-        apiService.getCurrentUser(),
-        // Mock team members for now - in real implementation this would be an API call
-        Promise.resolve({
-          success: true,
-          data: {
-            members: [
-              {
-                id: "1",
-                fullName: "فرناد باباپور",
-                email: "farnadadmin@gmail.com",
-                role: "ADMIN",
-                status: "ACTIVE",
-                joinedAt: "2024-01-01T00:00:00Z",
-                lastActiveAt: "2024-01-20T10:30:00Z",
-              },
-              {
-                id: "2",
-                fullName: "علی احمدی",
-                email: "ali@company.com",
-                role: "MEMBER",
-                status: "ACTIVE",
-                joinedAt: "2024-01-15T00:00:00Z",
-                lastActiveAt: "2024-01-19T14:20:00Z",
-              },
-              {
-                id: "3",
-                fullName: "سارا محمدی",
-                email: "sara@company.com",
-                role: "VIEWER",
-                status: "PENDING",
-                joinedAt: "2024-01-18T00:00:00Z",
-              },
-            ] as TeamMember[],
-          },
-        }),
-      ]);
+      const userResponse = await apiService.getCurrentUser();
 
       if (userResponse.success && userResponse.data) {
         const userData = userResponse.data.user;
@@ -135,18 +153,40 @@ export default function TeamManagement() {
         }
       }
 
-      if (teamResponse.success && teamResponse.data) {
-        setTeamMembers(teamResponse.data.members);
-      }
+      // Load team members from localStorage
+      const members = loadTeamMembersFromStorage();
+      setTeamMembers(members);
     } catch (error) {
       console.error("Error loading team data:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
-        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
+        description: "لطفاً صفح�� را مجدداً بارگذاری کنید",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    setSaving(true);
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      saveTeamMembersToStorage(teamMembers);
+      toast({
+        title: "تغییرات ذخیره شد",
+        description: "تمام تغییرات با موفقیت ذخیره شدند",
+      });
+    } catch (error) {
+      toast({
+        title: "خطا در ذخیره",
+        description: "خطا در ذخیره تغییرات",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -162,8 +202,17 @@ export default function TeamManagement() {
       return;
     }
 
+    // Check if email already exists
+    if (teamMembers.some(member => member.email === inviteForm.email)) {
+      toast({
+        title: "ایمیل تکراری",
+        description: "این ایمیل قبلاً در تیم وجود دارد",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      // Mock API call - in real implementation this would send an invitation
       const newMember: TeamMember = {
         id: Date.now().toString(),
         fullName: inviteForm.fullName,
@@ -173,17 +222,53 @@ export default function TeamManagement() {
         joinedAt: new Date().toISOString(),
       };
 
-      setTeamMembers((prev) => [...prev, newMember]);
+      const updatedMembers = [...teamMembers, newMember];
+      setTeamMembers(updatedMembers);
+      saveTeamMembersToStorage(updatedMembers);
+      
       setInviteForm({ email: "", fullName: "", role: "MEMBER" });
       setInviteDialogOpen(false);
 
       toast({
-        title: "دعوت‌نامه ارسال شد",
-        description: `دعوت‌نامه به ${inviteForm.email} ارسال شد`,
+        title: "عضو جدید اضافه شد",
+        description: `${inviteForm.fullName} به تیم اضافه شد`,
       });
     } catch (error) {
       toast({
-        title: "خطا در ارسال دعوت‌نامه",
+        title: "خطا در افزودن عضو",
+        description: "لطفاً دوباره تلاش کنید",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditMember = (member: TeamMember) => {
+    setEditingMember(member);
+    setEditDialogOpen(true);
+  };
+
+  const handleUpdateMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingMember) return;
+
+    try {
+      const updatedMembers = teamMembers.map(member =>
+        member.id === editingMember.id ? editingMember : member
+      );
+      
+      setTeamMembers(updatedMembers);
+      saveTeamMembersToStorage(updatedMembers);
+      setEditDialogOpen(false);
+      setEditingMember(null);
+
+      toast({
+        title: "عضو به‌روزرسانی شد",
+        description: "اطلاعات عضو با موفقیت به‌روزرسانی شد",
+      });
+    } catch (error) {
+      toast({
+        title: "خطا در به‌روزرسانی",
         description: "لطفاً دوباره تلاش کنید",
         variant: "destructive",
       });
@@ -191,14 +276,11 @@ export default function TeamManagement() {
   };
 
   const handleRemoveMember = async (memberId: string) => {
-    const confirmed = window.confirm(
-      "آیا مطمئن هستید که می‌خواهید این عضو را از تیم حذف کنید؟"
-    );
-
-    if (!confirmed) return;
-
     try {
-      setTeamMembers((prev) => prev.filter((member) => member.id !== memberId));
+      const updatedMembers = teamMembers.filter((member) => member.id !== memberId);
+      setTeamMembers(updatedMembers);
+      saveTeamMembersToStorage(updatedMembers);
+      
       toast({
         title: "عضو حذف شد",
         description: "عضو با موفقیت از تیم حذف شد",
@@ -212,10 +294,28 @@ export default function TeamManagement() {
     }
   };
 
+  const handleToggleStatus = (memberId: string) => {
+    const updatedMembers = teamMembers.map(member => {
+      if (member.id === memberId) {
+        const newStatus = member.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+        return { ...member, status: newStatus };
+      }
+      return member;
+    });
+    
+    setTeamMembers(updatedMembers);
+    saveTeamMembersToStorage(updatedMembers);
+    
+    toast({
+      title: "وضعیت تغییر کرد",
+      description: "وضعیت عضو با موفقیت تغییر کرد",
+    });
+  };
+
   const getRoleBadge = (role: string) => {
     const roleConfig = {
       ADMIN: { label: "مدیر", color: "bg-red-100 text-red-800" },
-      MEMBER: { label: "عضو", color: "bg-blue-100 text-blue-800" },
+      MEMBER: { label: "عضو", color: "bg-brand-100 text-brand-800" },
       VIEWER: { label: "بیننده", color: "bg-gray-100 text-gray-800" },
     };
     const config = roleConfig[role as keyof typeof roleConfig];
@@ -260,11 +360,11 @@ export default function TeamManagement() {
               بازگشت به داشبورد
             </Link>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
                 <Users className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-bold text-gray-900">مدیریت تیم</span>
-              <Badge className="bg-purple-100 text-purple-800">
+              <Badge className="bg-brand-100 text-brand-800">
                 <Crown className="w-3 h-3 ml-1" />
                 کسب‌وکار
               </Badge>
@@ -274,17 +374,38 @@ export default function TeamManagement() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Action Bar */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleSaveChanges}
+              disabled={saving}
+              className="bg-brand-600 hover:bg-brand-700"
+            >
+              {saving ? (
+                <RefreshCw className="w-4 h-4 ml-1 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4 ml-1" />
+              )}
+              {saving ? "در حال ذخیره..." : "ذخیره تغییرات"}
+            </Button>
+          </div>
+          <p className="text-sm text-gray-600">
+            تغییرات شما به صورت خودکار در مرورگر ذخیره می‌شوند
+          </p>
+        </div>
+
         {/* Team Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Users className="w-5 h-5 text-blue-600" />
+                <Users className="w-5 h-5 text-brand-600" />
                 کل اعضا
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-blue-600">
+              <div className="text-3xl font-bold text-brand-600">
                 {teamMembers.length}
               </div>
               <p className="text-sm text-gray-600">
@@ -297,7 +418,22 @@ export default function TeamManagement() {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <UserCheck className="w-5 h-5 text-green-600" />
-                دعوت‌های در انتظار
+                اعضای فعال
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-green-600">
+                {teamMembers.filter((m) => m.status === "ACTIVE").length}
+              </div>
+              <p className="text-sm text-gray-600">آماده کار</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <UserX className="w-5 h-5 text-yellow-600" />
+                در انتظار
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -339,7 +475,7 @@ export default function TeamManagement() {
               </div>
               <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-purple-600 hover:bg-purple-700">
+                  <Button className="bg-brand-600 hover:bg-brand-700">
                     <Plus className="w-4 h-4 ml-1" />
                     دعوت عضو جدید
                   </Button>
@@ -412,8 +548,8 @@ export default function TeamManagement() {
                     </div>
                     <div className="flex gap-2">
                       <Button type="submit" className="flex-1">
-                        <Mail className="w-4 h-4 ml-1" />
-                        ارسال دعوت‌نامه
+                        <Plus className="w-4 h-4 ml-1" />
+                        افزودن عضو
                       </Button>
                       <Button
                         type="button"
@@ -433,11 +569,11 @@ export default function TeamManagement() {
               {teamMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-brand-300"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                      <div className="w-12 h-12 bg-gradient-to-br from-brand-500 to-brand-600 rounded-full flex items-center justify-center text-white font-bold">
                         {member.fullName.charAt(0)}
                       </div>
                       <div>
@@ -461,16 +597,60 @@ export default function TeamManagement() {
                           )}
                         </div>
                       )}
-                      {member.role !== "ADMIN" && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveMember(member.id)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      )}
+                      <div className="flex items-center gap-1">
+                        {member.role !== "ADMIN" && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditMember(member)}
+                              className="text-brand-600 hover:text-brand-700 hover:bg-brand-50"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleToggleStatus(member.id)}
+                              className={member.status === "ACTIVE" 
+                                ? "text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                                : "text-green-600 hover:text-green-700 hover:bg-green-50"
+                              }
+                            >
+                              {member.status === "ACTIVE" ? <UserX className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent dir="rtl">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>حذف عضو از تیم</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    آیا مطمئن هستید که می‌خواهید {member.fullName} را از تیم حذف کنید؟
+                                    این عمل قابل بازگشت نیست.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>انصراف</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleRemoveMember(member.id)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    حذف عضو
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -487,7 +667,7 @@ export default function TeamManagement() {
                   </p>
                   <Button
                     onClick={() => setInviteDialogOpen(true)}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-brand-600 hover:bg-brand-700"
                   >
                     <Plus className="w-4 h-4 ml-1" />
                     دعوت عضو جدید
@@ -498,22 +678,115 @@ export default function TeamManagement() {
           </CardContent>
         </Card>
 
+        {/* Edit Member Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent dir="rtl">
+            <DialogHeader>
+              <DialogTitle>ویرایش اطلاعات عضو</DialogTitle>
+              <DialogDescription>
+                اطلاعات عضو را ویرایش کنید
+              </DialogDescription>
+            </DialogHeader>
+            {editingMember && (
+              <form onSubmit={handleUpdateMember} className="space-y-4">
+                <div>
+                  <Label htmlFor="editFullName">نام کامل</Label>
+                  <Input
+                    id="editFullName"
+                    value={editingMember.fullName}
+                    onChange={(e) =>
+                      setEditingMember(prev => prev ? {
+                        ...prev,
+                        fullName: e.target.value,
+                      } : null)
+                    }
+                    placeholder="نام و نام خانوادگی"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editEmail">ایمیل</Label>
+                  <Input
+                    id="editEmail"
+                    type="email"
+                    value={editingMember.email}
+                    onChange={(e) =>
+                      setEditingMember(prev => prev ? {
+                        ...prev,
+                        email: e.target.value,
+                      } : null)
+                    }
+                    placeholder="email@example.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editRole">نقش</Label>
+                  <Select
+                    value={editingMember.role}
+                    onValueChange={(value) =>
+                      setEditingMember(prev => prev ? {
+                        ...prev,
+                        role: value as "ADMIN" | "MEMBER" | "VIEWER",
+                      } : null)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="انتخاب نقش" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="VIEWER">
+                        بیننده - مشاهده رویدادها
+                      </SelectItem>
+                      <SelectItem value="MEMBER">
+                        عضو - ایجاد و ویرایش رویدادها
+                      </SelectItem>
+                      <SelectItem value="ADMIN">
+                        مدیر - دسترسی کامل
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit" className="flex-1">
+                    <Save className="w-4 h-4 ml-1" />
+                    ذخیره تغییرات
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setEditDialogOpen(false)}
+                  >
+                    انصراف
+                  </Button>
+                </div>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+
         {/* Team Features */}
         <div className="mt-8 grid md:grid-cols-2 gap-6">
-          <Card className="border-purple-200 bg-purple-50">
+          <Card className="border-brand-200 bg-brand-50">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-900">
+              <CardTitle className="flex items-center gap-2 text-brand-900">
                 <Calendar className="w-5 h-5" />
                 تقویم مشترک تیم
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-purple-700 mb-4">
+              <p className="text-brand-700 mb-4">
                 مشاهده رویدادهای تمام اعضای تیم در یک تقویم واحد
               </p>
               <Button
                 variant="outline"
-                className="border-purple-600 text-purple-600 hover:bg-purple-100"
+                className="border-brand-600 text-brand-600 hover:bg-brand-100"
+                onClick={() => {
+                  toast({
+                    title: "🔧 در حال توسعه",
+                    description: "تقویم مشترک تیم به زودی اضافه می‌شود",
+                  });
+                }}
               >
                 <Calendar className="w-4 h-4 ml-1" />
                 مشاهده تقویم تیم
@@ -535,6 +808,12 @@ export default function TeamManagement() {
               <Button
                 variant="outline"
                 className="border-blue-600 text-blue-600 hover:bg-blue-100"
+                onClick={() => {
+                  toast({
+                    title: "🔧 در حال توسعه",
+                    description: "گزارش‌گیری تیم به زودی اضافه می‌شود",
+                  });
+                }}
               >
                 <Eye className="w-4 h-4 ml-1" />
                 مشاهده گزارش‌ها
