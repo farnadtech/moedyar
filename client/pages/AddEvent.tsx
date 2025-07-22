@@ -174,6 +174,7 @@ export default function AddEvent() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [userSubscription, setUserSubscription] = useState<any>(null);
+  const [userEvents, setUserEvents] = useState<any[]>([]);
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -505,7 +506,7 @@ export default function AddEvent() {
                       ))}
                     </div>
                     <p className="text-xs text-gray-500 mt-2">
-                      این اط��اعات اختیاری هستند و به شما در یادآوری رویداد کمک
+                      این اطلاعات اختیاری هستند و به شما در یادآوری رویداد کمک
                       می‌کنند
                     </p>
                   </div>
