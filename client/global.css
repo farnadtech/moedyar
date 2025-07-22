@@ -127,4 +127,19 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* RTL support */
+  [dir="rtl"] {
+    direction: rtl;
+  }
+
+  [dir="rtl"] .rtl\\:mr-auto {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  [dir="rtl"] .rtl\\:ml-auto {
+    margin-right: auto;
+    margin-left: 0;
+  }
 }
