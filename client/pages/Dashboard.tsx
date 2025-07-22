@@ -129,6 +129,35 @@ export default function Dashboard() {
     return diffDays;
   };
 
+  const getEventTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      'BIRTHDAY': 'تولد',
+      'INSURANCE': 'بیمه',
+      'CONTRACT': 'قرارداد',
+      'CHECK': 'چک',
+      'CUSTOM': 'سایر'
+    };
+    return labels[type] || type;
+  };
+
+  const isPremium = user?.subscriptionType === 'PREMIUM' || user?.subscriptionType === 'BUSINESS';
+  const maxEvents = isPremium ? -1 : 3;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">در حال بارگذاری...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect to login
+  }
+
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       {/* Header */}
