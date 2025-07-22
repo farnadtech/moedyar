@@ -151,9 +151,18 @@ router.post('/test', authenticateToken, async (req: AuthRequest, res: Response) 
     );
 
     if (success) {
+      // Check if we're in demo mode
+      const isDemoMode = !process.env.EMAIL_USER ||
+                        process.env.EMAIL_USER === 'your-email@gmail.com';
+
+      const message = isDemoMode && method === 'EMAIL'
+        ? `یادآوری تست در حالت دمو اجرا شد (برای ارسال واقعی ایمیل، تنظیمات SMTP را در سرور پیکربندی کنید)`
+        : `یادآوری تست با موفقیت از طریق ${method} ارسال شد`;
+
       res.json({
         success: true,
-        message: `یادآوری تست با موفقیت از طریق ${method} ارسال شد`
+        message,
+        demoMode: isDemoMode && method === 'EMAIL'
       });
     } else {
       res.status(500).json({
@@ -178,7 +187,7 @@ router.post('/trigger-check', async (req, res: Response) => {
 
     res.json({
       success: true,
-      message: 'بررسی دستی یادآوری‌ها آغاز شد'
+      message: 'بررسی دستی یادآور��‌ها آغاز شد'
     });
 
   } catch (error) {
