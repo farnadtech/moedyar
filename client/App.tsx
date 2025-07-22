@@ -22,6 +22,7 @@ import AdminSettings from "./pages/AdminSettings";
 import AdminSetup from "./pages/AdminSetup";
 import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
+import SandboxPayment from "./pages/SandboxPayment";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
 
@@ -141,12 +142,13 @@ const App = () => (
             />
 
             <Route path="/premium" element={<Premium />} />
+            <Route path="/sandbox-payment" element={<SandboxPayment />} />
             <Route
               path="/demo"
               element={
                 <Placeholder
                   title="نمایش دمو"
-                  description="مشاهده ویدیوی آموزشی و تست سیستم"
+                  description="مشاهده ویدیو�� آموزشی و تست سیستم"
                 />
               }
             />
