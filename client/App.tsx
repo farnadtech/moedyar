@@ -145,7 +145,7 @@ const App = () => (
               path="/demo"
               element={
                 <Placeholder
-                  title="نمایش ��مو"
+                  title="نمایش دمو"
                   description="مشاهده ویدیوی آموزشی و تست سیستم"
                 />
               }
