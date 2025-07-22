@@ -199,7 +199,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
-                  ��وش آمدید، {user.fullName}
+                  خوش آمدید، {user.fullName}
                 </h1>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">
