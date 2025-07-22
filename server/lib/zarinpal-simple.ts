@@ -24,34 +24,40 @@ const ZARINPAL_PAYMENT_URL = 'https://www.zarinpal.com/pg/StartPay/';
 export async function requestPayment(paymentData: PaymentRequest): Promise<PaymentResponse> {
   try {
     const merchantId = process.env.ZARINPAL_MERCHANT_ID || 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
-    
+
     const requestBody = {
-      MerchantID: merchantId,
-      Amount: paymentData.amount,
-      CallbackURL: paymentData.callbackUrl,
-      Description: paymentData.description,
-      Email: paymentData.email,
-      Mobile: paymentData.mobile,
+      merchant_id: merchantId,
+      amount: paymentData.amount,
+      callback_url: paymentData.callbackUrl,
+      description: paymentData.description,
+      metadata: {
+        email: paymentData.email,
+        mobile: paymentData.mobile,
+      }
     };
+
+    console.log('ZarinPal request:', requestBody);
 
     const response = await fetch(ZARINPAL_REQUEST_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify(requestBody),
     });
 
     const result = await response.json();
+    console.log('ZarinPal response:', result);
 
-    if (result.Status === 100) {
+    if (result.data && result.data.code === 100) {
       return {
-        status: result.Status,
-        authority: result.Authority,
-        url: ZARINPAL_PAYMENT_URL + result.Authority
+        status: result.data.code,
+        authority: result.data.authority,
+        url: ZARINPAL_PAYMENT_URL + result.data.authority
       };
     } else {
-      throw new Error(`Payment request failed with status: ${result.Status}`);
+      throw new Error(`Payment request failed with code: ${result.data?.code || 'unknown'}, message: ${result.data?.message || 'unknown error'}`);
     }
   } catch (error) {
     console.error('ZarinPal payment request error:', error);
@@ -97,13 +103,13 @@ export function getPaymentStatusMessage(status: number): string {
     '-10': 'ترمینال فعال نمی‌باشد',
     '-11': 'تلاش بیش از حد در بازه زمانی کوتاه',
     '-12': 'شناسه قابل قبول نمی‌باشد',
-    '-21': 'هیچ نوع عملیات مالی برای این تراکنش تعریف نشده',
+    '-21': 'هیچ نوع عملیات مالی برای این تراک��ش تعریف نشده',
     '-22': 'تراکنش ناموفق',
     '-33': 'رقم تراکنش با رقم پرداخت شده مطابقت ندارد',
     '-34': 'سقف تقسیم تراکنش از لحاظ تعداد یا رقم عبور کرده',
     '-40': 'اجازه دسترسی به متد مربوطه وجود ندارد',
     '-41': 'اطلاعات ارسال شده مربوط به Additional Data غیر معتبر می‌باشد',
-    '-42': 'مدت زمان معتبر طول عمر شناسه پرداخت بایستی بین 30 دقیقه تا 45 رو�� مشخص گردد',
+    '-42': 'مدت زمان معتبر طول عمر شناسه پرداخت بایستی بین 30 دقیقه تا 45 روز مشخص گردد',
     '-54': 'درخواست مورد نظر یافت نشد'
   };
 
