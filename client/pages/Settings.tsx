@@ -115,7 +115,7 @@ export default function Settings() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast({
-        title: "✅ تنظیمات یادآوری به‌روزرسانی شد",
+        title: "✅ تنظیمات یادآ��ری به‌روزرسانی شد",
         description: "تغییرات با موفقیت ذخیره شد"
       });
 
@@ -287,7 +287,7 @@ export default function Settings() {
                       تنظیمات یادآوری
                     </CardTitle>
                     <CardDescription>
-                      نحوه دریافت یادآوری‌ها را تنظیم ��نید
+                      نحوه دریافت یادآوری‌ها را تنظیم کنید
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -373,6 +373,44 @@ export default function Settings() {
                             </p>
                           </div>
                         )}
+
+                        {/* Test Notifications */}
+                        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <h4 className="font-medium text-blue-900 mb-2">تست یادآوری</h4>
+                          <p className="text-sm text-blue-700 mb-3">
+                            برای ��طمینان از عملکرد سیستم، یادآوری تستی ارسال کنید
+                          </p>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleTestNotification('EMAIL')}
+                              disabled={saving}
+                            >
+                              تست ایمیل
+                            </Button>
+                            {subscription?.currentType !== 'FREE' && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleTestNotification('SMS')}
+                                  disabled={saving}
+                                >
+                                  تست پیامک
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleTestNotification('WHATSAPP')}
+                                  disabled={saving}
+                                >
+                                  تست واتساپ
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
 
                       <Button type="submit" disabled={saving} className="bg-brand-600 hover:bg-brand-700">
