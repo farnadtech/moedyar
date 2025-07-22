@@ -18,7 +18,7 @@ const eventTypes = [
   { value: "INSURANCE", label: "بیمه", icon: "🛡️" },
   { value: "CONTRACT", label: "قرارداد", icon: "📋" },
   { value: "CHECK", label: "چک", icon: "💰" },
-  { value: "CUSTOM", label: "سایر", icon: "���" },
+  { value: "CUSTOM", label: "سایر", icon: "📅" },
 ];
 
 const reminderMethods = [
