@@ -17,6 +17,7 @@ import {
   LogOut,
   Trash2,
   Edit,
+  Eye,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -107,7 +108,7 @@ export default function Dashboard() {
         setEvents(events.filter((e) => e.id !== id));
         toast({
           title: "رویداد حذف شد",
-          description: "رویداد با موفقیت حذف شد",
+          description: "رویداد با موفقیت حذف ��د",
         });
       } else {
         toast({
