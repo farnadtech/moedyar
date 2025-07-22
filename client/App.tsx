@@ -63,6 +63,11 @@ const App = () => (
                 <AdminDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/api-test" element={
+              <ProtectedRoute>
+                <ApiTest />
+              </ProtectedRoute>
+            } />
 
             <Route path="/premium" element={<Premium />} />
             <Route path="/demo" element={
@@ -86,7 +91,7 @@ const App = () => (
             <Route path="/terms" element={
               <Placeholder
                 title="شرایط استفاده"
-                description="قوانین و مقررات استفاده از سرویس"
+                description="قوانین و مقررات استفاده از سروی��"
               />
             } />
             <Route path="/privacy" element={
