@@ -37,10 +37,11 @@ export async function sendEmailNotification(data: NotificationData): Promise<boo
     // Check if email is configured
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS ||
         process.env.EMAIL_USER === 'your-email@gmail.com') {
-      console.log('📧 Email notification (simulation mode):', {
+      console.log('📧 Email notification (DEMO MODE - not actually sent):', {
         to: data.to,
         title: data.eventTitle,
-        daysUntil: data.daysUntil
+        daysUntil: data.daysUntil,
+        note: 'Configure EMAIL_USER and EMAIL_PASS in .env to send real emails'
       });
       return true; // Simulate success for development
     }
