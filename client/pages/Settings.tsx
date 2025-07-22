@@ -207,7 +207,7 @@ export default function Settings() {
     if (confirmed) {
       toast({
         title: "🔧 در حال توسعه",
-        description: "قابلیت حذف حساب به زودی اضافه خواهد ش��",
+        description: "قابلیت حذف حساب به زودی اضافه خواهد شد",
       });
     }
   };
@@ -535,7 +535,7 @@ export default function Settings() {
                                subscription?.currentType === 'PREMIUM' ? 'حساب پرمیوم' : 'حساب کسب‌وکار'}
                             </h3>
                             <p className="text-brand-700">
-                              {subscription?.currentType === 'FREE' ? 'محدود به ۳ رویداد' : 'رویدادهای نامحدود'}
+                              {subscription?.currentType === 'FREE' ? 'محدود به ۳ رویداد' : 'رویدادهای نامح��ود'}
                             </p>
                           </div>
                           {subscription?.currentType !== 'FREE' && (
@@ -642,7 +642,7 @@ export default function Settings() {
                         <p className="text-sm text-gray-600 mb-4">
                           برای امنیت بیشتر، رمز عبور خود را به‌طور مرتب تغییر دهید
                         </p>
-                        <Button variant="outline">
+                        <Button variant="outline" onClick={handleChangePassword}>
                           <Shield className="w-4 h-4 ml-1" />
                           تغییر رمز عبور
                         </Button>
