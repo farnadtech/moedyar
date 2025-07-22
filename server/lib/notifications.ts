@@ -34,9 +34,20 @@ export interface NotificationData {
 
 export async function sendEmailNotification(data: NotificationData): Promise<boolean> {
   try {
+    // Check if email is configured
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS ||
+        process.env.EMAIL_USER === 'your-email@gmail.com') {
+      console.log('📧 Email notification (simulation mode):', {
+        to: data.to,
+        title: data.eventTitle,
+        daysUntil: data.daysUntil
+      });
+      return true; // Simulate success for development
+    }
+
     const { to, eventTitle, eventDate, daysUntil, userFullName } = data;
-    
-    const subject = daysUntil === 0 
+
+    const subject = daysUntil === 0
       ? `امروز: ${eventTitle}`
       : `یادآوری: ${eventTitle} - ${daysUntil} روز مانده`;
 
@@ -46,11 +57,11 @@ export async function sendEmailNotification(data: NotificationData): Promise<boo
           <h1 style="margin: 0; font-size: 24px;">📅 رویداد یار</h1>
           <p style="margin: 10px 0 0 0; opacity: 0.9;">سیستم هوشمند یادآوری رویدادها</p>
         </div>
-        
+
         <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
           <h2 style="color: #333; margin-top: 0;">سلام ${userFullName} عزیز،</h2>
-          
-          ${daysUntil === 0 
+
+          ${daysUntil === 0
             ? `<div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 20px; margin: 20px 0;">
                  <h3 style="color: #92400e; margin: 0 0 10px 0;">🔔 امروز روز رویداد شماست!</h3>
                  <p style="color: #92400e; margin: 0; font-size: 16px; font-weight: bold;">${eventTitle}</p>
@@ -61,21 +72,21 @@ export async function sendEmailNotification(data: NotificationData): Promise<boo
                  <p style="color: #1d4ed8; margin: 10px 0 0 0;">${daysUntil} روز تا رویداد باقی مانده است</p>
                </div>`
           }
-          
+
           <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
             <h4 style="color: #374151; margin: 0 0 10px 0;">جزئیات رویداد:</h4>
             <p style="color: #6b7280; margin: 5px 0;"><strong>عنوان:</strong> ${eventTitle}</p>
             <p style="color: #6b7280; margin: 5px 0;"><strong>تاریخ:</strong> ${new Date(eventDate).toLocaleDateString('fa-IR')}</p>
             <p style="color: #6b7280; margin: 5px 0;"><strong>زمان باقی‌مانده:</strong> ${daysUntil === 0 ? 'امروز!' : `${daysUntil} روز`}</p>
           </div>
-          
+
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.APP_URL || 'http://localhost:8080'}/dashboard" 
+            <a href="${process.env.APP_URL || 'http://localhost:8080'}/dashboard"
                style="background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
               مشاهده داشبورد
             </a>
           </div>
-          
+
           <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
             <p style="color: #9ca3af; font-size: 14px; margin: 0;">
               این پیام از طرف <strong>رویداد یار</strong> ارسال شده است.<br>
