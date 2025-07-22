@@ -412,7 +412,7 @@ export default function EditEvent() {
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">ویرایش رویداد</span>
+            <span className="text-xl font-bold text-gray-900">ویرا��ش رویداد</span>
           </div>
         </nav>
       </header>
@@ -446,7 +446,7 @@ export default function EditEvent() {
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="مثال: تمدید بیمه خودرو"
+                    placeholder="مث��ل: تمدید بیمه خودرو"
                     required
                   />
                   {errors.title && (
@@ -475,16 +475,12 @@ export default function EditEvent() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       تاریخ رویداد *
                     </label>
-                    <input
-                      type="date"
-                      name="eventDate"
+                    <PersianCalendar
                       value={formData.eventDate}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                        errors.eventDate
-                          ? "border-red-500 bg-red-50"
-                          : "border-gray-300"
-                      }`}
+                      onChange={(date) => setFormData(prev => ({ ...prev, eventDate: date }))}
+                      placeholder="انتخاب تاریخ رویداد"
+                      className={errors.eventDate ? "border-red-500" : ""}
+                      name="eventDate"
                       required
                     />
                     {errors.eventDate && (
