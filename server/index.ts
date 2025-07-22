@@ -34,6 +34,9 @@ export function createServer() {
   // Subscription routes
   app.use("/api/subscriptions", subscriptionRoutes);
 
+  // Notification routes
+  app.use("/api/notifications", notificationRoutes);
+
   // Error handling middleware
   app.use((err: any, req: any, res: any, next: any) => {
     console.error('API Error:', err);
