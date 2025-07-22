@@ -90,7 +90,7 @@ class ApiService {
         if (endpoint.includes("/auth/me")) {
           return {
             success: false,
-            message: "خطا در ارتباط با سرور - لطفا�� صفحه را مجدداً بارگذاری کنید",
+            message: "خطا در ارتباط با سرور - لطفاً صفحه را مجدداً بارگذاری کنید",
           };
         }
       }
