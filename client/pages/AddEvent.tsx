@@ -68,7 +68,7 @@ export default function AddEvent() {
           },
           {
             key: "gift_idea",
-            label: "اید�� کادو",
+            label: "ایده کادو",
             placeholder: "چه کادویی بخرید؟",
             required: false,
           },
@@ -422,16 +422,12 @@ export default function AddEvent() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       تاریخ رویداد *
                     </label>
-                    <input
-                      type="date"
-                      name="eventDate"
+                    <PersianCalendar
                       value={formData.eventDate}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                        errors.eventDate
-                          ? "border-red-500 bg-red-50"
-                          : "border-gray-300"
-                      }`}
+                      onChange={(date) => setFormData(prev => ({ ...prev, eventDate: date }))}
+                      placeholder="انتخاب تاریخ رویداد"
+                      className={errors.eventDate ? "border-red-500" : ""}
+                      name="eventDate"
                       required
                     />
                     {errors.eventDate && (
@@ -452,7 +448,7 @@ export default function AddEvent() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      در صورت عدم انتخاب، ��اعت ۰۹:۰۰ در نظر گرفته می‌شود
+                      در صورت عدم انتخاب، ساعت ۰۹:۰۰ در نظر گرفته می‌شود
                     </p>
                   </div>
                 </div>
