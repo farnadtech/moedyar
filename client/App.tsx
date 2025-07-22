@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import RegisterPersonal from "./pages/RegisterPersonal";
 import Dashboard from "./pages/Dashboard";
+import Placeholder from "./pages/Placeholder";
 
 const queryClient = new QueryClient();
 
