@@ -82,6 +82,11 @@ const App = () => (
                 <AdminTransactions />
               </ProtectedRoute>
             } />
+            <Route path="/admin/settings" element={
+              <ProtectedRoute>
+                <AdminSettings />
+              </ProtectedRoute>
+            } />
             <Route path="/admin/setup" element={
               <ProtectedRoute>
                 <AdminSetup />
