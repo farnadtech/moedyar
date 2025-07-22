@@ -315,6 +315,24 @@ class ApiService {
     return this.request<any>(`/admin/transactions?${params}`);
   }
 
+  // System Configuration Methods
+  async getSystemConfig(): Promise<ApiResponse<any>> {
+    return this.request<any>('/config/system');
+  }
+
+  async updateSystemConfig(config: any, section?: string): Promise<ApiResponse> {
+    return this.request('/config/system', {
+      method: 'PUT',
+      body: JSON.stringify({ config, section }),
+    });
+  }
+
+  async testSystemService(service: 'email' | 'sms' | 'whatsapp' | 'zarinpal'): Promise<ApiResponse> {
+    return this.request(`/config/test/${service}`, {
+      method: 'POST',
+    });
+  }
+
   // Utility Methods
   isAuthenticated(): boolean {
     return !!this.getAuthToken();
