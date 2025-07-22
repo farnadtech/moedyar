@@ -7,6 +7,7 @@ import eventRoutes from "./routes/events";
 import subscriptionRoutes from "./routes/subscriptions";
 import notificationRoutes from "./routes/notifications";
 import adminRoutes from "./routes/admin";
+import configRoutes from "./routes/config";
 import { startNotificationScheduler } from "./lib/scheduler";
 
 // Load environment variables
