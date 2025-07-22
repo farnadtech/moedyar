@@ -130,7 +130,7 @@ router.get('/plans', async (req, res: Response) => {
   }
 });
 
-// Start premium subscription (prepare for payment)
+// Start premium subscription with ZarinPal
 router.post('/upgrade', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.userId;
@@ -176,21 +176,62 @@ router.post('/upgrade', authenticateToken, async (req: AuthRequest, res: Respons
       }
     });
 
-    // Here you would integrate with ZarinPal
-    // For now, we'll simulate the payment process
-    const paymentData = {
-      subscriptionId: subscription.id,
-      amount,
-      description: `خرید پکیج ${planType === 'PREMIUM' ? 'پرمیوم' : 'کسب‌وکار'}`,
-      // In real implementation, you'd get payment URL from ZarinPal
-      paymentUrl: `/payment/zarinpal?subscription=${subscription.id}&amount=${amount}`
-    };
-
-    res.json({
-      success: true,
-      message: 'درخواست ارتقا ایجاد شد',
-      data: paymentData
+    // Get user info for ZarinPal
+    const user = await db.user.findUnique({
+      where: { id: userId }
     });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'کاربر یافت نشد'
+      });
+    }
+
+    // Create ZarinPal payment request
+    try {
+      const callbackUrl = `${process.env.APP_URL || 'http://localhost:8080'}/api/subscriptions/verify-payment?subscription=${subscription.id}`;
+      
+      const paymentResponse = await requestPayment({
+        amount,
+        description: `خرید پکیج ${planType === 'PREMIUM' ? 'پرمیوم' : 'کسب‌وکار'} - رویداد یار`,
+        callbackUrl,
+        email: user.email,
+        mobile: user.phone || undefined
+      });
+
+      // Store payment authority in subscription
+      await db.subscription.update({
+        where: { id: subscription.id },
+        data: {
+          paymentId: paymentResponse.authority
+        }
+      });
+
+      res.json({
+        success: true,
+        message: 'درخواست پرداخت ایجاد شد',
+        data: {
+          subscriptionId: subscription.id,
+          amount,
+          authority: paymentResponse.authority,
+          paymentUrl: paymentResponse.url
+        }
+      });
+
+    } catch (paymentError) {
+      console.error('ZarinPal payment error:', paymentError);
+      
+      // Delete the subscription if payment request failed
+      await db.subscription.delete({
+        where: { id: subscription.id }
+      });
+
+      res.status(500).json({
+        success: false,
+        message: 'خطا در ایجاد درخواست پرداخت'
+      });
+    }
 
   } catch (error) {
     console.error('Upgrade subscription error:', error);
@@ -201,67 +242,79 @@ router.post('/upgrade', authenticateToken, async (req: AuthRequest, res: Respons
   }
 });
 
-// Confirm payment (simulate ZarinPal callback)
-router.post('/confirm-payment', authenticateToken, async (req: AuthRequest, res: Response) => {
+// Verify ZarinPal payment (callback handler)
+router.get('/verify-payment', async (req, res: Response) => {
   try {
-    const { subscriptionId, paymentStatus } = req.body;
-    const userId = req.user!.userId;
+    const { Authority, Status, subscription: subscriptionId } = req.query;
 
-    const subscription = await db.subscription.findFirst({
-      where: {
-        id: subscriptionId,
-        userId,
-        isActive: false
-      }
+    if (!Authority || !subscriptionId) {
+      return res.redirect(`${process.env.APP_URL || 'http://localhost:8080'}/dashboard?payment=failed&reason=invalid_params`);
+    }
+
+    const subscription = await db.subscription.findUnique({
+      where: { id: subscriptionId as string },
+      include: { user: true }
     });
 
     if (!subscription) {
-      return res.status(404).json({
-        success: false,
-        message: 'اشتراک یافت نشد'
-      });
+      return res.redirect(`${process.env.APP_URL || 'http://localhost:8080'}/dashboard?payment=failed&reason=subscription_not_found`);
     }
 
-    if (paymentStatus === 'success') {
-      // Activate subscription
-      await db.subscription.update({
-        where: { id: subscriptionId },
-        data: {
-          isActive: true,
-          paymentId: `payment_${Date.now()}` // Simulate payment ID
-        }
-      });
-
-      // Update user subscription type
-      await db.user.update({
-        where: { id: userId },
-        data: {
-          subscriptionType: subscription.type
-        }
-      });
-
-      res.json({
-        success: true,
-        message: 'پرداخت با موفقیت انجام شد و اشتراک فعال گردید'
-      });
-    } else {
-      // Delete failed subscription
+    if (Status !== 'OK') {
+      // Payment was cancelled or failed
       await db.subscription.delete({
-        where: { id: subscriptionId }
+        where: { id: subscription.id }
+      });
+      
+      return res.redirect(`${process.env.APP_URL || 'http://localhost:8080'}/dashboard?payment=cancelled`);
+    }
+
+    try {
+      // Verify payment with ZarinPal
+      const verifyResponse = await verifyPayment(Authority as string, subscription.amount || 0);
+
+      if (verifyResponse.status === 100 || verifyResponse.status === 101) {
+        // Payment successful
+        await db.subscription.update({
+          where: { id: subscription.id },
+          data: {
+            isActive: true,
+            paymentId: verifyResponse.refId || Authority as string
+          }
+        });
+
+        // Update user subscription type
+        await db.user.update({
+          where: { id: subscription.userId },
+          data: {
+            subscriptionType: subscription.type
+          }
+        });
+
+        return res.redirect(`${process.env.APP_URL || 'http://localhost:8080'}/dashboard?payment=success&plan=${subscription.type.toLowerCase()}`);
+      } else {
+        // Payment verification failed
+        await db.subscription.delete({
+          where: { id: subscription.id }
+        });
+
+        const errorMessage = getPaymentStatusMessage(verifyResponse.status);
+        return res.redirect(`${process.env.APP_URL || 'http://localhost:8080'}/dashboard?payment=failed&reason=${encodeURIComponent(errorMessage)}`);
+      }
+
+    } catch (verifyError) {
+      console.error('Payment verification error:', verifyError);
+      
+      await db.subscription.delete({
+        where: { id: subscription.id }
       });
 
-      res.status(400).json({
-        success: false,
-        message: 'پرداخت ناموفق بود'
-      });
+      return res.redirect(`${process.env.APP_URL || 'http://localhost:8080'}/dashboard?payment=failed&reason=verification_error`);
     }
 
   } catch (error) {
-    console.error('Confirm payment error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'خطا در تایید پرداخت'
-    });
+    console.error('Payment verification handler error:', error);
+    return res.redirect(`${process.env.APP_URL || 'http://localhost:8080'}/dashboard?payment=failed&reason=server_error`);
   }
 });
 
@@ -281,7 +334,7 @@ router.post('/cancel', authenticateToken, async (req: AuthRequest, res: Response
     if (!subscription) {
       return res.status(404).json({
         success: false,
-        message: 'اشتراک فعالی یافت نشد'
+        message: 'اشتر��ک فعالی یافت نشد'
       });
     }
 
