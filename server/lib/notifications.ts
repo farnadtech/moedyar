@@ -157,22 +157,30 @@ export async function sendSMSNotification(data: NotificationData, phoneNumber: s
 
 export async function sendWhatsAppNotification(data: NotificationData, phoneNumber: string): Promise<boolean> {
   try {
+    // Check if WhatsApp is configured
+    if (!process.env.WHATSAPP_API_KEY || process.env.WHATSAPP_API_KEY === 'your-whatsapp-api-key') {
+      console.log('📱 WhatsApp notification (DEMO MODE - not actually sent):', {
+        to: phoneNumber,
+        title: data.eventTitle,
+        daysUntil: data.daysUntil,
+        note: 'Configure WHATSAPP_API_KEY in .env to send real WhatsApp messages'
+      });
+      return true; // Simulate success for development
+    }
+
     const { eventTitle, daysUntil } = data;
-    
-    // For WhatsApp, we would typically use WhatsApp Business API
-    // For now, this is a placeholder implementation
-    // You can integrate with services like Twilio, MessageBird, or direct WhatsApp Business API
-    
-    const message = daysUntil === 0 
+
+    const message = daysUntil === 0
       ? `🔔 *رویداد یار*\n\nامروز روز "${eventTitle}" شماست!\n\nبرای مشاهده جزئیات به داشبورد مراجعه کنید:\n${process.env.APP_URL || 'http://localhost:8080'}`
       : `⏰ *رویداد یار*\n\n${daysUntil} روز تا "${eventTitle}" باقی مانده است.\n\nداشبورد: ${process.env.APP_URL || 'http://localhost:8080'}`;
 
     console.log('WhatsApp message prepared for:', phoneNumber);
     console.log('Message:', message);
-    
+
     // TODO: Implement actual WhatsApp sending
-    // This would require integration with WhatsApp Business API
-    
+    // This would require integration with WhatsApp Business API (Twilio, MessageBird, etc.)
+    // For now, return success in demo mode
+
     return true;
 
   } catch (error) {
