@@ -138,6 +138,25 @@ export default function AdminDashboard() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Quick Actions */}
+        <div className="mb-6">
+          <Card className="border-blue-200 bg-blue-50">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-blue-900">راهنمای راه‌اندازی سیستم</h3>
+                  <p className="text-sm text-blue-700">پیکربندی ایمیل، درگاه پرداخت و سایر خدمات</p>
+                </div>
+                <Link to="/admin/setup">
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    مشاهده راهنما
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
