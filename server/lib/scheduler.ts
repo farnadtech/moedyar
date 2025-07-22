@@ -1,25 +1,33 @@
-import cron from 'node-cron';
-import { db } from './db';
-import { sendNotification, NotificationData } from './notifications';
+import cron from "node-cron";
+import { db } from "./db";
+import { sendNotification, NotificationData } from "./notifications";
 
 export function startNotificationScheduler() {
   // Run every day at 9:00 AM
-  cron.schedule('0 9 * * *', async () => {
-    console.log('Starting daily notification check...');
-    await checkAndSendNotifications();
-  }, {
-    timezone: "Asia/Tehran"
-  });
+  cron.schedule(
+    "0 9 * * *",
+    async () => {
+      console.log("Starting daily notification check...");
+      await checkAndSendNotifications();
+    },
+    {
+      timezone: "Asia/Tehran",
+    },
+  );
 
   // Also run every 6 hours for more frequent checks
-  cron.schedule('0 */6 * * *', async () => {
-    console.log('Starting 6-hour notification check...');
-    await checkAndSendNotifications();
-  }, {
-    timezone: "Asia/Tehran"
-  });
+  cron.schedule(
+    "0 */6 * * *",
+    async () => {
+      console.log("Starting 6-hour notification check...");
+      await checkAndSendNotifications();
+    },
+    {
+      timezone: "Asia/Tehran",
+    },
+  );
 
-  console.log('Notification scheduler started');
+  console.log("Notification scheduler started");
 }
 
 async function checkAndSendNotifications() {
@@ -34,17 +42,17 @@ async function checkAndSendNotifications() {
         event: {
           isActive: true,
           eventDate: {
-            gte: today
-          }
-        }
+            gte: today,
+          },
+        },
       },
       include: {
         event: {
           include: {
-            user: true
-          }
-        }
-      }
+            user: true,
+          },
+        },
+      },
     });
 
     console.log(`Found ${dueReminders.length} reminders to check`);
@@ -55,7 +63,9 @@ async function checkAndSendNotifications() {
     for (const reminder of dueReminders) {
       try {
         const eventDate = new Date(reminder.event.eventDate);
-        const daysDiff = Math.ceil((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        const daysDiff = Math.ceil(
+          (eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+        );
 
         // Check if we should send reminder today
         if (daysDiff === reminder.daysBefore || daysDiff === 0) {
@@ -73,44 +83,49 @@ async function checkAndSendNotifications() {
             eventTitle: reminder.event.title,
             eventDate: reminder.event.eventDate.toISOString(),
             daysUntil: daysDiff,
-            userFullName: reminder.event.user.fullName
+            userFullName: reminder.event.user.fullName,
           };
 
           const success = await sendNotification(
             reminder.method as any,
             notificationData,
-            reminder.event.user.phone || undefined
+            reminder.event.user.phone || undefined,
           );
 
           if (success) {
             // Update last sent time
             await db.reminder.update({
               where: { id: reminder.id },
-              data: { lastSentAt: new Date() }
+              data: { lastSentAt: new Date() },
             });
 
             sentCount++;
-            console.log(`✅ Sent ${reminder.method} notification for event: ${reminder.event.title}`);
+            console.log(
+              `✅ Sent ${reminder.method} notification for event: ${reminder.event.title}`,
+            );
           } else {
             failedCount++;
-            console.error(`❌ Failed to send ${reminder.method} notification for event: ${reminder.event.title}`);
+            console.error(
+              `❌ Failed to send ${reminder.method} notification for event: ${reminder.event.title}`,
+            );
           }
         }
       } catch (error) {
-        console.error('Error processing reminder:', reminder.id, error);
+        console.error("Error processing reminder:", reminder.id, error);
         failedCount++;
       }
     }
 
-    console.log(`Notification check completed. Sent: ${sentCount}, Failed: ${failedCount}`);
-
+    console.log(
+      `Notification check completed. Sent: ${sentCount}, Failed: ${failedCount}`,
+    );
   } catch (error) {
-    console.error('Error in notification scheduler:', error);
+    console.error("Error in notification scheduler:", error);
   }
 }
 
 // Manual trigger for testing
 export async function triggerNotificationCheck() {
-  console.log('Manual notification check triggered');
+  console.log("Manual notification check triggered");
   await checkAndSendNotifications();
 }

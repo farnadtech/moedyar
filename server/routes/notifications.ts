@@ -1,13 +1,13 @@
-import { Router, Response } from 'express';
-import { db } from '../lib/db';
-import { sendNotification, NotificationData } from '../lib/notifications';
-import { authenticateToken, AuthRequest } from '../lib/auth';
-import { triggerNotificationCheck } from '../lib/scheduler';
+import { Router, Response } from "express";
+import { db } from "../lib/db";
+import { sendNotification, NotificationData } from "../lib/notifications";
+import { authenticateToken, AuthRequest } from "../lib/auth";
+import { triggerNotificationCheck } from "../lib/scheduler";
 
 const router = Router();
 
 // Check and send due notifications (this would be called by a cron job)
-router.post('/check-and-send', async (req, res: Response) => {
+router.post("/check-and-send", async (req, res: Response) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -19,17 +19,17 @@ router.post('/check-and-send', async (req, res: Response) => {
         event: {
           isActive: true,
           eventDate: {
-            gte: today
-          }
-        }
+            gte: today,
+          },
+        },
       },
       include: {
         event: {
           include: {
-            user: true
-          }
-        }
-      }
+            user: true,
+          },
+        },
+      },
     });
 
     const sentNotifications = [];
@@ -38,7 +38,9 @@ router.post('/check-and-send', async (req, res: Response) => {
     for (const reminder of dueReminders) {
       try {
         const eventDate = new Date(reminder.event.eventDate);
-        const daysDiff = Math.ceil((eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        const daysDiff = Math.ceil(
+          (eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+        );
 
         // Check if we should send reminder today
         if (daysDiff === reminder.daysBefore || daysDiff === 0) {
@@ -56,145 +58,148 @@ router.post('/check-and-send', async (req, res: Response) => {
             eventTitle: reminder.event.title,
             eventDate: reminder.event.eventDate.toISOString(),
             daysUntil: daysDiff,
-            userFullName: reminder.event.user.fullName
+            userFullName: reminder.event.user.fullName,
           };
 
           const success = await sendNotification(
             reminder.method as any,
             notificationData,
-            reminder.event.user.phone || undefined
+            reminder.event.user.phone || undefined,
           );
 
           if (success) {
             // Update last sent time
             await db.reminder.update({
               where: { id: reminder.id },
-              data: { lastSentAt: new Date() }
+              data: { lastSentAt: new Date() },
             });
 
             sentNotifications.push({
               reminderId: reminder.id,
               eventTitle: reminder.event.title,
               method: reminder.method,
-              userEmail: reminder.event.user.email
+              userEmail: reminder.event.user.email,
             });
           } else {
             failedNotifications.push({
               reminderId: reminder.id,
               eventTitle: reminder.event.title,
               method: reminder.method,
-              error: 'Failed to send notification'
+              error: "Failed to send notification",
             });
           }
         }
       } catch (error) {
-        console.error('Error processing reminder:', reminder.id, error);
+        console.error("Error processing reminder:", reminder.id, error);
         failedNotifications.push({
           reminderId: reminder.id,
           eventTitle: reminder.event.title,
           method: reminder.method,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : "Unknown error",
         });
       }
     }
 
     res.json({
       success: true,
-      message: 'Notification check completed',
+      message: "Notification check completed",
       data: {
         totalChecked: dueReminders.length,
         sent: sentNotifications.length,
         failed: failedNotifications.length,
         sentNotifications,
-        failedNotifications
-      }
+        failedNotifications,
+      },
     });
-
   } catch (error) {
-    console.error('Notification check error:', error);
+    console.error("Notification check error:", error);
     res.status(500).json({
       success: false,
-      message: 'خطا در بررسی یادآوری‌ها'
+      message: "خطا در بررسی یادآوری‌ها",
     });
   }
 });
 
 // Test notification sending
-router.post('/test', authenticateToken, async (req: AuthRequest, res: Response) => {
-  try {
-    const userId = req.user!.userId;
-    const { method = 'EMAIL', eventTitle = 'تست سیستم یادآوری' } = req.body;
+router.post(
+  "/test",
+  authenticateToken,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = req.user!.userId;
+      const { method = "EMAIL", eventTitle = "تست سیستم یادآوری" } = req.body;
 
-    const user = await db.user.findUnique({
-      where: { id: userId }
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'کاربر یافت نشد'
+      const user = await db.user.findUnique({
+        where: { id: userId },
       });
-    }
 
-    const testData: NotificationData = {
-      to: user.email,
-      eventTitle,
-      eventDate: new Date().toISOString(),
-      daysUntil: 1,
-      userFullName: user.fullName
-    };
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "کاربر یافت نشد",
+        });
+      }
 
-    const success = await sendNotification(
-      method,
-      testData,
-      user.phone || undefined
-    );
+      const testData: NotificationData = {
+        to: user.email,
+        eventTitle,
+        eventDate: new Date().toISOString(),
+        daysUntil: 1,
+        userFullName: user.fullName,
+      };
 
-    if (success) {
-      // Check if we're in demo mode
-      const isDemoMode = !process.env.EMAIL_USER ||
-                        process.env.EMAIL_USER === 'your-email@gmail.com';
+      const success = await sendNotification(
+        method,
+        testData,
+        user.phone || undefined,
+      );
 
-      const message = isDemoMode && method === 'EMAIL'
-        ? `یادآوری تست در حالت دمو اجرا شد (برای ارسال واقعی ایمیل، تنظیمات SMTP را در سرور پیکربندی کنید)`
-        : `یادآوری تست با موفقیت از طریق ${method} ارسال شد`;
+      if (success) {
+        // Check if we're in demo mode
+        const isDemoMode =
+          !process.env.EMAIL_USER ||
+          process.env.EMAIL_USER === "your-email@gmail.com";
 
-      res.json({
-        success: true,
-        message,
-        demoMode: isDemoMode && method === 'EMAIL'
-      });
-    } else {
+        const message =
+          isDemoMode && method === "EMAIL"
+            ? `یادآوری تست در حالت دمو اجرا شد (برای ارسال واقعی ایمیل، تنظیمات SMTP را در سرور پیکربندی کنید)`
+            : `یادآوری تست با موفقیت از طریق ${method} ارسال شد`;
+
+        res.json({
+          success: true,
+          message,
+          demoMode: isDemoMode && method === "EMAIL",
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: "خطا در ارسال یادآوری تست",
+        });
+      }
+    } catch (error) {
+      console.error("Test notification error:", error);
       res.status(500).json({
         success: false,
-        message: 'خطا در ارسال یادآوری تست'
+        message: "خطا در ارسال یادآوری تست",
       });
     }
-
-  } catch (error) {
-    console.error('Test notification error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'خطا در ارسال یادآوری تست'
-    });
-  }
-});
+  },
+);
 
 // Manual trigger for notification check (admin only)
-router.post('/trigger-check', async (req, res: Response) => {
+router.post("/trigger-check", async (req, res: Response) => {
   try {
     await triggerNotificationCheck();
 
     res.json({
       success: true,
-      message: 'بررسی دستی یادآور��‌ها آغاز شد'
+      message: "بررسی دستی یادآور��‌ها آغاز شد",
     });
-
   } catch (error) {
-    console.error('Manual trigger error:', error);
+    console.error("Manual trigger error:", error);
     res.status(500).json({
       success: false,
-      message: 'خطا در اجرای بررسی دستی'
+      message: "خطا در اجرای بررسی دستی",
     });
   }
 });

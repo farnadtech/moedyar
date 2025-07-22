@@ -1,6 +1,22 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Bell, Plus, Settings, Crown, User, LogOut, Trash2, Edit } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Calendar,
+  Bell,
+  Plus,
+  Settings,
+  Crown,
+  User,
+  LogOut,
+  Trash2,
+  Edit,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -46,16 +62,17 @@ export default function Dashboard() {
 
       // Check if user is authenticated
       if (!apiService.isAuthenticated()) {
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
       // Load user data, events, and subscription info in parallel
-      const [userResponse, eventsResponse, subscriptionResponse] = await Promise.all([
-        apiService.getCurrentUser(),
-        apiService.getEvents(),
-        apiService.getCurrentSubscription()
-      ]);
+      const [userResponse, eventsResponse, subscriptionResponse] =
+        await Promise.all([
+          apiService.getCurrentUser(),
+          apiService.getEvents(),
+          apiService.getCurrentSubscription(),
+        ]);
 
       if (userResponse.success && userResponse.data) {
         setUser(userResponse.data.user);
@@ -68,13 +85,12 @@ export default function Dashboard() {
       if (subscriptionResponse.success && subscriptionResponse.data) {
         setSubscriptionData(subscriptionResponse.data);
       }
-
     } catch (error) {
-      console.error('Error loading dashboard:', error);
+      console.error("Error loading dashboard:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -86,24 +102,24 @@ export default function Dashboard() {
       const response = await apiService.deleteEvent(id);
 
       if (response.success) {
-        setEvents(events.filter(e => e.id !== id));
+        setEvents(events.filter((e) => e.id !== id));
         toast({
           title: "رویداد حذف شد",
-          description: "رویداد با موفقیت حذف شد"
+          description: "رویداد با موفقیت حذف شد",
         });
       } else {
         toast({
           title: "خطا در حذف رویداد",
           description: response.message || "لطفاً دوباره تلاش کنید",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
     } catch (error) {
-      console.error('Error deleting event:', error);
+      console.error("Error deleting event:", error);
       toast({
         title: "خطا در حذف رویداد",
         description: "خطا در ارتباط با سرور",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -114,10 +130,10 @@ export default function Dashboard() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('fa-IR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Intl.DateTimeFormat("fa-IR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     }).format(date);
   };
 
@@ -131,21 +147,26 @@ export default function Dashboard() {
 
   const getEventTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
-      'BIRTHDAY': 'تولد',
-      'INSURANCE': 'بیمه',
-      'CONTRACT': 'قرارداد',
-      'CHECK': 'چک',
-      'CUSTOM': 'سایر'
+      BIRTHDAY: "تولد",
+      INSURANCE: "بیمه",
+      CONTRACT: "قرارداد",
+      CHECK: "چک",
+      CUSTOM: "سایر",
     };
     return labels[type] || type;
   };
 
-  const isPremium = user?.subscriptionType === 'PREMIUM' || user?.subscriptionType === 'BUSINESS';
+  const isPremium =
+    user?.subscriptionType === "PREMIUM" ||
+    user?.subscriptionType === "BUSINESS";
   const maxEvents = isPremium ? -1 : 3;
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری...</p>
@@ -169,10 +190,14 @@ export default function Dashboard() {
                 <Calendar className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">خوش آمدید، {user.fullName}</h1>
+                <h1 className="text-xl font-bold text-gray-900">
+                  خوش آمدید، {user.fullName}
+                </h1>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">
-                    {user.accountType === 'PERSONAL' ? 'حساب شخصی' : 'حساب کسب‌وکار'}
+                    {user.accountType === "PERSONAL"
+                      ? "حساب شخصی"
+                      : "حساب کسب‌وکار"}
                   </span>
                   {!isPremium && (
                     <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
@@ -182,25 +207,35 @@ export default function Dashboard() {
                   {isPremium && (
                     <span className="px-2 py-1 bg-brand-100 text-brand-700 text-xs rounded-full flex items-center gap-1">
                       <Crown className="w-3 h-3" />
-                      {user.subscriptionType === 'PREMIUM' ? 'پرمیوم' : 'کسب‌وکار'}
+                      {user.subscriptionType === "PREMIUM"
+                        ? "پرمیوم"
+                        : "کسب‌وکار"}
                     </span>
                   )}
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               {!isPremium && (
                 <Link to="/premium">
-                  <Button variant="outline" size="sm" className="text-brand-600 border-brand-600 hover:bg-brand-50">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-brand-600 border-brand-600 hover:bg-brand-50"
+                  >
                     <Crown className="w-4 h-4 ml-1" />
                     ارتقا به پرمیوم
                   </Button>
                 </Link>
               )}
-              {user?.email === 'farnadadmin@gmail.com' && (
+              {user?.email === "farnadadmin@gmail.com" && (
                 <Link to="/admin">
-                  <Button variant="outline" size="sm" className="text-red-600 border-red-600 hover:bg-red-50">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 border-red-600 hover:bg-red-50"
+                  >
                     <User className="w-4 h-4 ml-1" />
                     پنل ادمین
                   </Button>
@@ -231,12 +266,13 @@ export default function Dashboard() {
                 <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mb-4">
                   <Plus className="w-8 h-8 text-brand-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">رویداد جدید اضافه کنید</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  رویداد جدید اضافه کنید
+                </h3>
                 <p className="text-gray-600 text-center mb-4">
                   {isPremium
                     ? "رویداد نامحدود اضافه کنید و همیشه در جریان باشید"
-                    : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`
-                  }
+                    : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
                 </p>
                 <Link to="/add-event">
                   <Button
@@ -249,7 +285,10 @@ export default function Dashboard() {
                 </Link>
                 {!isPremium && events.length >= maxEvents && (
                   <p className="text-sm text-gray-500 mt-2">
-                    برای افزودن رویداد بیشتر، <Link to="/premium" className="text-brand-600">ارتقا دهید</Link>
+                    برای افزودن رویداد بیشتر،{" "}
+                    <Link to="/premium" className="text-brand-600">
+                      ارتقا دهید
+                    </Link>
                   </p>
                 )}
               </CardContent>
@@ -257,14 +296,20 @@ export default function Dashboard() {
 
             {/* Events List */}
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-900">رویدادهای شما</h2>
-              
+              <h2 className="text-xl font-semibold text-gray-900">
+                رویدادهای شما
+              </h2>
+
               {events.length === 0 ? (
                 <Card>
                   <CardContent className="text-center py-12">
                     <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-500 mb-2">هنوز رویدادی ندارید</h3>
-                    <p className="text-gray-400">اولین رویدادتان را اضافه کنید</p>
+                    <h3 className="text-lg font-medium text-gray-500 mb-2">
+                      هنوز رویدادی ندارید
+                    </h3>
+                    <p className="text-gray-400">
+                      اولین رویدادتان را اضافه کنید
+                    </p>
                   </CardContent>
                 </Card>
               ) : (
@@ -274,15 +319,23 @@ export default function Dashboard() {
                   const isUpcoming = daysUntil <= 7 && daysUntil >= 0;
 
                   return (
-                    <Card key={event.id} className={`${isOverdue ? 'border-red-200 bg-red-50' : isUpcoming ? 'border-yellow-200 bg-yellow-50' : ''}`}>
+                    <Card
+                      key={event.id}
+                      className={`${isOverdue ? "border-red-200 bg-red-50" : isUpcoming ? "border-yellow-200 bg-yellow-50" : ""}`}
+                    >
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className={`w-3 h-3 rounded-full ${isOverdue ? 'bg-red-500' : isUpcoming ? 'bg-yellow-500' : 'bg-green-500'}`} />
+                            <div
+                              className={`w-3 h-3 rounded-full ${isOverdue ? "bg-red-500" : isUpcoming ? "bg-yellow-500" : "bg-green-500"}`}
+                            />
                             <div>
-                              <CardTitle className="text-lg">{event.title}</CardTitle>
+                              <CardTitle className="text-lg">
+                                {event.title}
+                              </CardTitle>
                               <CardDescription>
-                                {formatDate(event.eventDate)} • {getEventTypeLabel(event.eventType)}
+                                {formatDate(event.eventDate)} •{" "}
+                                {getEventTypeLabel(event.eventType)}
                               </CardDescription>
                             </div>
                           </div>
@@ -309,7 +362,9 @@ export default function Dashboard() {
                                 {Math.abs(daysUntil)} روز گذشته
                               </span>
                             ) : daysUntil === 0 ? (
-                              <span className="text-yellow-600 font-medium">امروز!</span>
+                              <span className="text-yellow-600 font-medium">
+                                امروز!
+                              </span>
                             ) : (
                               <span className="text-gray-600">
                                 {daysUntil} روز مانده
@@ -318,11 +373,17 @@ export default function Dashboard() {
                           </div>
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Bell className="w-4 h-4" />
-                            یادآوری: {event.reminders.map(r => r.daysBefore).join('، ')} روز قبل
+                            یادآوری:{" "}
+                            {event.reminders
+                              .map((r) => r.daysBefore)
+                              .join("، ")}{" "}
+                            روز قبل
                           </div>
                         </div>
                         {event.description && (
-                          <p className="text-sm text-gray-600">{event.description}</p>
+                          <p className="text-sm text-gray-600">
+                            {event.description}
+                          </p>
                         )}
                       </CardContent>
                     </Card>
@@ -353,7 +414,9 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادها:</span>
                     <span className="font-medium">
-                      {isPremium ? `${events.length} رویداد` : `${events.length}/۳`}
+                      {isPremium
+                        ? `${events.length} رویداد`
+                        : `${events.length}/۳`}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -363,7 +426,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                 </div>
-                
+
                 {!isPremium && (
                   <div className="mt-4 pt-4 border-t">
                     <Link to="/premium">
@@ -387,22 +450,24 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای امروز:</span>
                     <span className="font-medium text-yellow-600">
-                      {events.filter(e => getDaysUntil(e.date) === 0).length}
+                      {events.filter((e) => getDaysUntil(e.date) === 0).length}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای این هفته:</span>
                     <span className="font-medium text-blue-600">
-                      {events.filter(e => {
-                        const days = getDaysUntil(e.date);
-                        return days >= 0 && days <= 7;
-                      }).length}
+                      {
+                        events.filter((e) => {
+                          const days = getDaysUntil(e.date);
+                          return days >= 0 && days <= 7;
+                        }).length
+                      }
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای گذشته:</span>
                     <span className="font-medium text-red-600">
-                      {events.filter(e => getDaysUntil(e.date) < 0).length}
+                      {events.filter((e) => getDaysUntil(e.date) < 0).length}
                     </span>
                   </div>
                 </div>
@@ -410,7 +475,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Admin Panel Access */}
-            {user?.email === 'farnadadmin@gmail.com' && (
+            {user?.email === "farnadadmin@gmail.com" && (
               <Card className="border-red-200 bg-red-50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-red-900">
@@ -424,7 +489,10 @@ export default function Dashboard() {
                   </p>
                   <div className="space-y-2">
                     <Link to="/admin/dashboard" className="block">
-                      <Button variant="outline" className="w-full border-red-600 text-red-600 hover:bg-red-50">
+                      <Button
+                        variant="outline"
+                        className="w-full border-red-600 text-red-600 hover:bg-red-50"
+                      >
                         مدیریت کاربران
                       </Button>
                     </Link>
@@ -439,7 +507,7 @@ export default function Dashboard() {
             )}
 
             {/* Premium Features Preview */}
-            {!isPremium && user?.email !== 'farnadadmin@gmail.com' && (
+            {!isPremium && user?.email !== "farnadadmin@gmail.com" && (
               <Card className="border-brand-200 bg-brand-50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-brand-900">

@@ -1,8 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { CreditCard, ArrowRight, Search, Filter, FileText, Users, Calendar, Settings } from "lucide-react";
+import {
+  CreditCard,
+  ArrowRight,
+  Search,
+  Filter,
+  FileText,
+  Users,
+  Calendar,
+  Settings,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -12,8 +27,8 @@ export default function AdminTransactions() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [pagination, setPagination] = useState<any>(null);
 
   const { toast } = useToast();
@@ -25,8 +40,13 @@ export default function AdminTransactions() {
   const loadTransactions = async () => {
     try {
       setLoading(true);
-      
-      const response = await apiService.getAdminTransactions(currentPage, 20, searchQuery, statusFilter);
+
+      const response = await apiService.getAdminTransactions(
+        currentPage,
+        20,
+        searchQuery,
+        statusFilter,
+      );
 
       if (response.success) {
         setTransactions(response.data.transactions);
@@ -35,16 +55,15 @@ export default function AdminTransactions() {
         toast({
           title: "خطا در بارگذاری تراکنش‌ها",
           description: response.message,
-          variant: "destructive"
+          variant: "destructive",
         });
       }
-
     } catch (error) {
-      console.error('Error loading transactions:', error);
+      console.error("Error loading transactions:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -61,32 +80,38 @@ export default function AdminTransactions() {
 
   const getSubscriptionTypeBadge = (type: string) => {
     const types: Record<string, { label: string; color: string }> = {
-      'FREE': { label: 'رایگان', color: 'bg-gray-100 text-gray-800' },
-      'PREMIUM': { label: 'پرمیوم', color: 'bg-yellow-100 text-yellow-800' },
-      'BUSINESS': { label: 'کسب‌وکار', color: 'bg-purple-100 text-purple-800' }
+      FREE: { label: "رایگان", color: "bg-gray-100 text-gray-800" },
+      PREMIUM: { label: "پرمیوم", color: "bg-yellow-100 text-yellow-800" },
+      BUSINESS: { label: "کسب‌وکار", color: "bg-purple-100 text-purple-800" },
     };
-    
-    const typeConfig = types[type] || { label: type, color: 'bg-gray-100 text-gray-800' };
+
+    const typeConfig = types[type] || {
+      label: type,
+      color: "bg-gray-100 text-gray-800",
+    };
     return <Badge className={typeConfig.color}>{typeConfig.label}</Badge>;
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('fa-IR').format(amount) + ' تومان';
+    return new Intl.NumberFormat("fa-IR").format(amount) + " تومان";
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fa-IR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("fa-IR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   if (loading && transactions.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری تراکنش‌ها...</p>
@@ -101,7 +126,10 @@ export default function AdminTransactions() {
       <header className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/admin/dashboard" className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700">
+            <Link
+              to="/admin/dashboard"
+              className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
+            >
               <ArrowRight className="w-4 h-4" />
               بازگشت به پنل ادمین
             </Link>
@@ -109,7 +137,9 @@ export default function AdminTransactions() {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <CreditCard className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">مدیریت تراکنش‌ها</span>
+              <span className="text-xl font-bold text-gray-900">
+                مدیریت تراکنش‌ها
+              </span>
             </div>
           </div>
         </div>
@@ -131,7 +161,10 @@ export default function AdminTransactions() {
                 مشاهده رویدادها
               </Button>
             </Link>
-            <Button variant="default" className="bg-brand-600 hover:bg-brand-700">
+            <Button
+              variant="default"
+              className="bg-brand-600 hover:bg-brand-700"
+            >
               <CreditCard className="w-4 h-4 mr-2" />
               تراکنش‌ها
             </Button>
@@ -198,7 +231,10 @@ export default function AdminTransactions() {
             ) : (
               <div className="space-y-4">
                 {transactions.map((transaction) => (
-                  <div key={transaction.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div
+                    key={transaction.id}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-4 mb-2">
@@ -211,7 +247,8 @@ export default function AdminTransactions() {
                         <div className="flex items-center gap-4 text-sm text-gray-500">
                           <span className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
-                            {transaction.user.fullName} ({transaction.user.email})
+                            {transaction.user.fullName} (
+                            {transaction.user.email})
                           </span>
                           <span className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
@@ -225,21 +262,29 @@ export default function AdminTransactions() {
                     <div className="bg-gray-50 rounded-lg p-3">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
                         <div>
-                          <span className="font-medium text-gray-600">شناسه تراکنش:</span>
+                          <span className="font-medium text-gray-600">
+                            شناسه تراکنش:
+                          </span>
                           <p className="text-gray-800 font-mono text-xs break-all">
                             {transaction.id}
                           </p>
                         </div>
                         <div>
-                          <span className="font-medium text-gray-600">شناسه پرداخت:</span>
+                          <span className="font-medium text-gray-600">
+                            شناسه پرداخت:
+                          </span>
                           <p className="text-gray-800 font-mono text-xs break-all">
-                            {transaction.paymentId || 'نامشخص'}
+                            {transaction.paymentId || "نامشخص"}
                           </p>
                         </div>
                         <div>
-                          <span className="font-medium text-gray-600">تاریخ انقضا:</span>
+                          <span className="font-medium text-gray-600">
+                            تاریخ انقضا:
+                          </span>
                           <p className="text-gray-800">
-                            {transaction.endDate ? formatDate(transaction.endDate) : 'نامحدود'}
+                            {transaction.endDate
+                              ? formatDate(transaction.endDate)
+                              : "نامحدود"}
                           </p>
                         </div>
                       </div>
@@ -249,7 +294,10 @@ export default function AdminTransactions() {
                     <div className="mt-3 pt-3 border-t border-gray-100">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600">
-                          وضعیت فعلی کاربر: {getSubscriptionTypeBadge(transaction.user.subscriptionType)}
+                          وضعیت فعلی کاربر:{" "}
+                          {getSubscriptionTypeBadge(
+                            transaction.user.subscriptionType,
+                          )}
                         </span>
                         <span className="text-gray-500">
                           تاریخ ثبت: {formatDate(transaction.createdAt)}

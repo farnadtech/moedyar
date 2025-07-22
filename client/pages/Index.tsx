@@ -1,6 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Calendar, Bell, Smartphone, Mail, Zap, Star, Users, Building, User } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Check,
+  Calendar,
+  Bell,
+  Smartphone,
+  Mail,
+  Zap,
+  Star,
+  Users,
+  Building,
+  User,
+} from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -15,7 +32,10 @@ export default function Index() {
   // Show loading state while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gradient-to-br from-brand-50 to-white flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری...</p>
@@ -25,7 +45,10 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white" dir="rtl">
+    <div
+      className="min-h-screen bg-gradient-to-br from-brand-50 to-white"
+      dir="rtl"
+    >
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
@@ -37,7 +60,10 @@ export default function Index() {
           </div>
           <div className="flex items-center gap-4">
             <Link to="/login">
-              <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+              <Button
+                variant="ghost"
+                className="text-gray-600 hover:text-gray-900"
+              >
                 ورود
               </Button>
             </Link>
@@ -58,11 +84,15 @@ export default function Index() {
             <span className="text-brand-600 block">فراموش نکنید</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-            سیستم هوشمند یادآوری رویدادها برای کسب‌وکارها و افراد. از تاریخ چک تا تولد، از بیمه تا قراردادها - همه چیز در یک مکان.
+            سیستم هوشمند یادآوری رویدادها برای کسب‌وکارها و افراد. از تاریخ چک
+            تا تولد، از بیمه تا قراردادها - همه چیز در یک مکان.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/register/personal">
-              <Button size="lg" className="bg-brand-600 hover:bg-brand-700 text-lg px-8 py-6">
+              <Button
+                size="lg"
+                className="bg-brand-600 hover:bg-brand-700 text-lg px-8 py-6"
+              >
                 <User className="ml-2 h-5 w-5" />
                 شروع رایگان - حساب شخصی
               </Button>
@@ -80,8 +110,12 @@ export default function Index() {
       {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">چرا رویداد یار؟</h2>
-          <p className="text-lg text-gray-600">راه حل کاملی برای مدیریت تمام رویدادهای مهم شما</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            چرا رویداد یار؟
+          </h2>
+          <p className="text-lg text-gray-600">
+            راه حل کاملی برای مدیریت تمام رویدادهای مهم شما
+          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -92,7 +126,8 @@ export default function Index() {
               </div>
               <CardTitle className="text-xl">ثبت آسان رویدادها</CardTitle>
               <CardDescription className="text-base">
-                تاریخ چک، تولد، بیمه، قرارداد و هر رویداد مهم دیگری را با چند کلیک ثبت کنید
+                تاریخ چک، تولد، بیمه، قرارداد و هر رویداد مهم دیگری را با چند
+                کلیک ثبت کنید
               </CardDescription>
             </CardHeader>
           </Card>
@@ -104,7 +139,8 @@ export default function Index() {
               </div>
               <CardTitle className="text-xl">یادآوری هوشمند</CardTitle>
               <CardDescription className="text-base">
-                یادآوری‌های چندگانه در بازه‌های زمانی مختلف برای اطمینان از عدم فراموشی
+                یادآوری‌های چندگانه در بازه‌های زمانی مختلف برای اطمینان از عدم
+                فراموشی
               </CardDescription>
             </CardHeader>
           </Card>
@@ -126,8 +162,12 @@ export default function Index() {
       {/* Pricing Section */}
       <section className="container mx-auto px-4 py-16 bg-gray-50">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">پکیج‌های حساب شخصی</h2>
-          <p className="text-lg text-gray-600">بسته مناسب برای نیازهای شما را انتخاب کنید</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            پکیج‌های حساب شخصی
+          </h2>
+          <p className="text-lg text-gray-600">
+            بسته مناسب برای نیازهای شما را انتخاب کنید
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -170,7 +210,9 @@ export default function Index() {
             </div>
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">پرمیوم</CardTitle>
-              <div className="text-4xl font-bold text-brand-600">۴۹,۰۰۰ تومان</div>
+              <div className="text-4xl font-bold text-brand-600">
+                ۴۹,۰۰۰ تومان
+              </div>
               <CardDescription>ماهانه - لغو آسان</CardDescription>
             </CardHeader>
             <CardContent>
@@ -212,7 +254,8 @@ export default function Index() {
         <div className="bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl p-8 md:p-12 text-white text-center">
           <h2 className="text-3xl font-bold mb-4">حساب کسب‌وکار</h2>
           <p className="text-xl mb-6 opacity-90">
-            راه‌حل تخصصی برای شرکت‌ها و سازمان‌ها با قابلیت‌های پیشرفته مدیریت تیم
+            راه‌حل تخصصی برای شرکت‌ها و سازمان‌ها با قابلیت‌های پیشرفته مدیریت
+            تیم
           </p>
           <div className="flex items-center justify-center gap-8 mb-6">
             <div className="flex items-center gap-2">
@@ -239,9 +282,12 @@ export default function Index() {
       {/* Contact/Demo */}
       <section className="container mx-auto px-4 py-16 bg-gray-50">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">آماده شروع هستید؟</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            آماده شروع هستید؟
+          </h2>
           <p className="text-lg text-gray-600 mb-8">
-            همین امروز رویداد یار را امتحان کنید و هیچ رویداد مهمی را فراموش نکنید
+            همین امروز رویداد یار را امتحان کنید و هیچ رویداد مهمی را فراموش
+            نکنید
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/demo">
@@ -268,15 +314,26 @@ export default function Index() {
               </div>
               <span className="text-xl font-bold">رویداد یار</span>
             </div>
-            <p className="text-gray-400 mb-6">مدیریت هوشمند رویدادها و یادآوری‌ها</p>
+            <p className="text-gray-400 mb-6">
+              مدیریت هوشمند رویدادها و یادآوری‌ها
+            </p>
             <div className="flex justify-center gap-6">
-              <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                to="/privacy"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 حریم خصوصی
               </Link>
-              <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                to="/terms"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 شرایط استفاده
               </Link>
-              <Link to="/support" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                to="/support"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 پشتیبانی
               </Link>
             </div>

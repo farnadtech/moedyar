@@ -38,103 +38,154 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPersonal />} />
             <Route path="/register/personal" element={<RegisterPersonal />} />
-            <Route path="/register/business" element={
-              <Placeholder
-                title="ثبت نام حساب کسب‌وکار"
-                description="حساب کسب‌وکار با قابلیت‌های پیشرفته مدیریت تیم"
-                suggestion="برای دریافت اطلاعات بیشتر در مورد حساب کسب‌وکار و قیمت‌گذاری، با ما تماس بگیرید."
-              />
-            } />
+            <Route
+              path="/register/business"
+              element={
+                <Placeholder
+                  title="ثبت نام حساب کسب‌وکار"
+                  description="حساب کسب‌وکار با قابلیت‌های پیشرفته مدیریت تیم"
+                  suggestion="برای دریافت اطلاعات بیشتر در مورد حساب کسب‌وکار و قیمت‌گذاری، با ما تماس بگیرید."
+                />
+              }
+            />
 
             {/* Protected Routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/add-event" element={
-              <ProtectedRoute>
-                <AddEvent />
-              </ProtectedRoute>
-            } />
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/dashboard" element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/events" element={
-              <ProtectedRoute>
-                <AdminEvents />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/transactions" element={
-              <ProtectedRoute>
-                <AdminTransactions />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/settings" element={
-              <ProtectedRoute>
-                <AdminSettings />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/setup" element={
-              <ProtectedRoute>
-                <AdminSetup />
-              </ProtectedRoute>
-            } />
-            <Route path="/api-test" element={
-              <ProtectedRoute>
-                <ApiTest />
-              </ProtectedRoute>
-            } />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-event"
+              element={
+                <ProtectedRoute>
+                  <AddEvent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/events"
+              element={
+                <ProtectedRoute>
+                  <AdminEvents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/transactions"
+              element={
+                <ProtectedRoute>
+                  <AdminTransactions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <ProtectedRoute>
+                  <AdminSettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/setup"
+              element={
+                <ProtectedRoute>
+                  <AdminSetup />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/api-test"
+              element={
+                <ProtectedRoute>
+                  <ApiTest />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="/premium" element={<Premium />} />
-            <Route path="/demo" element={
-              <Placeholder
-                title="نمایش دمو"
-                description="مشاهده ویدیوی آموزشی و تست سیستم"
-              />
-            } />
-            <Route path="/contact" element={
-              <Placeholder
-                title="تماس با ما"
-                description="راه‌های ارتباط و دریافت پشتیبانی"
-              />
-            } />
-            <Route path="/support" element={
-              <Placeholder
-                title="پشتیبانی"
-                description="مرکز کمک و پاسخ به سوالات متداول"
-              />
-            } />
-            <Route path="/terms" element={
-              <Placeholder
-                title="شرایط استفاده"
-                description="قوانین و مقررات استفاده از سرویس"
-              />
-            } />
-            <Route path="/privacy" element={
-              <Placeholder
-                title="حریم خصوصی"
-                description="نحوه جمع‌آوری و استفاده از اطلاعات کاربران"
-              />
-            } />
-            <Route path="/forgot-password" element={
-              <Placeholder
-                title="بازیابی رمز عبور"
-                description="فرم بازیابی رمز عبور از طریق ایمیل"
-              />
-            } />
+            <Route
+              path="/demo"
+              element={
+                <Placeholder
+                  title="نمایش دمو"
+                  description="مشاهده ویدیوی آموزشی و تست سیستم"
+                />
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <Placeholder
+                  title="تماس با ما"
+                  description="راه‌های ارتباط و دریافت پشتیبانی"
+                />
+              }
+            />
+            <Route
+              path="/support"
+              element={
+                <Placeholder
+                  title="پشتیبانی"
+                  description="مرکز کمک و پاسخ به سوالات متداول"
+                />
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <Placeholder
+                  title="شرایط استفاده"
+                  description="قوانین و مقررات استفاده از سرویس"
+                />
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <Placeholder
+                  title="حریم خصوصی"
+                  description="نحوه جمع‌آوری و استفاده از اطلاعات کاربران"
+                />
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <Placeholder
+                  title="بازیابی رمز عبور"
+                  description="فرم بازیابی رمز عبور از طریق ایمیل"
+                />
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

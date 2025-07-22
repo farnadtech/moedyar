@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -7,26 +13,26 @@ import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
 
 const eventTypes = [
-  { value: 'BIRTHDAY', label: 'تولد', icon: '🎂' },
-  { value: 'INSURANCE', label: 'بیمه', icon: '🛡️' },
-  { value: 'CONTRACT', label: 'قرارداد', icon: '📋' },
-  { value: 'CHECK', label: 'چک', icon: '💰' },
-  { value: 'CUSTOM', label: 'سایر', icon: '📅' }
+  { value: "BIRTHDAY", label: "تولد", icon: "🎂" },
+  { value: "INSURANCE", label: "بیمه", icon: "🛡️" },
+  { value: "CONTRACT", label: "قرارداد", icon: "📋" },
+  { value: "CHECK", label: "چک", icon: "💰" },
+  { value: "CUSTOM", label: "سایر", icon: "📅" },
 ];
 
 const reminderMethods = [
-  { value: 'EMAIL', label: 'ایمیل', icon: '📧', free: true },
-  { value: 'SMS', label: 'پیامک', icon: '📱', free: false },
-  { value: 'WHATSAPP', label: 'واتس‌اپ', icon: '💬', free: false }
+  { value: "EMAIL", label: "ایمیل", icon: "📧", free: true },
+  { value: "SMS", label: "پیامک", icon: "📱", free: false },
+  { value: "WHATSAPP", label: "واتس‌اپ", icon: "💬", free: false },
 ];
 
 const reminderDaysOptions = [
-  { value: 1, label: '۱ روز قبل' },
-  { value: 3, label: '۳ روز قبل' },
-  { value: 7, label: '۱ هفته قبل' },
-  { value: 14, label: '۲ هفته قبل' },
-  { value: 30, label: '۱ ماه قبل' },
-  { value: 60, label: '۲ ماه قبل' }
+  { value: 1, label: "۱ روز قبل" },
+  { value: 3, label: "۳ روز قبل" },
+  { value: 7, label: "۱ هفته قبل" },
+  { value: 14, label: "۲ هفته قبل" },
+  { value: 30, label: "۱ ماه قبل" },
+  { value: 60, label: "۲ ماه قبل" },
 ];
 
 export default function AddEvent() {
@@ -34,49 +40,135 @@ export default function AddEvent() {
     title: "",
     description: "",
     eventDate: "",
-    eventType: "CUSTOM"
+    eventType: "CUSTOM",
   });
 
-  const [dynamicFields, setDynamicFields] = useState<Record<string, string>>({});
+  const [dynamicFields, setDynamicFields] = useState<Record<string, string>>(
+    {},
+  );
 
   // Get dynamic fields based on event type
   const getDynamicFields = (eventType: string) => {
     switch (eventType) {
-      case 'BIRTHDAY':
+      case "BIRTHDAY":
         return [
-          { key: 'person_name', label: 'نام فرد', placeholder: 'نام کامل فرد', required: false },
-          { key: 'relation', label: 'نسبت', placeholder: 'مثال: پدر، مادر، دوست', required: false },
-          { key: 'gift_idea', label: 'ایده کادو', placeholder: 'چه کادویی بخرید؟', required: false }
+          {
+            key: "person_name",
+            label: "نام فرد",
+            placeholder: "نام کامل فرد",
+            required: false,
+          },
+          {
+            key: "relation",
+            label: "نسبت",
+            placeholder: "مثال: پدر، مادر، دوست",
+            required: false,
+          },
+          {
+            key: "gift_idea",
+            label: "ایده کادو",
+            placeholder: "چه کادویی بخرید؟",
+            required: false,
+          },
         ];
-      case 'INSURANCE':
+      case "INSURANCE":
         return [
-          { key: 'insurance_type', label: 'نوع بیمه', placeholder: 'مثال: خودرو، درمان، آتش‌سوزی', required: false },
-          { key: 'policy_number', label: 'شماره بیمه‌نامه', placeholder: 'شماره بیمه‌نامه', required: false },
-          { key: 'company_name', label: 'نام شرکت بیمه', placeholder: 'نام شرکت بیمه‌گر', required: false },
-          { key: 'premium_amount', label: 'مبلغ حق بیمه', placeholder: 'مبلغ به تومان', required: false }
+          {
+            key: "insurance_type",
+            label: "نوع بیمه",
+            placeholder: "مثال: خودرو، درمان، آتش‌سوزی",
+            required: false,
+          },
+          {
+            key: "policy_number",
+            label: "شماره بیمه‌نامه",
+            placeholder: "شماره بیمه‌نامه",
+            required: false,
+          },
+          {
+            key: "company_name",
+            label: "نام شرکت بیمه",
+            placeholder: "نام شرکت بیمه‌گر",
+            required: false,
+          },
+          {
+            key: "premium_amount",
+            label: "مبلغ حق بیمه",
+            placeholder: "مبلغ به تومان",
+            required: false,
+          },
         ];
-      case 'CONTRACT':
+      case "CONTRACT":
         return [
-          { key: 'contract_type', label: 'نوع قرارداد', placeholder: 'مثال: اجاره، خرید، کاری', required: false },
-          { key: 'other_party', label: 'طرف مقابل', placeholder: 'نام شخص یا شرکت', required: false },
-          { key: 'contract_value', label: 'ارزش قرارداد', placeholder: 'مبلغ به تومان', required: false },
-          { key: 'renewal_terms', label: 'شرایط تمدید', placeholder: 'نحوه تمدید قرارداد', required: false }
+          {
+            key: "contract_type",
+            label: "نوع قرارداد",
+            placeholder: "مثال: اجاره، خرید، کاری",
+            required: false,
+          },
+          {
+            key: "other_party",
+            label: "طرف مقابل",
+            placeholder: "نام شخص یا شرکت",
+            required: false,
+          },
+          {
+            key: "contract_value",
+            label: "ارزش قرارداد",
+            placeholder: "مبلغ به تومان",
+            required: false,
+          },
+          {
+            key: "renewal_terms",
+            label: "شرایط تمدید",
+            placeholder: "نحوه تمدید قرارداد",
+            required: false,
+          },
         ];
-      case 'CHECK':
+      case "CHECK":
         return [
-          { key: 'check_number', label: 'شماره چک', placeholder: 'شماره چک', required: false },
-          { key: 'bank_name', label: 'نام بانک', placeholder: 'نام بانک صادرکننده', required: false },
-          { key: 'amount', label: 'مبلغ چک', placeholder: 'مبلغ به تومان', required: false },
-          { key: 'recipient', label: 'گیرنده چک', placeholder: 'نام گیرنده', required: false },
-          { key: 'account_number', label: 'شماره حساب', placeholder: 'شماره حساب', required: false }
+          {
+            key: "check_number",
+            label: "شماره چک",
+            placeholder: "شماره چک",
+            required: false,
+          },
+          {
+            key: "bank_name",
+            label: "نام بانک",
+            placeholder: "نام بانک صادرکننده",
+            required: false,
+          },
+          {
+            key: "amount",
+            label: "مبلغ چک",
+            placeholder: "مبلغ به تومان",
+            required: false,
+          },
+          {
+            key: "recipient",
+            label: "گیرنده چک",
+            placeholder: "نام گیرنده",
+            required: false,
+          },
+          {
+            key: "account_number",
+            label: "شماره حساب",
+            placeholder: "شماره حساب",
+            required: false,
+          },
         ];
       default:
         return [];
     }
   };
-  
-  const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>([1, 7]);
-  const [selectedReminderMethods, setSelectedReminderMethods] = useState<string[]>(['EMAIL']);
+
+  const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>([
+    1, 7,
+  ]);
+  const [selectedReminderMethods, setSelectedReminderMethods] = useState<
+    string[]
+  >(["EMAIL"]);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [userSubscription, setUserSubscription] = useState<any>(null);
@@ -84,58 +176,62 @@ export default function AddEvent() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
-    
+
     if (errors[e.target.name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [e.target.name]: ""
+        [e.target.name]: "",
       }));
     }
   };
 
   const handleReminderDayToggle = (days: number) => {
-    setSelectedReminderDays(prev => 
-      prev.includes(days) 
-        ? prev.filter(d => d !== days)
-        : [...prev, days].sort((a, b) => a - b)
+    setSelectedReminderDays((prev) =>
+      prev.includes(days)
+        ? prev.filter((d) => d !== days)
+        : [...prev, days].sort((a, b) => a - b),
     );
   };
 
   const handleReminderMethodToggle = (method: string) => {
-    const methodData = reminderMethods.find(m => m.value === method);
+    const methodData = reminderMethods.find((m) => m.value === method);
 
     // Check if method is premium and user doesn't have premium
-    if (!methodData?.free && userSubscription?.currentType === 'FREE') {
+    if (!methodData?.free && userSubscription?.currentType === "FREE") {
       toast({
         title: "نیاز به حساب پرمیوم",
         description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
-    setSelectedReminderMethods(prev =>
+    setSelectedReminderMethods((prev) =>
       prev.includes(method)
-        ? prev.filter(m => m !== method)
-        : [...prev, method]
+        ? prev.filter((m) => m !== method)
+        : [...prev, method],
     );
   };
 
   const handleEventTypeChange = (newEventType: string) => {
-    setFormData(prev => ({ ...prev, eventType: newEventType }));
+    setFormData((prev) => ({ ...prev, eventType: newEventType }));
     // Clear dynamic fields when event type changes
     setDynamicFields({});
   };
 
   const handleDynamicFieldChange = (key: string, value: string) => {
-    setDynamicFields(prev => ({
+    setDynamicFields((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -152,7 +248,7 @@ export default function AddEvent() {
       const selectedDate = new Date(formData.eventDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       if (selectedDate < today) {
         newErrors.eventDate = "تاریخ رویداد نمی‌تواند در گذشته باشد";
       }
@@ -172,7 +268,7 @@ export default function AddEvent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -186,7 +282,7 @@ export default function AddEvent() {
         eventDate: formData.eventDate,
         eventType: formData.eventType,
         reminderDays: selectedReminderDays,
-        reminderMethods: selectedReminderMethods
+        reminderMethods: selectedReminderMethods,
       });
 
       if (response.success) {
@@ -203,23 +299,22 @@ export default function AddEvent() {
           toast({
             title: "نیاز به ارتقا حساب",
             description: response.message,
-            variant: "destructive"
+            variant: "destructive",
           });
         } else {
           toast({
             title: "خطا در ایجاد رویداد",
             description: response.message || "لطفاً دوباره تلاش کنید",
-            variant: "destructive"
+            variant: "destructive",
           });
         }
       }
-
     } catch (error) {
-      console.error('Create event error:', error);
+      console.error("Create event error:", error);
       toast({
         title: "خطا در ایجاد رویداد",
         description: "خطا در ارتباط با سرور",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -235,19 +330,25 @@ export default function AddEvent() {
           setUserSubscription(response.data);
         }
       } catch (error) {
-        console.error('Error loading subscription:', error);
+        console.error("Error loading subscription:", error);
       }
     };
-    
+
     loadSubscriptionData();
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white" dir="rtl">
+    <div
+      className="min-h-screen bg-gradient-to-br from-brand-50 to-white"
+      dir="rtl"
+    >
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
-          <Link to="/dashboard" className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
+          >
             <ArrowRight className="w-4 h-4" />
             بازگشت به داشبورد
           </Link>
@@ -285,7 +386,9 @@ export default function AddEvent() {
                     value={formData.title}
                     onChange={handleChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.title ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      errors.title
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
                     }`}
                     placeholder="مثال: تمدید بیمه خودرو"
                     required
@@ -321,12 +424,16 @@ export default function AddEvent() {
                     value={formData.eventDate}
                     onChange={handleChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.eventDate ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      errors.eventDate
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
                     }`}
                     required
                   />
                   {errors.eventDate && (
-                    <p className="text-red-500 text-sm mt-1">{errors.eventDate}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.eventDate}
+                    </p>
                   )}
                 </div>
 
@@ -343,8 +450,8 @@ export default function AddEvent() {
                         onClick={() => handleEventTypeChange(type.value)}
                         className={`p-3 border-2 rounded-lg text-center transition-colors ${
                           formData.eventType === type.value
-                            ? 'border-brand-500 bg-brand-50 text-brand-700'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? "border-brand-500 bg-brand-50 text-brand-700"
+                            : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
                         <div className="text-2xl mb-1">{type.icon}</div>
@@ -368,8 +475,13 @@ export default function AddEvent() {
                           </label>
                           <input
                             type="text"
-                            value={dynamicFields[field.key] || ''}
-                            onChange={(e) => handleDynamicFieldChange(field.key, e.target.value)}
+                            value={dynamicFields[field.key] || ""}
+                            onChange={(e) =>
+                              handleDynamicFieldChange(
+                                field.key,
+                                e.target.value,
+                              )
+                            }
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
                             placeholder={field.placeholder}
                           />
@@ -377,7 +489,8 @@ export default function AddEvent() {
                       ))}
                     </div>
                     <p className="text-xs text-gray-500 mt-2">
-                      این اطلاعات اختیاری هستند و به شما در یادآوری رویداد کمک می‌کنند
+                      این اطلاعات اختیاری هستند و به شما در یادآوری رویداد کمک
+                      می‌کنند
                     </p>
                   </div>
                 )}
@@ -395,8 +508,8 @@ export default function AddEvent() {
                         onClick={() => handleReminderDayToggle(option.value)}
                         className={`p-3 border-2 rounded-lg text-center transition-colors ${
                           selectedReminderDays.includes(option.value)
-                            ? 'border-brand-500 bg-brand-50 text-brand-700'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? "border-brand-500 bg-brand-50 text-brand-700"
+                            : "border-gray-200 hover:border-gray-300"
                         }`}
                       >
                         <div className="flex items-center justify-center mb-1">
@@ -406,12 +519,16 @@ export default function AddEvent() {
                             <div className="w-4 h-4" />
                           )}
                         </div>
-                        <div className="text-sm font-medium">{option.label}</div>
+                        <div className="text-sm font-medium">
+                          {option.label}
+                        </div>
                       </button>
                     ))}
                   </div>
                   {errors.reminderDays && (
-                    <p className="text-red-500 text-sm mt-1">{errors.reminderDays}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.reminderDays}
+                    </p>
                   )}
                 </div>
 
@@ -422,22 +539,27 @@ export default function AddEvent() {
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {reminderMethods.map((method) => {
-                      const isSelected = selectedReminderMethods.includes(method.value);
+                      const isSelected = selectedReminderMethods.includes(
+                        method.value,
+                      );
                       const isPremiumOnly = !method.free;
-                      const hasAccess = method.free || userSubscription?.currentType !== 'FREE';
-                      
+                      const hasAccess =
+                        method.free || userSubscription?.currentType !== "FREE";
+
                       return (
                         <button
                           key={method.value}
                           type="button"
-                          onClick={() => handleReminderMethodToggle(method.value)}
+                          onClick={() =>
+                            handleReminderMethodToggle(method.value)
+                          }
                           disabled={!hasAccess}
                           className={`p-4 border-2 rounded-lg text-center transition-colors relative ${
                             isSelected
-                              ? 'border-brand-500 bg-brand-50 text-brand-700'
+                              ? "border-brand-500 bg-brand-50 text-brand-700"
                               : hasAccess
-                              ? 'border-gray-200 hover:border-gray-300'
-                              : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                                ? "border-gray-200 hover:border-gray-300"
+                                : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
                           }`}
                         >
                           {isPremiumOnly && !hasAccess && (
@@ -448,9 +570,13 @@ export default function AddEvent() {
                             </div>
                           )}
                           <div className="text-2xl mb-2">{method.icon}</div>
-                          <div className="text-sm font-medium">{method.label}</div>
+                          <div className="text-sm font-medium">
+                            {method.label}
+                          </div>
                           {isPremiumOnly && (
-                            <div className="text-xs text-gray-500 mt-1">پرمیوم</div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              پرمیوم
+                            </div>
                           )}
                           {isSelected && (
                             <div className="absolute top-1 right-1">
@@ -462,19 +588,24 @@ export default function AddEvent() {
                     })}
                   </div>
                   {errors.reminderMethods && (
-                    <p className="text-red-500 text-sm mt-1">{errors.reminderMethods}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.reminderMethods}
+                    </p>
                   )}
-                  {userSubscription?.currentType === 'FREE' && (
+                  {userSubscription?.currentType === "FREE" && (
                     <p className="text-sm text-gray-600 mt-2">
-                      برای استفاده از پیامک و واتس‌اپ، <Link to="/premium" className="text-brand-600">حساب خود را ارتقا دهید</Link>
+                      برای استفاده از پیامک و واتس‌اپ،{" "}
+                      <Link to="/premium" className="text-brand-600">
+                        حساب خود را ارتقا دهید
+                      </Link>
                     </p>
                   )}
                 </div>
 
                 {/* Submit Button */}
                 <div className="flex gap-4 pt-4">
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     className="flex-1 bg-brand-600 hover:bg-brand-700 py-3"
                     disabled={isLoading}
                   >
@@ -491,7 +622,11 @@ export default function AddEvent() {
                     )}
                   </Button>
                   <Link to="/dashboard">
-                    <Button type="button" variant="outline" className="px-6 py-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="px-6 py-3"
+                    >
                       <X className="w-4 h-4 ml-1" />
                       انصراف
                     </Button>

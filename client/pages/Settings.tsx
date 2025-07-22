@@ -1,6 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowRight, User, Bell, Shield, Smartphone, Mail, Crown, Save, Edit2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Calendar,
+  ArrowRight,
+  User,
+  Bell,
+  Shield,
+  Smartphone,
+  Mail,
+  Crown,
+  Save,
+  Edit2,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -11,19 +28,19 @@ export default function Settings() {
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
-  
+  const [activeTab, setActiveTab] = useState("profile");
+
   const [profileData, setProfileData] = useState({
     fullName: "",
     email: "",
-    phone: ""
+    phone: "",
   });
 
   const [notificationSettings, setNotificationSettings] = useState({
     emailNotifications: true,
     smsNotifications: false,
     whatsappNotifications: false,
-    reminderTiming: [1, 7] // Default reminder days
+    reminderTiming: [1, 7], // Default reminder days
   });
 
   const navigate = useNavigate();
@@ -36,15 +53,15 @@ export default function Settings() {
   const loadUserData = async () => {
     try {
       setLoading(true);
-      
+
       if (!apiService.isAuthenticated()) {
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
       const [userResponse, subscriptionResponse] = await Promise.all([
         apiService.getCurrentUser(),
-        apiService.getCurrentSubscription()
+        apiService.getCurrentSubscription(),
       ]);
 
       if (userResponse.success && userResponse.data) {
@@ -53,28 +70,27 @@ export default function Settings() {
         setProfileData({
           fullName: userData.fullName || "",
           email: userData.email || "",
-          phone: userData.phone || ""
+          phone: userData.phone || "",
         });
       }
 
       if (subscriptionResponse.success && subscriptionResponse.data) {
         setSubscription(subscriptionResponse.data);
-        
+
         // Set notification settings based on subscription
-        const isPremium = subscriptionResponse.data.currentType !== 'FREE';
-        setNotificationSettings(prev => ({
+        const isPremium = subscriptionResponse.data.currentType !== "FREE";
+        setNotificationSettings((prev) => ({
           ...prev,
           smsNotifications: isPremium,
-          whatsappNotifications: isPremium
+          whatsappNotifications: isPremium,
         }));
       }
-
     } catch (error) {
-      console.error('Error loading user data:', error);
+      console.error("Error loading user data:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -88,7 +104,7 @@ export default function Settings() {
     try {
       const response = await apiService.updateProfile({
         fullName: profileData.fullName,
-        phone: profileData.phone
+        phone: profileData.phone,
       });
 
       if (response.success) {
@@ -98,28 +114,27 @@ export default function Settings() {
           setProfileData({
             fullName: response.data.user.fullName || "",
             email: response.data.user.email || "",
-            phone: response.data.user.phone || ""
+            phone: response.data.user.phone || "",
           });
         }
 
         toast({
           title: "✅ پروفایل به‌روزرسانی شد",
-          description: "تغییرات با موفقیت ذخیره شد"
+          description: "تغییرات با موفقیت ذخیره شد",
         });
       } else {
         toast({
           title: "خطا در به‌روزرسانی",
           description: response.message || "لطفاً دوباره تلاش کنید",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
-
     } catch (error) {
-      console.error('Profile update error:', error);
+      console.error("Profile update error:", error);
       toast({
         title: "خطا در به‌روزرسانی",
         description: "خطا در ارتباط با ����رور",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setSaving(false);
@@ -132,18 +147,17 @@ export default function Settings() {
 
     try {
       // Here you would call an API to update notification settings
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       toast({
         title: "✅ تنظیمات یادآوری به‌روزرسانی شد",
-        description: "تغییرات با موفقیت ذخیره شد"
+        description: "تغییرات با موفقیت ذخیره شد",
       });
-
     } catch (error) {
       toast({
         title: "خطا در به‌روزرسانی",
         description: "لطفاً دوباره تلاش کنید",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setSaving(false);
@@ -154,7 +168,9 @@ export default function Settings() {
     apiService.logout();
   };
 
-  const handleTestNotification = async (method: 'EMAIL' | 'SMS' | 'WHATSAPP') => {
+  const handleTestNotification = async (
+    method: "EMAIL" | "SMS" | "WHATSAPP",
+  ) => {
     try {
       setSaving(true);
 
@@ -162,22 +178,24 @@ export default function Settings() {
 
       if (response.success) {
         toast({
-          title: response.data?.demoMode ? "📧 حالت دمو" : "✅ یادآوری تست ارسال شد",
+          title: response.data?.demoMode
+            ? "📧 حالت دمو"
+            : "✅ یادآوری تست ارسال شد",
           description: response.message,
-          variant: response.data?.demoMode ? "default" : "default"
+          variant: response.data?.demoMode ? "default" : "default",
         });
       } else {
         toast({
           title: "خطا در ارسال تست",
           description: response.message || "لطفاً دوباره تلاش کنید",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
     } catch (error) {
       toast({
         title: "خطا در ارسال تست",
         description: "خطا در ارتباط با سرور",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setSaving(false);
@@ -201,7 +219,7 @@ export default function Settings() {
 
   const handleDeleteAccount = () => {
     const confirmed = window.confirm(
-      'آیا واقعاً می‌خواهید حساب کاربری خود را برای همیشه حذف کنید؟ این عمل غیرقابل بازگشت است.'
+      "آیا واقعاً می‌خواهید حساب کاربری خود را برای همیشه حذف کنید؟ این عمل غیرقابل بازگشت است.",
     );
 
     if (confirmed) {
@@ -214,7 +232,10 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری...</p>
@@ -224,10 +245,10 @@ export default function Settings() {
   }
 
   const tabs = [
-    { id: 'profile', label: 'پروفایل', icon: User },
-    { id: 'notifications', label: 'یادآوری‌ها', icon: Bell },
-    { id: 'subscription', label: 'اشتراک', icon: Crown },
-    { id: 'security', label: 'امنیت', icon: Shield }
+    { id: "profile", label: "پروفایل", icon: User },
+    { id: "notifications", label: "یادآوری‌ها", icon: Bell },
+    { id: "subscription", label: "اشتراک", icon: Crown },
+    { id: "security", label: "امنیت", icon: Shield },
   ];
 
   return (
@@ -236,7 +257,10 @@ export default function Settings() {
       <header className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/dashboard" className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700">
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
+            >
               <ArrowRight className="w-4 h-4" />
               بازگشت به داشبورد
             </Link>
@@ -265,7 +289,9 @@ export default function Settings() {
                           key={tab.id}
                           onClick={() => setActiveTab(tab.id)}
                           className={`w-full flex items-center gap-3 px-4 py-3 text-right hover:bg-gray-50 transition-colors ${
-                            activeTab === tab.id ? 'bg-brand-50 text-brand-700 border-l-2 border-brand-500' : 'text-gray-600'
+                            activeTab === tab.id
+                              ? "bg-brand-50 text-brand-700 border-l-2 border-brand-500"
+                              : "text-gray-600"
                           }`}
                         >
                           <Icon className="w-5 h-5" />
@@ -281,7 +307,7 @@ export default function Settings() {
             {/* Main Content */}
             <div className="lg:col-span-3">
               {/* Profile Tab */}
-              {activeTab === 'profile' && (
+              {activeTab === "profile" && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -301,7 +327,12 @@ export default function Settings() {
                         <input
                           type="text"
                           value={profileData.fullName}
-                          onChange={(e) => setProfileData(prev => ({ ...prev, fullName: e.target.value }))}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              fullName: e.target.value,
+                            }))
+                          }
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                           placeholder="نام کامل خود را وارد کنید"
                         />
@@ -314,7 +345,12 @@ export default function Settings() {
                         <input
                           type="email"
                           value={profileData.email}
-                          onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              email: e.target.value,
+                            }))
+                          }
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                           placeholder="your-email@example.com"
                         />
@@ -327,7 +363,12 @@ export default function Settings() {
                         <input
                           type="tel"
                           value={profileData.phone}
-                          onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              phone: e.target.value,
+                            }))
+                          }
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                           placeholder="09123456789"
                         />
@@ -337,7 +378,11 @@ export default function Settings() {
                       </div>
 
                       <div className="flex gap-3">
-                        <Button type="submit" disabled={saving} className="bg-brand-600 hover:bg-brand-700">
+                        <Button
+                          type="submit"
+                          disabled={saving}
+                          className="bg-brand-600 hover:bg-brand-700"
+                        >
                           {saving ? (
                             <div className="flex items-center gap-2">
                               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -357,7 +402,7 @@ export default function Settings() {
               )}
 
               {/* Notifications Tab */}
-              {activeTab === 'notifications' && (
+              {activeTab === "notifications" && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -369,25 +414,34 @@ export default function Settings() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <form onSubmit={handleNotificationSubmit} className="space-y-6">
+                    <form
+                      onSubmit={handleNotificationSubmit}
+                      className="space-y-6"
+                    >
                       <div>
-                        <h3 className="text-lg font-medium mb-4">روش‌های یادآوری</h3>
+                        <h3 className="text-lg font-medium mb-4">
+                          روش‌های یادآوری
+                        </h3>
                         <div className="space-y-4">
                           <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                             <div className="flex items-center gap-3">
                               <Mail className="w-5 h-5 text-blue-500" />
                               <div>
                                 <div className="font-medium">ایمیل</div>
-                                <div className="text-sm text-gray-500">دریافت یادآوری از طریق ایمیل</div>
+                                <div className="text-sm text-gray-500">
+                                  دریافت یادآوری از طریق ایمیل
+                                </div>
                               </div>
                             </div>
                             <input
                               type="checkbox"
                               checked={notificationSettings.emailNotifications}
-                              onChange={(e) => setNotificationSettings(prev => ({ 
-                                ...prev, 
-                                emailNotifications: e.target.checked 
-                              }))}
+                              onChange={(e) =>
+                                setNotificationSettings((prev) => ({
+                                  ...prev,
+                                  emailNotifications: e.target.checked,
+                                }))
+                              }
                               className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500"
                             />
                           </div>
@@ -398,81 +452,106 @@ export default function Settings() {
                               <div>
                                 <div className="font-medium flex items-center gap-2">
                                   پیامک
-                                  {subscription?.currentType === 'FREE' && (
-                                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">پرمیوم</span>
+                                  {subscription?.currentType === "FREE" && (
+                                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                                      پرمیوم
+                                    </span>
                                   )}
                                 </div>
-                                <div className="text-sm text-gray-500">دریافت یادآوری از طریق پیامک</div>
+                                <div className="text-sm text-gray-500">
+                                  دریافت یادآوری از طریق پیامک
+                                </div>
                               </div>
                             </div>
                             <input
                               type="checkbox"
                               checked={notificationSettings.smsNotifications}
-                              onChange={(e) => setNotificationSettings(prev => ({ 
-                                ...prev, 
-                                smsNotifications: e.target.checked 
-                              }))}
-                              disabled={subscription?.currentType === 'FREE'}
+                              onChange={(e) =>
+                                setNotificationSettings((prev) => ({
+                                  ...prev,
+                                  smsNotifications: e.target.checked,
+                                }))
+                              }
+                              disabled={subscription?.currentType === "FREE"}
                               className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500 disabled:opacity-50"
                             />
                           </div>
 
                           <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                             <div className="flex items-center gap-3">
-                              <div className="w-5 h-5 text-green-600 text-center">💬</div>
+                              <div className="w-5 h-5 text-green-600 text-center">
+                                💬
+                              </div>
                               <div>
                                 <div className="font-medium flex items-center gap-2">
                                   واتس‌اپ
-                                  {subscription?.currentType === 'FREE' && (
-                                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">پرمیوم</span>
+                                  {subscription?.currentType === "FREE" && (
+                                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                                      پرمیوم
+                                    </span>
                                   )}
                                 </div>
-                                <div className="text-sm text-gray-500">دریافت یادآوری از طریق واتس‌اپ</div>
+                                <div className="text-sm text-gray-500">
+                                  دریافت یادآوری از طریق واتس‌اپ
+                                </div>
                               </div>
                             </div>
                             <input
                               type="checkbox"
-                              checked={notificationSettings.whatsappNotifications}
-                              onChange={(e) => setNotificationSettings(prev => ({ 
-                                ...prev, 
-                                whatsappNotifications: e.target.checked 
-                              }))}
-                              disabled={subscription?.currentType === 'FREE'}
+                              checked={
+                                notificationSettings.whatsappNotifications
+                              }
+                              onChange={(e) =>
+                                setNotificationSettings((prev) => ({
+                                  ...prev,
+                                  whatsappNotifications: e.target.checked,
+                                }))
+                              }
+                              disabled={subscription?.currentType === "FREE"}
                               className="w-4 h-4 text-brand-600 border-gray-300 rounded focus:ring-brand-500 disabled:opacity-50"
                             />
                           </div>
                         </div>
 
-                        {subscription?.currentType === 'FREE' && (
+                        {subscription?.currentType === "FREE" && (
                           <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                             <p className="text-sm text-yellow-800">
                               برای استفاده از پیامک و واتس‌اپ، نیاز به{" "}
-                              <Link to="/premium" className="text-brand-600 font-medium">ارتقا به حساب پرمیوم</Link> دارید.
+                              <Link
+                                to="/premium"
+                                className="text-brand-600 font-medium"
+                              >
+                                ارتقا به حساب پرمیوم
+                              </Link>{" "}
+                              دارید.
                             </p>
                           </div>
                         )}
 
                         {/* Test Notifications */}
                         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                          <h4 className="font-medium text-blue-900 mb-2">تست یادآوری</h4>
+                          <h4 className="font-medium text-blue-900 mb-2">
+                            تست یادآوری
+                          </h4>
                           <p className="text-sm text-blue-700 mb-3">
-                            برای اطمینان از عملکرد سیستم، یادآوری تستی ارسال کنید
+                            برای اطمینان از عملکرد سیستم، یادآوری تستی ارسال
+                            کنید
                           </p>
                           <div className="flex gap-2 mb-3">
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleTestNotification('EMAIL')}
+                              onClick={() => handleTestNotification("EMAIL")}
                               disabled={saving}
                             >
                               تست ایمیل
                             </Button>
-                            {subscription?.currentType !== 'FREE' && (
+                            {subscription?.currentType !== "FREE" && (
                               <>
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => handleTestNotification('SMS')}
+                                  onClick={() => handleTestNotification("SMS")}
                                   disabled={saving}
                                 >
                                   تست پیامک
@@ -480,7 +559,9 @@ export default function Settings() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => handleTestNotification('WHATSAPP')}
+                                  onClick={() =>
+                                    handleTestNotification("WHATSAPP")
+                                  }
                                   disabled={saving}
                                 >
                                   تست واتساپ
@@ -489,13 +570,18 @@ export default function Settings() {
                             )}
                           </div>
                           <div className="text-xs text-blue-600 bg-blue-100 p-2 rounded">
-                            💡 <strong>توجه:</strong> در حال حاضر سیستم در حالت دمو قرار دارد.
-                            برای ارسال واقعی ایمیل، مدیر سیستم باید تنظیمات SMTP را پیکربندی کند.
+                            💡 <strong>توجه:</strong> در حال حاضر سیستم در حالت
+                            دمو قرار دارد. برای ارسال واقعی ایمیل، مدیر سیستم
+                            باید تنظیمات SMTP را پیکربندی کند.
                           </div>
                         </div>
                       </div>
 
-                      <Button type="submit" disabled={saving} className="bg-brand-600 hover:bg-brand-700">
+                      <Button
+                        type="submit"
+                        disabled={saving}
+                        className="bg-brand-600 hover:bg-brand-700"
+                      >
                         {saving ? (
                           <div className="flex items-center gap-2">
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -514,16 +600,14 @@ export default function Settings() {
               )}
 
               {/* Subscription Tab */}
-              {activeTab === 'subscription' && (
+              {activeTab === "subscription" && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Crown className="w-5 h-5" />
                       اشتراک شما
                     </CardTitle>
-                    <CardDescription>
-                      مدیریت اشتراک و پکیج فعلی
-                    </CardDescription>
+                    <CardDescription>مدیریت اشتراک و پکیج فعلی</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
@@ -531,35 +615,46 @@ export default function Settings() {
                         <div className="flex items-center justify-between mb-4">
                           <div>
                             <h3 className="text-lg font-semibold text-brand-900">
-                              {subscription?.currentType === 'FREE' ? 'حساب رایگان' : 
-                               subscription?.currentType === 'PREMIUM' ? 'حساب پرمیوم' : 'حساب کسب‌وکار'}
+                              {subscription?.currentType === "FREE"
+                                ? "حساب رایگان"
+                                : subscription?.currentType === "PREMIUM"
+                                  ? "حساب پرمیوم"
+                                  : "حساب کسب‌وکار"}
                             </h3>
                             <p className="text-brand-700">
-                              {subscription?.currentType === 'FREE' ? 'محدود به ۳ رویداد' : 'رویدادهای نامحدود'}
+                              {subscription?.currentType === "FREE"
+                                ? "محدود به ۳ رویداد"
+                                : "رویدادهای نامحدود"}
                             </p>
                           </div>
-                          {subscription?.currentType !== 'FREE' && (
+                          {subscription?.currentType !== "FREE" && (
                             <Crown className="w-8 h-8 text-brand-600" />
                           )}
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>
-                            <span className="text-sm text-brand-600">رویدادهای ثبت شده:</span>
+                            <span className="text-sm text-brand-600">
+                              رویدادهای ثبت شده:
+                            </span>
                             <div className="font-semibold text-brand-900">
                               {subscription?.eventCount || 0}
-                              {subscription?.currentType === 'FREE' && '/۳'}
+                              {subscription?.currentType === "FREE" && "/۳"}
                             </div>
                           </div>
                           <div>
-                            <span className="text-sm text-brand-600">روش‌های یادآوری:</span>
+                            <span className="text-sm text-brand-600">
+                              روش‌های یادآوری:
+                            </span>
                             <div className="font-semibold text-brand-900">
-                              {subscription?.currentType === 'FREE' ? 'ایمیل' : 'ایمیل، پیامک، واتساپ'}
+                              {subscription?.currentType === "FREE"
+                                ? "ایمیل"
+                                : "ایمیل، پیامک، واتساپ"}
                             </div>
                           </div>
                         </div>
 
-                        {subscription?.currentType === 'FREE' ? (
+                        {subscription?.currentType === "FREE" ? (
                           <div className="flex gap-3">
                             <Link to="/premium" className="flex-1">
                               <Button className="w-full bg-brand-600 hover:bg-brand-700">
@@ -574,7 +669,10 @@ export default function Settings() {
                               <Edit2 className="w-4 h-4 ml-1" />
                               تغییر پکیج
                             </Button>
-                            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
+                            <Button
+                              variant="outline"
+                              className="text-red-600 border-red-200 hover:bg-red-50"
+                            >
                               لغو اشتراک
                             </Button>
                           </div>
@@ -583,21 +681,29 @@ export default function Settings() {
 
                       {/* Feature Comparison */}
                       <div>
-                        <h3 className="text-lg font-medium mb-4">مقایسه پکیج‌ها</h3>
+                        <h3 className="text-lg font-medium mb-4">
+                          مقایسه پکیج‌ها
+                        </h3>
                         <div className="overflow-x-auto">
                           <table className="w-full border border-gray-200 rounded-lg">
                             <thead className="bg-gray-50">
                               <tr>
                                 <th className="px-4 py-3 text-right">ویژگی</th>
-                                <th className="px-4 py-3 text-center">رایگان</th>
-                                <th className="px-4 py-3 text-center">پرمیوم</th>
+                                <th className="px-4 py-3 text-center">
+                                  رایگان
+                                </th>
+                                <th className="px-4 py-3 text-center">
+                                  پرمیوم
+                                </th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                               <tr>
                                 <td className="px-4 py-3">تعداد رویداد</td>
                                 <td className="px-4 py-3 text-center">۳</td>
-                                <td className="px-4 py-3 text-center">نامحدود</td>
+                                <td className="px-4 py-3 text-center">
+                                  نامحدود
+                                </td>
                               </tr>
                               <tr>
                                 <td className="px-4 py-3">یادآوری ایمیل</td>
@@ -624,42 +730,51 @@ export default function Settings() {
               )}
 
               {/* Security Tab */}
-              {activeTab === 'security' && (
+              {activeTab === "security" && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="w-5 h-5" />
                       امنیت حساب
                     </CardTitle>
-                    <CardDescription>
-                      تنظیمات امنیتی و رمز عبور
-                    </CardDescription>
+                    <CardDescription>تنظیمات امنیتی و رمز عبور</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
                       <div className="border border-gray-200 rounded-lg p-4">
                         <h3 className="font-medium mb-2">تغییر رمز عبور</h3>
                         <p className="text-sm text-gray-600 mb-4">
-                          برای امنیت بیشتر، رمز عبور خود را به‌طور مرتب تغییر دهید
+                          برای امنیت بیشتر، رمز عبور خود را به‌طور مرتب تغییر
+                          دهید
                         </p>
-                        <Button variant="outline" onClick={handleChangePassword}>
+                        <Button
+                          variant="outline"
+                          onClick={handleChangePassword}
+                        >
                           <Shield className="w-4 h-4 ml-1" />
                           تغییر رمز عبور
                         </Button>
                       </div>
 
                       <div className="border border-gray-200 rounded-lg p-4">
-                        <h3 className="font-medium mb-2">خروج از همه دستگاه‌ها</h3>
+                        <h3 className="font-medium mb-2">
+                          خروج از همه دستگاه‌ها
+                        </h3>
                         <p className="text-sm text-gray-600 mb-4">
                           از تمام دستگاه‌های متصل به حساب خود خارج شوید
                         </p>
-                        <Button variant="outline" onClick={handleLogoutAllDevices}>
+                        <Button
+                          variant="outline"
+                          onClick={handleLogoutAllDevices}
+                        >
                           خروج از همه دستگاه‌ها
                         </Button>
                       </div>
 
                       <div className="border border-red-200 rounded-lg p-4">
-                        <h3 className="font-medium text-red-700 mb-2">حذف حساب</h3>
+                        <h3 className="font-medium text-red-700 mb-2">
+                          حذف حساب
+                        </h3>
                         <p className="text-sm text-gray-600 mb-4">
                           حذف دائمی حساب کاربری و تمام اطلاعات مرتبط
                         </p>

@@ -48,15 +48,15 @@ export function createServer() {
 
   // Error handling middleware
   app.use((err: any, req: any, res: any, next: any) => {
-    console.error('API Error:', err);
+    console.error("API Error:", err);
     res.status(500).json({
       success: false,
-      message: 'خطای داخلی سرور'
+      message: "خطای داخلی سرور",
     });
   });
 
   // Start notification scheduler
-  if (process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV !== "test") {
     startNotificationScheduler();
   }
 

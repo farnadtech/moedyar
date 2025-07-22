@@ -1,6 +1,6 @@
 // API service for communicating with backend
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = "/api";
 
 interface ApiResponse<T = any> {
   success: boolean;
@@ -12,28 +12,28 @@ interface ApiResponse<T = any> {
 
 class ApiService {
   private getAuthToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem("authToken");
   }
 
   private setAuthToken(token: string): void {
-    localStorage.setItem('authToken', token);
+    localStorage.setItem("authToken", token);
   }
 
   private removeAuthToken(): void {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
   }
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<ApiResponse<T>> {
     const token = this.getAuthToken();
 
     const config: RequestInit = {
-      method: 'GET',
+      method: "GET",
       ...options,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
@@ -45,28 +45,28 @@ class ApiService {
       // Handle authentication errors first
       if (response.status === 401 || response.status === 403) {
         this.removeAuthToken();
-        window.location.href = '/login';
+        window.location.href = "/login";
         return {
           success: false,
-          message: 'نیاز به احراز هویت مجدد'
+          message: "نیاز به احراز هویت مجدد",
         };
       }
 
       // Check if response is JSON
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
         // If not JSON, read as text and return error
         try {
           const text = await response.text();
-          console.error('Non-JSON response:', text);
+          console.error("Non-JSON response:", text);
           return {
             success: false,
-            message: 'سرور پاسخ نامعتبر ارسال کرد'
+            message: "سرور پاسخ نامعتبر ارسال کرد",
           };
         } catch {
           return {
             success: false,
-            message: 'خطا در خواندن پاسخ سرور'
+            message: "خطا در خواندن پاسخ سرور",
           };
         }
       }
@@ -76,18 +76,17 @@ class ApiService {
         const data: ApiResponse<T> = await response.json();
         return data;
       } catch (jsonError) {
-        console.error('JSON parse error:', jsonError);
+        console.error("JSON parse error:", jsonError);
         return {
           success: false,
-          message: 'خطا در تجزیه پاسخ سرور'
+          message: "خطا در تجزیه پاسخ سرور",
         };
       }
-
     } catch (error) {
-      console.error('API Request Error:', error);
+      console.error("API Request Error:", error);
       return {
         success: false,
-        message: 'خطا در ارتباط با سرور'
+        message: "خطا در ارتباط با سرور",
       };
     }
   }
@@ -97,12 +96,15 @@ class ApiService {
     fullName: string;
     email: string;
     password: string;
-    accountType?: 'PERSONAL' | 'BUSINESS';
+    accountType?: "PERSONAL" | "BUSINESS";
   }): Promise<ApiResponse<{ user: any; token: string }>> {
-    const response = await this.request<{ user: any; token: string }>('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(userData),
-    });
+    const response = await this.request<{ user: any; token: string }>(
+      "/auth/register",
+      {
+        method: "POST",
+        body: JSON.stringify(userData),
+      },
+    );
 
     if (response.success && response.data?.token) {
       this.setAuthToken(response.data.token);
@@ -115,10 +117,13 @@ class ApiService {
     email: string;
     password: string;
   }): Promise<ApiResponse<{ user: any; token: string }>> {
-    const response = await this.request<{ user: any; token: string }>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    });
+    const response = await this.request<{ user: any; token: string }>(
+      "/auth/login",
+      {
+        method: "POST",
+        body: JSON.stringify(credentials),
+      },
+    );
 
     if (response.success && response.data?.token) {
       this.setAuthToken(response.data.token);
@@ -128,27 +133,27 @@ class ApiService {
   }
 
   async getCurrentUser(): Promise<ApiResponse<{ user: any }>> {
-    return this.request<{ user: any }>('/auth/me');
+    return this.request<{ user: any }>("/auth/me");
   }
 
   async updateProfile(profileData: {
     fullName: string;
     phone?: string;
   }): Promise<ApiResponse<{ user: any }>> {
-    return this.request<{ user: any }>('/auth/profile', {
-      method: 'PUT',
+    return this.request<{ user: any }>("/auth/profile", {
+      method: "PUT",
       body: JSON.stringify(profileData),
     });
   }
 
   logout(): void {
     this.removeAuthToken();
-    window.location.href = '/';
+    window.location.href = "/";
   }
 
   // Event Methods
   async getEvents(): Promise<ApiResponse<{ events: any[] }>> {
-    return this.request<{ events: any[] }>('/events');
+    return this.request<{ events: any[] }>("/events");
   }
 
   async getEvent(id: string): Promise<ApiResponse<{ event: any }>> {
@@ -163,113 +168,129 @@ class ApiService {
     reminderDays?: number[];
     reminderMethods?: string[];
   }): Promise<ApiResponse<{ event: any }>> {
-    return this.request<{ event: any }>('/events', {
-      method: 'POST',
+    return this.request<{ event: any }>("/events", {
+      method: "POST",
       body: JSON.stringify(eventData),
     });
   }
 
-  async updateEvent(id: string, eventData: Partial<{
-    title: string;
-    description?: string;
-    eventDate: string;
-    eventType?: string;
-    reminderDays?: number[];
-    reminderMethods?: string[];
-  }>): Promise<ApiResponse<{ event: any }>> {
+  async updateEvent(
+    id: string,
+    eventData: Partial<{
+      title: string;
+      description?: string;
+      eventDate: string;
+      eventType?: string;
+      reminderDays?: number[];
+      reminderMethods?: string[];
+    }>,
+  ): Promise<ApiResponse<{ event: any }>> {
     return this.request<{ event: any }>(`/events/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(eventData),
     });
   }
 
   async deleteEvent(id: string): Promise<ApiResponse> {
     return this.request(`/events/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async getEventStats(): Promise<ApiResponse<{ stats: any }>> {
-    return this.request<{ stats: any }>('/events/stats/overview');
+    return this.request<{ stats: any }>("/events/stats/overview");
   }
 
   // Subscription Methods
-  async getCurrentSubscription(): Promise<ApiResponse<{ 
-    subscription: any; 
-    currentType: string; 
-    eventCount: number; 
-    limits: any; 
-  }>> {
-    return this.request<{ 
-      subscription: any; 
-      currentType: string; 
-      eventCount: number; 
-      limits: any; 
-    }>('/subscriptions/current');
+  async getCurrentSubscription(): Promise<
+    ApiResponse<{
+      subscription: any;
+      currentType: string;
+      eventCount: number;
+      limits: any;
+    }>
+  > {
+    return this.request<{
+      subscription: any;
+      currentType: string;
+      eventCount: number;
+      limits: any;
+    }>("/subscriptions/current");
   }
 
   async getSubscriptionPlans(): Promise<ApiResponse<{ plans: any }>> {
-    return this.request<{ plans: any }>('/subscriptions/plans');
+    return this.request<{ plans: any }>("/subscriptions/plans");
   }
 
-  async upgradeSubscription(planType: 'PREMIUM' | 'BUSINESS'): Promise<ApiResponse<{
-    subscriptionId: string;
-    amount: number;
-    paymentUrl: string;
-  }>> {
+  async upgradeSubscription(planType: "PREMIUM" | "BUSINESS"): Promise<
+    ApiResponse<{
+      subscriptionId: string;
+      amount: number;
+      paymentUrl: string;
+    }>
+  > {
     return this.request<{
       subscriptionId: string;
       amount: number;
       paymentUrl: string;
-    }>('/subscriptions/upgrade', {
-      method: 'POST',
+    }>("/subscriptions/upgrade", {
+      method: "POST",
       body: JSON.stringify({ planType }),
     });
   }
 
-  async confirmPayment(subscriptionId: string, paymentStatus: 'success' | 'failed'): Promise<ApiResponse> {
-    return this.request('/subscriptions/confirm-payment', {
-      method: 'POST',
+  async confirmPayment(
+    subscriptionId: string,
+    paymentStatus: "success" | "failed",
+  ): Promise<ApiResponse> {
+    return this.request("/subscriptions/confirm-payment", {
+      method: "POST",
       body: JSON.stringify({ subscriptionId, paymentStatus }),
     });
   }
 
   async cancelSubscription(): Promise<ApiResponse> {
-    return this.request('/subscriptions/cancel', {
-      method: 'POST',
+    return this.request("/subscriptions/cancel", {
+      method: "POST",
     });
   }
 
   async cancelSubscription(): Promise<ApiResponse> {
-    return this.request('/subscriptions/cancel', {
-      method: 'POST',
+    return this.request("/subscriptions/cancel", {
+      method: "POST",
     });
   }
 
   // Notification Methods
-  async testNotification(method: 'EMAIL' | 'SMS' | 'WHATSAPP' = 'EMAIL'): Promise<ApiResponse> {
-    return this.request('/notifications/test', {
-      method: 'POST',
+  async testNotification(
+    method: "EMAIL" | "SMS" | "WHATSAPP" = "EMAIL",
+  ): Promise<ApiResponse> {
+    return this.request("/notifications/test", {
+      method: "POST",
       body: JSON.stringify({ method }),
     });
   }
 
   async triggerNotificationCheck(): Promise<ApiResponse> {
-    return this.request('/notifications/trigger-check', {
-      method: 'POST',
+    return this.request("/notifications/trigger-check", {
+      method: "POST",
     });
   }
 
   // Admin Methods
   async getAdminStats(): Promise<ApiResponse<any>> {
-    return this.request<any>('/admin/stats');
+    return this.request<any>("/admin/stats");
   }
 
-  async getUsers(page: number = 1, limit: number = 10, search: string = ''): Promise<ApiResponse<any>> {
+  async getUsers(
+    page: number = 1,
+    limit: number = 10,
+    search: string = "",
+  ): Promise<ApiResponse<any>> {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
-      ...(search && { search })
+      ...(search && { search }),
     });
     return this.request<any>(`/admin/users?${params}`);
   }
@@ -278,58 +299,76 @@ class ApiService {
     return this.request<any>(`/admin/users/${userId}`);
   }
 
-  async updateUserSubscription(userId: string, subscriptionType: string): Promise<ApiResponse> {
+  async updateUserSubscription(
+    userId: string,
+    subscriptionType: string,
+  ): Promise<ApiResponse> {
     return this.request(`/admin/users/${userId}/subscription`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify({ subscriptionType }),
     });
   }
 
   async deleteUser(userId: string): Promise<ApiResponse> {
     return this.request(`/admin/users/${userId}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async getAdminActivities(): Promise<ApiResponse<any>> {
-    return this.request<any>('/admin/activities');
+    return this.request<any>("/admin/activities");
   }
 
-  async getAdminEvents(page: number = 1, limit: number = 20, search: string = '', eventType: string = ''): Promise<ApiResponse<any>> {
+  async getAdminEvents(
+    page: number = 1,
+    limit: number = 20,
+    search: string = "",
+    eventType: string = "",
+  ): Promise<ApiResponse<any>> {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
       ...(search && { search }),
-      ...(eventType && { eventType })
+      ...(eventType && { eventType }),
     });
     return this.request<any>(`/admin/events?${params}`);
   }
 
-  async getAdminTransactions(page: number = 1, limit: number = 20, search: string = '', status: string = ''): Promise<ApiResponse<any>> {
+  async getAdminTransactions(
+    page: number = 1,
+    limit: number = 20,
+    search: string = "",
+    status: string = "",
+  ): Promise<ApiResponse<any>> {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
       ...(search && { search }),
-      ...(status && { status })
+      ...(status && { status }),
     });
     return this.request<any>(`/admin/transactions?${params}`);
   }
 
   // System Configuration Methods
   async getSystemConfig(): Promise<ApiResponse<any>> {
-    return this.request<any>('/config/system');
+    return this.request<any>("/config/system");
   }
 
-  async updateSystemConfig(config: any, section?: string): Promise<ApiResponse> {
-    return this.request('/config/system', {
-      method: 'PUT',
+  async updateSystemConfig(
+    config: any,
+    section?: string,
+  ): Promise<ApiResponse> {
+    return this.request("/config/system", {
+      method: "PUT",
       body: JSON.stringify({ config, section }),
     });
   }
 
-  async testSystemService(service: 'email' | 'sms' | 'whatsapp' | 'zarinpal'): Promise<ApiResponse> {
+  async testSystemService(
+    service: "email" | "sms" | "whatsapp" | "zarinpal",
+  ): Promise<ApiResponse> {
     return this.request(`/config/test/${service}`, {
-      method: 'POST',
+      method: "POST",
     });
   }
 

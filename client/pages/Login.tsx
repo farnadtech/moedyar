@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Calendar, ArrowRight, Mail, Lock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -9,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -19,15 +25,15 @@ export default function Login() {
   const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
     // Clear error when user starts typing
     if (errors[e.target.name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [e.target.name]: ""
+        [e.target.name]: "",
       }));
     }
   };
@@ -75,16 +81,15 @@ export default function Login() {
         toast({
           title: "خطا در ورود",
           description: "ایمیل یا رمز عبور اشتباه است",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
-
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       toast({
         title: "خطا در ورود",
         description: "خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -92,11 +97,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white flex items-center justify-center p-4" dir="rtl">
+    <div
+      className="min-h-screen bg-gradient-to-br from-brand-50 to-white flex items-center justify-center p-4"
+      dir="rtl"
+    >
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6 text-brand-600 hover:text-brand-700">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 mb-6 text-brand-600 hover:text-brand-700"
+          >
             <ArrowRight className="w-4 h-4" />
             بازگشت به صفحه اصلی
           </Link>
@@ -106,16 +117,16 @@ export default function Login() {
             </div>
             <span className="text-2xl font-bold text-gray-900">رویداد یار</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">ورود به حساب</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            ورود به حساب
+          </h1>
           <p className="text-gray-600">به پنل مدیریت رویدادهایتان بروید</p>
         </div>
 
         <Card className="border-2 border-brand-100">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">خوش آمدید</CardTitle>
-            <CardDescription>
-              اطلاعات حساب خود را وارد کنید
-            </CardDescription>
+            <CardDescription>اطلاعات حساب خود را وارد کنید</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -131,7 +142,9 @@ export default function Login() {
                     value={formData.email}
                     onChange={handleChange}
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      errors.email
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
                     }`}
                     placeholder="your-email@example.com"
                     required
@@ -154,7 +167,9 @@ export default function Login() {
                     value={formData.password}
                     onChange={handleChange}
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      errors.password
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
                     }`}
                     placeholder="رمز عبور خود را وارد کنید"
                     required
@@ -176,7 +191,10 @@ export default function Login() {
                     مرا به خاطر بسپار
                   </label>
                 </div>
-                <Link to="/forgot-password" className="text-sm text-brand-600 hover:text-brand-700">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-brand-600 hover:text-brand-700"
+                >
                   فراموشی رمز عبور؟
                 </Link>
               </div>
@@ -200,7 +218,10 @@ export default function Login() {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 حساب ندارید؟{" "}
-                <Link to="/register" className="text-brand-600 hover:text-brand-700 font-medium">
+                <Link
+                  to="/register"
+                  className="text-brand-600 hover:text-brand-700 font-medium"
+                >
                   ثبت نام کنید
                 </Link>
               </p>
@@ -223,10 +244,16 @@ export default function Login() {
 
         {/* Quick links */}
         <div className="mt-6 text-center space-y-2">
-          <Link to="/demo" className="block text-sm text-gray-500 hover:text-gray-700">
+          <Link
+            to="/demo"
+            className="block text-sm text-gray-500 hover:text-gray-700"
+          >
             مشاهده دمو سیستم
           </Link>
-          <Link to="/support" className="block text-sm text-gray-500 hover:text-gray-700">
+          <Link
+            to="/support"
+            className="block text-sm text-gray-500 hover:text-gray-700"
+          >
             نیاز به کمک دارید؟
           </Link>
         </div>

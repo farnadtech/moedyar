@@ -1,8 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, ArrowRight, Search, Filter, Eye, FileText, Users, Settings } from "lucide-react";
+import {
+  Calendar,
+  ArrowRight,
+  Search,
+  Filter,
+  Eye,
+  FileText,
+  Users,
+  Settings,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -12,8 +27,8 @@ export default function AdminEvents() {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [eventTypeFilter, setEventTypeFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [eventTypeFilter, setEventTypeFilter] = useState("");
   const [pagination, setPagination] = useState<any>(null);
 
   const { toast } = useToast();
@@ -25,8 +40,13 @@ export default function AdminEvents() {
   const loadEvents = async () => {
     try {
       setLoading(true);
-      
-      const response = await apiService.getAdminEvents(currentPage, 20, searchQuery, eventTypeFilter);
+
+      const response = await apiService.getAdminEvents(
+        currentPage,
+        20,
+        searchQuery,
+        eventTypeFilter,
+      );
 
       if (response.success) {
         setEvents(response.data.events);
@@ -35,16 +55,15 @@ export default function AdminEvents() {
         toast({
           title: "خطا در بارگذاری رویدادها",
           description: response.message,
-          variant: "destructive"
+          variant: "destructive",
         });
       }
-
     } catch (error) {
-      console.error('Error loading events:', error);
+      console.error("Error loading events:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -53,35 +72,44 @@ export default function AdminEvents() {
 
   const getEventTypeBadge = (eventType: string) => {
     const types: Record<string, { label: string; color: string }> = {
-      'BIRTHDAY': { label: 'تولد', color: 'bg-pink-100 text-pink-800' },
-      'INSURANCE': { label: 'بیمه', color: 'bg-blue-100 text-blue-800' },
-      'CONTRACT': { label: 'قرارداد', color: 'bg-green-100 text-green-800' },
-      'CHECK': { label: 'چک', color: 'bg-orange-100 text-orange-800' },
-      'CUSTOM': { label: 'سفارشی', color: 'bg-purple-100 text-purple-800' }
+      BIRTHDAY: { label: "تولد", color: "bg-pink-100 text-pink-800" },
+      INSURANCE: { label: "بیمه", color: "bg-blue-100 text-blue-800" },
+      CONTRACT: { label: "قرارداد", color: "bg-green-100 text-green-800" },
+      CHECK: { label: "چک", color: "bg-orange-100 text-orange-800" },
+      CUSTOM: { label: "سفارشی", color: "bg-purple-100 text-purple-800" },
     };
-    
-    const type = types[eventType] || { label: eventType, color: 'bg-gray-100 text-gray-800' };
+
+    const type = types[eventType] || {
+      label: eventType,
+      color: "bg-gray-100 text-gray-800",
+    };
     return <Badge className={type.color}>{type.label}</Badge>;
   };
 
   const getSubscriptionBadge = (subscriptionType: string) => {
     const types: Record<string, { label: string; color: string }> = {
-      'FREE': { label: 'رایگان', color: 'bg-gray-100 text-gray-800' },
-      'PREMIUM': { label: 'پرمیوم', color: 'bg-yellow-100 text-yellow-800' },
-      'BUSINESS': { label: 'کسب‌وکار', color: 'bg-purple-100 text-purple-800' }
+      FREE: { label: "رایگان", color: "bg-gray-100 text-gray-800" },
+      PREMIUM: { label: "پرمیوم", color: "bg-yellow-100 text-yellow-800" },
+      BUSINESS: { label: "کسب‌وکار", color: "bg-purple-100 text-purple-800" },
     };
-    
-    const type = types[subscriptionType] || { label: subscriptionType, color: 'bg-gray-100 text-gray-800' };
+
+    const type = types[subscriptionType] || {
+      label: subscriptionType,
+      color: "bg-gray-100 text-gray-800",
+    };
     return <Badge className={type.color}>{type.label}</Badge>;
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fa-IR');
+    return new Date(dateString).toLocaleDateString("fa-IR");
   };
 
   if (loading && events.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری رویدادها...</p>
@@ -96,7 +124,10 @@ export default function AdminEvents() {
       <header className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/admin/dashboard" className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700">
+            <Link
+              to="/admin/dashboard"
+              className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
+            >
               <ArrowRight className="w-4 h-4" />
               بازگشت به پنل ادمین
             </Link>
@@ -104,7 +135,9 @@ export default function AdminEvents() {
               <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                 <FileText className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">مدیریت رویدادها</span>
+              <span className="text-xl font-bold text-gray-900">
+                مدیریت رویدادها
+              </span>
             </div>
           </div>
         </div>
@@ -120,7 +153,10 @@ export default function AdminEvents() {
                 مدیریت کاربران
               </Button>
             </Link>
-            <Button variant="default" className="bg-brand-600 hover:bg-brand-700">
+            <Button
+              variant="default"
+              className="bg-brand-600 hover:bg-brand-700"
+            >
               <FileText className="w-4 h-4 mr-2" />
               مشاهده رویدادها
             </Button>
@@ -196,12 +232,19 @@ export default function AdminEvents() {
             ) : (
               <div className="space-y-4">
                 {events.map((event) => (
-                  <div key={event.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div
+                    key={event.id}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg text-gray-900 mb-1">{event.title}</h3>
+                        <h3 className="font-semibold text-lg text-gray-900 mb-1">
+                          {event.title}
+                        </h3>
                         {event.description && (
-                          <p className="text-gray-600 text-sm mb-2">{event.description}</p>
+                          <p className="text-gray-600 text-sm mb-2">
+                            {event.description}
+                          </p>
                         )}
                         <div className="flex items-center gap-4 text-sm text-gray-500">
                           <span className="flex items-center gap-1">
@@ -221,30 +264,48 @@ export default function AdminEvents() {
                     </div>
 
                     {/* Dynamic Fields */}
-                    {event.dynamicFields && Object.keys(event.dynamicFields).length > 0 && (
-                      <div className="bg-gray-50 rounded-lg p-3 mb-3">
-                        <h4 className="font-medium text-sm text-gray-700 mb-2">اطلاعات اضافی:</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                          {Object.entries(event.dynamicFields).map(([key, value]) => (
-                            <div key={key} className="flex">
-                              <span className="font-medium text-gray-600 ml-2">{key}:</span>
-                              <span className="text-gray-800">{String(value)}</span>
-                            </div>
-                          ))}
+                    {event.dynamicFields &&
+                      Object.keys(event.dynamicFields).length > 0 && (
+                        <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                          <h4 className="font-medium text-sm text-gray-700 mb-2">
+                            اطلاعات اضافی:
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            {Object.entries(event.dynamicFields).map(
+                              ([key, value]) => (
+                                <div key={key} className="flex">
+                                  <span className="font-medium text-gray-600 ml-2">
+                                    {key}:
+                                  </span>
+                                  <span className="text-gray-800">
+                                    {String(value)}
+                                  </span>
+                                </div>
+                              ),
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
                     {/* Reminders */}
                     {event.reminders && event.reminders.length > 0 && (
                       <div className="border-t pt-3">
-                        <h4 className="font-medium text-sm text-gray-700 mb-2">یادآوری‌ها:</h4>
+                        <h4 className="font-medium text-sm text-gray-700 mb-2">
+                          یادآوری‌ها:
+                        </h4>
                         <div className="flex flex-wrap gap-2">
-                          {event.reminders.map((reminder: any, index: number) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {formatDate(reminder.reminderDate)} - {reminder.method}
-                            </Badge>
-                          ))}
+                          {event.reminders.map(
+                            (reminder: any, index: number) => (
+                              <Badge
+                                key={index}
+                                variant="outline"
+                                className="text-xs"
+                              >
+                                {formatDate(reminder.reminderDate)} -{" "}
+                                {reminder.method}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
                     )}

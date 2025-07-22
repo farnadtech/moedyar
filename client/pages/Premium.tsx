@@ -1,6 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowRight, Crown, Check, Star, Zap, Shield, Users } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Calendar,
+  ArrowRight,
+  Crown,
+  Check,
+  Star,
+  Zap,
+  Shield,
+  Users,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -21,36 +36,36 @@ export default function Premium() {
 
   useEffect(() => {
     loadData();
-    
+
     // Check for payment result in URL params
     const urlParams = new URLSearchParams(window.location.search);
-    const paymentStatus = urlParams.get('payment');
-    const plan = urlParams.get('plan');
-    const reason = urlParams.get('reason');
+    const paymentStatus = urlParams.get("payment");
+    const plan = urlParams.get("plan");
+    const reason = urlParams.get("reason");
 
-    if (paymentStatus === 'success' && plan) {
+    if (paymentStatus === "success" && plan) {
       toast({
         title: "✅ پرداخت موفق",
-        description: `اشتراک ${plan === 'premium' ? 'پرمیوم' : 'کسب‌وکار'} شما با موفقیت فعال شد!`,
+        description: `اشتراک ${plan === "premium" ? "پرمیوم" : "کسب‌وکار"} شما با موفقیت فعال شد!`,
       });
       // Clean URL
-      window.history.replaceState({}, '', '/premium');
-    } else if (paymentStatus === 'failed' && reason) {
+      window.history.replaceState({}, "", "/premium");
+    } else if (paymentStatus === "failed" && reason) {
       toast({
         title: "❌ پرداخت ناموفق",
         description: decodeURIComponent(reason),
-        variant: "destructive"
+        variant: "destructive",
       });
       // Clean URL
-      window.history.replaceState({}, '', '/premium');
-    } else if (paymentStatus === 'cancelled') {
+      window.history.replaceState({}, "", "/premium");
+    } else if (paymentStatus === "cancelled") {
       toast({
         title: "پرداخت لغو شد",
         description: "عملیات پرداخت توسط کاربر لغو شد",
-        variant: "destructive"
+        variant: "destructive",
       });
       // Clean URL
-      window.history.replaceState({}, '', '/premium');
+      window.history.replaceState({}, "", "/premium");
     }
   }, []);
 
@@ -60,7 +75,9 @@ export default function Premium() {
 
       const [plansResponse, subscriptionResponse] = await Promise.all([
         apiService.getSubscriptionPlans(),
-        isAuthenticated ? apiService.getCurrentSubscription() : Promise.resolve({ success: false })
+        isAuthenticated
+          ? apiService.getCurrentSubscription()
+          : Promise.resolve({ success: false }),
       ]);
 
       if (plansResponse.success) {
@@ -70,33 +87,32 @@ export default function Premium() {
       if (subscriptionResponse.success) {
         setUserSubscription(subscriptionResponse.data);
       }
-
     } catch (error) {
-      console.error('Error loading premium data:', error);
+      console.error("Error loading premium data:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpgrade = async (planType: 'PREMIUM' | 'BUSINESS') => {
+  const handleUpgrade = async (planType: "PREMIUM" | "BUSINESS") => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     try {
       setUpgrading(planType);
 
-      console.log('🚀 Starting upgrade process for:', planType);
+      console.log("🚀 Starting upgrade process for:", planType);
 
       const response = await apiService.upgradeSubscription(planType);
 
-      console.log('📦 Upgrade response:', response);
+      console.log("📦 Upgrade response:", response);
 
       if (response.success && response.data?.paymentUrl) {
         toast({
@@ -110,24 +126,23 @@ export default function Premium() {
         }, 1000);
       } else {
         const errorMessage = response.message || "لطفاً دوباره تلاش کنید";
-        console.error('❌ Upgrade failed:', errorMessage);
+        console.error("❌ Upgrade failed:", errorMessage);
 
         toast({
           title: "خطا در ایجاد درخواست پرداخت",
           description: errorMessage,
-          variant: "destructive"
+          variant: "destructive",
         });
       }
-
     } catch (error: any) {
-      console.error('💥 Upgrade error:', error);
+      console.error("💥 Upgrade error:", error);
 
       const errorMessage = error?.message || "خطا در ارتباط با سرور";
 
       toast({
         title: "خطا در ارتقا",
         description: errorMessage,
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setUpgrading(null);
@@ -135,7 +150,7 @@ export default function Premium() {
   };
 
   const handleCancelSubscription = async () => {
-    if (!isAuthenticated || currentPlan === 'FREE') {
+    if (!isAuthenticated || currentPlan === "FREE") {
       return;
     }
 
@@ -147,7 +162,8 @@ export default function Premium() {
       if (response.success) {
         toast({
           title: "✅ اشتراک لغو شد",
-          description: "اشتراک شما با موفقیت لغو شد و به پکیج رایگان منتقل شدید",
+          description:
+            "اشتراک شما با موفقیت لغو شد و به پکیج رایگان منتقل شدید",
         });
 
         // Reload data to reflect changes
@@ -156,23 +172,22 @@ export default function Premium() {
         toast({
           title: "خطا در لغو اشتراک",
           description: response.message || "لطفاً دوباره تلاش کنید",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
-
     } catch (error: any) {
-      console.error('Cancel subscription error:', error);
+      console.error("Cancel subscription error:", error);
       toast({
         title: "خطا در لغو اشتراک",
         description: error?.message || "خطا در ارتباط با سرور",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setCancelling(false);
     }
   };
 
-  const handleChangePlan = async (newPlan: 'PREMIUM' | 'BUSINESS') => {
+  const handleChangePlan = async (newPlan: "PREMIUM" | "BUSINESS") => {
     if (!isAuthenticated || currentPlan === newPlan) {
       return;
     }
@@ -181,10 +196,10 @@ export default function Premium() {
       setChangingPlan(true);
 
       // If downgrading or changing plan, we need to cancel current and upgrade
-      if (currentPlan !== 'FREE') {
+      if (currentPlan !== "FREE") {
         const cancelResponse = await apiService.cancelSubscription();
         if (!cancelResponse.success) {
-          throw new Error(cancelResponse.message || 'خطا در لغو اشتراک فعلی');
+          throw new Error(cancelResponse.message || "خطا در لغو اشتراک فعلی");
         }
       }
 
@@ -201,15 +216,14 @@ export default function Premium() {
           window.location.href = upgradeResponse.data.paymentUrl;
         }, 1000);
       } else {
-        throw new Error(upgradeResponse.message || 'خطا در تغییر پکیج');
+        throw new Error(upgradeResponse.message || "خطا در تغییر پکیج");
       }
-
     } catch (error: any) {
-      console.error('Change plan error:', error);
+      console.error("Change plan error:", error);
       toast({
         title: "خطا در تغییر پکیج",
         description: error?.message || "خطا در ارتباط با سرور",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setChangingPlan(false);
@@ -218,7 +232,10 @@ export default function Premium() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری...</p>
@@ -227,24 +244,32 @@ export default function Premium() {
     );
   }
 
-  const currentPlan = userSubscription?.currentType || 'FREE';
-  const isPremium = currentPlan === 'PREMIUM';
-  const isBusiness = currentPlan === 'BUSINESS';
+  const currentPlan = userSubscription?.currentType || "FREE";
+  const isPremium = currentPlan === "PREMIUM";
+  const isBusiness = currentPlan === "BUSINESS";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white" dir="rtl">
+    <div
+      className="min-h-screen bg-gradient-to-br from-brand-50 to-white"
+      dir="rtl"
+    >
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
-          <Link to={isAuthenticated ? "/dashboard" : "/"} className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700">
+          <Link
+            to={isAuthenticated ? "/dashboard" : "/"}
+            className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
+          >
             <ArrowRight className="w-4 h-4" />
-            {isAuthenticated ? 'بازگشت به داشبورد' : 'بازگشت به صفحه اصلی'}
+            {isAuthenticated ? "بازگشت به داشبورد" : "بازگشت به صفحه اصلی"}
           </Link>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
               <Crown className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">ارتقا به پرمیوم</span>
+            <span className="text-xl font-bold text-gray-900">
+              ارتقا به پرمیوم
+            </span>
           </div>
         </nav>
       </header>
@@ -257,21 +282,26 @@ export default function Premium() {
             <span className="text-brand-600 block">تجربه کنید</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            با ارتقا به حساب پرمیوم، از امکانات پیشرفته و یادآوری‌های چندگانه بهره‌مند شوید
+            با ارتقا به حساب پرمیوم، از امکانات پیشرفته و یادآوری‌های چندگانه
+            بهره‌مند شوید
           </p>
-          
+
           {isAuthenticated && (
             <div className="bg-brand-50 border border-brand-200 rounded-lg p-4 mb-8">
               <p className="text-brand-700">
-                حساب فعلی شما: <strong>
-                  {currentPlan === 'FREE' ? 'رایگان' : 
-                   currentPlan === 'PREMIUM' ? 'پرمیوم' : 'کسب‌وکار'}
+                حساب فعلی شما:{" "}
+                <strong>
+                  {currentPlan === "FREE"
+                    ? "رایگان"
+                    : currentPlan === "PREMIUM"
+                      ? "پرمیوم"
+                      : "کسب‌وکار"}
                 </strong>
               </p>
               {userSubscription?.eventCount !== undefined && (
                 <p className="text-brand-600 text-sm">
                   رویدادهای ثبت شده: {userSubscription.eventCount}
-                  {currentPlan === 'FREE' && '/۳'}
+                  {currentPlan === "FREE" && "/۳"}
                 </p>
               )}
             </div>
@@ -281,12 +311,14 @@ export default function Premium() {
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
           {/* Free Plan */}
-          <Card className={`border-2 ${currentPlan === 'FREE' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+          <Card
+            className={`border-2 ${currentPlan === "FREE" ? "border-green-500 bg-green-50" : "border-gray-200"}`}
+          >
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">رایگان</CardTitle>
               <div className="text-4xl font-bold text-gray-700">۰ تومان</div>
               <CardDescription>برای شروع و آزمایش</CardDescription>
-              {currentPlan === 'FREE' && (
+              {currentPlan === "FREE" && (
                 <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
                   پکیج فعلی شما
                 </div>
@@ -307,7 +339,7 @@ export default function Premium() {
                   <span>پشتیبانی پایه</span>
                 </li>
               </ul>
-              {currentPlan !== 'FREE' && (
+              {currentPlan !== "FREE" && (
                 <Button variant="outline" className="w-full" disabled>
                   پکیج فعلی شما
                 </Button>
@@ -316,8 +348,10 @@ export default function Premium() {
           </Card>
 
           {/* Premium Plan */}
-          <Card className={`border-2 relative ${currentPlan === 'PREMIUM' ? 'border-green-500 bg-green-50' : isPremium || isBusiness ? 'border-gray-200' : 'border-brand-500'}`}>
-            {currentPlan === 'FREE' && (
+          <Card
+            className={`border-2 relative ${currentPlan === "PREMIUM" ? "border-green-500 bg-green-50" : isPremium || isBusiness ? "border-gray-200" : "border-brand-500"}`}
+          >
+            {currentPlan === "FREE" && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <span className="bg-brand-600 text-white px-4 py-1 rounded-full text-sm font-medium">
                   پیشنهاد ویژه
@@ -333,7 +367,7 @@ export default function Premium() {
                 {plans?.PREMIUM?.price?.toLocaleString()} تومان
               </div>
               <CardDescription>ماهانه - لغو آسان</CardDescription>
-              {currentPlan === 'PREMIUM' && (
+              {currentPlan === "PREMIUM" && (
                 <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
                   پکیج فعلی شما
                 </div>
@@ -362,8 +396,8 @@ export default function Premium() {
                   <span>پشتیبانی اولویت‌دار</span>
                 </li>
               </ul>
-              
-              {currentPlan === 'PREMIUM' ? (
+
+              {currentPlan === "PREMIUM" ? (
                 <div className="space-y-2">
                   <Button variant="outline" className="w-full" disabled>
                     پکیج فعلی شما
@@ -378,12 +412,12 @@ export default function Premium() {
                     {cancelling ? "در حال لغو..." : "لغو اشتراک"}
                   </Button>
                 </div>
-              ) : currentPlan === 'BUSINESS' ? (
+              ) : currentPlan === "BUSINESS" ? (
                 <div className="space-y-2">
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => handleChangePlan('PREMIUM')}
+                    onClick={() => handleChangePlan("PREMIUM")}
                     disabled={changingPlan}
                   >
                     {changingPlan ? "در حال تغییر..." : "تغییر به پرمیوم"}
@@ -399,12 +433,12 @@ export default function Premium() {
                   </Button>
                 </div>
               ) : (
-                <Button 
+                <Button
                   className="w-full bg-brand-600 hover:bg-brand-700"
-                  onClick={() => handleUpgrade('PREMIUM')}
-                  disabled={upgrading === 'PREMIUM'}
+                  onClick={() => handleUpgrade("PREMIUM")}
+                  disabled={upgrading === "PREMIUM"}
                 >
-                  {upgrading === 'PREMIUM' ? (
+                  {upgrading === "PREMIUM" ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       در حا�� پردازش...
@@ -421,7 +455,9 @@ export default function Premium() {
           </Card>
 
           {/* Business Plan */}
-          <Card className={`border-2 ${currentPlan === 'BUSINESS' ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+          <Card
+            className={`border-2 ${currentPlan === "BUSINESS" ? "border-green-500 bg-green-50" : "border-gray-200"}`}
+          >
             <CardHeader className="text-center">
               <CardTitle className="text-2xl flex items-center justify-center gap-2">
                 <Users className="w-6 h-6 text-purple-600" />
@@ -431,7 +467,7 @@ export default function Premium() {
                 {plans?.BUSINESS?.price?.toLocaleString()} تومان
               </div>
               <CardDescription>ماهانه - پیشرفته</CardDescription>
-              {currentPlan === 'BUSINESS' && (
+              {currentPlan === "BUSINESS" && (
                 <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
                   پکیج فعلی شما
                 </div>
@@ -460,8 +496,8 @@ export default function Premium() {
                   <span>پشتیبانی اختصاصی</span>
                 </li>
               </ul>
-              
-              {currentPlan === 'BUSINESS' ? (
+
+              {currentPlan === "BUSINESS" ? (
                 <div className="space-y-2">
                   <Button variant="outline" className="w-full" disabled>
                     پکیج فعلی شما
@@ -476,23 +512,23 @@ export default function Premium() {
                     {cancelling ? "در حال لغو..." : "لغو اشتراک"}
                   </Button>
                 </div>
-              ) : currentPlan === 'PREMIUM' ? (
+              ) : currentPlan === "PREMIUM" ? (
                 <Button
                   variant="outline"
                   className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
-                  onClick={() => handleChangePlan('BUSINESS')}
+                  onClick={() => handleChangePlan("BUSINESS")}
                   disabled={changingPlan}
                 >
                   {changingPlan ? "در حال تغییر..." : "ارتقا به کسب‌وکار"}
                 </Button>
               ) : (
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
-                  onClick={() => handleUpgrade('BUSINESS')}
-                  disabled={upgrading === 'BUSINESS'}
+                  onClick={() => handleUpgrade("BUSINESS")}
+                  disabled={upgrading === "BUSINESS"}
                 >
-                  {upgrading === 'BUSINESS' ? (
+                  {upgrading === "BUSINESS" ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
                       در حال پردازش...
@@ -511,15 +547,25 @@ export default function Premium() {
 
         {/* Features Comparison */}
         <div className="max-w-4xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8">مقایسه جزئیات پکیج‌ها</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">
+            مقایسه جزئیات پکیج‌ها
+          </h2>
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-right font-medium text-gray-900">ویژگی</th>
-                  <th className="px-6 py-4 text-center font-medium text-gray-900">رایگان</th>
-                  <th className="px-6 py-4 text-center font-medium text-gray-900">پرمیوم</th>
-                  <th className="px-6 py-4 text-center font-medium text-gray-900">کسب‌وکار</th>
+                  <th className="px-6 py-4 text-right font-medium text-gray-900">
+                    ویژگی
+                  </th>
+                  <th className="px-6 py-4 text-center font-medium text-gray-900">
+                    رایگان
+                  </th>
+                  <th className="px-6 py-4 text-center font-medium text-gray-900">
+                    پرمیوم
+                  </th>
+                  <th className="px-6 py-4 text-center font-medium text-gray-900">
+                    کسب‌وکار
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -575,7 +621,8 @@ export default function Premium() {
           <Shield className="w-12 h-12 text-brand-600 mx-auto mb-4" />
           <h3 className="text-2xl font-bold mb-4">پرداخت امن با زرین‌پال</h3>
           <p className="text-gray-600 mb-6">
-            تمام پرداخت‌ها از طریق درگاه معتبر زرین‌پال انجام می‌شود. اطلاعات شما کاملاً محفوظ است.
+            تمام پرداخت‌ها از طریق درگاه معتبر زرین‌پال انجام می‌شود. اطلاعات
+            شما کاملاً محفوظ است.
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
             <span>🔒 SSL محافظت شده</span>
