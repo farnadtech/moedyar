@@ -1,3 +1,5 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const ZarinPal = require('zarinpal-checkout');
 
 // Initialize ZarinPal
@@ -72,7 +74,7 @@ export function getPaymentStatusMessage(status: number): string {
     '-10': 'ترمینال فعال نمی‌باشد',
     '-11': 'تلاش بیش از حد در بازه زمانی کوتاه',
     '-12': 'شناسه قابل قبول نمی‌باشد',
-    '-21': 'هیچ نوع عملیات مالی برای این ت��اکنش تعریف نشده',
+    '-21': 'هیچ نوع عملیات مالی برای این تراکنش تعریف نشده',
     '-22': 'تراکنش ناموفق',
     '-33': 'رقم تراکنش با رقم پرداخت شده مطابقت ندارد',
     '-34': 'سقف تقسیم تراکنش از لحاظ تعداد یا رقم عبور کرده',
