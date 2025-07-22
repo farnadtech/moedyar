@@ -91,7 +91,7 @@ export default function AdminDashboard() {
         if (response.success) {
           toast({
             title: "کاربر حذف شد",
-            description: "کاربر با موفقیت ��ذف شد",
+            description: "کاربر با موفقیت حذف شد",
           });
           loadAdminData();
         } else {
