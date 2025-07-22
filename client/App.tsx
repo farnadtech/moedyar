@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import AddEvent from "./pages/AddEvent";
 import Settings from "./pages/Settings";
 import Premium from "./pages/Premium";
+import AdminDashboard from "./pages/AdminDashboard";
 import Placeholder from "./pages/Placeholder";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
@@ -61,7 +62,7 @@ const App = () => (
             <Route path="/demo" element={
               <Placeholder
                 title="نمایش دمو"
-                description="مشاهده ویدیوی آموزشی و تست سیستم"
+                description="مشاهده ویدیوی آمو��شی و تست سیستم"
               />
             } />
             <Route path="/contact" element={
