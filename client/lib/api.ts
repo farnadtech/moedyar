@@ -176,6 +176,7 @@ class ApiService {
     title: string;
     description?: string;
     eventDate: string;
+    eventTime?: string;
     eventType?: string;
     reminderDays?: number[];
     reminderMethods?: string[];
@@ -192,6 +193,7 @@ class ApiService {
       title: string;
       description?: string;
       eventDate: string;
+      eventTime?: string;
       eventType?: string;
       reminderDays?: number[];
       reminderMethods?: string[];
