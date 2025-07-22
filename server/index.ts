@@ -47,5 +47,10 @@ export function createServer() {
     });
   });
 
+  // Start notification scheduler
+  if (process.env.NODE_ENV !== 'test') {
+    startNotificationScheduler();
+  }
+
   return app;
 }
