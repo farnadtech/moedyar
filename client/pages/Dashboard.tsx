@@ -73,7 +73,7 @@ export default function Dashboard() {
       console.error('Error loading dashboard:', error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
-        description: "لطفاً صفحه را مجدداً ب��رگذاری کنید",
+        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
         variant: "destructive"
       });
     } finally {
@@ -259,10 +259,10 @@ export default function Dashboard() {
                 </Card>
               ) : (
                 events.map((event) => {
-                  const daysUntil = getDaysUntil(event.date);
+                  const daysUntil = getDaysUntil(event.eventDate);
                   const isOverdue = daysUntil < 0;
                   const isUpcoming = daysUntil <= 7 && daysUntil >= 0;
-                  
+
                   return (
                     <Card key={event.id} className={`${isOverdue ? 'border-red-200 bg-red-50' : isUpcoming ? 'border-yellow-200 bg-yellow-50' : ''}`}>
                       <CardHeader className="pb-3">
@@ -272,7 +272,7 @@ export default function Dashboard() {
                             <div>
                               <CardTitle className="text-lg">{event.title}</CardTitle>
                               <CardDescription>
-                                {formatDate(event.date)} • {event.type}
+                                {formatDate(event.eventDate)} • {getEventTypeLabel(event.eventType)}
                               </CardDescription>
                             </div>
                           </div>
@@ -280,8 +280,8 @@ export default function Dashboard() {
                             <Button variant="ghost" size="sm">
                               <Edit className="w-4 h-4" />
                             </Button>
-                            <Button 
-                              variant="ghost" 
+                            <Button
+                              variant="ghost"
                               size="sm"
                               onClick={() => handleDeleteEvent(event.id)}
                               className="text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -308,7 +308,7 @@ export default function Dashboard() {
                           </div>
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Bell className="w-4 h-4" />
-                            یادآوری: {event.reminderDays.join('، ')} روز قبل
+                            یادآوری: {event.reminders.map(r => r.daysBefore).join('، ')} روز قبل
                           </div>
                         </div>
                         {event.description && (
