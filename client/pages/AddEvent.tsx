@@ -18,7 +18,7 @@ const eventTypes = [
   { value: "INSURANCE", label: "بیمه", icon: "🛡️" },
   { value: "CONTRACT", label: "قرارداد", icon: "📋" },
   { value: "CHECK", label: "چک", icon: "💰" },
-  { value: "CUSTOM", label: "سایر", icon: "📅" },
+  { value: "CUSTOM", label: "سایر", icon: "���" },
 ];
 
 const reminderMethods = [
@@ -306,7 +306,7 @@ export default function AddEvent() {
           });
         } else {
           toast({
-            title: "خطا در ایجاد ر��یداد",
+            title: "خطا در ایجاد رویداد",
             description: response.message || "لطفاً دوباره تلاش کنید",
             variant: "destructive",
           });
@@ -422,7 +422,7 @@ export default function AddEvent() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       تاریخ رویداد *
                     </label>
-                    <PersianCalendar
+                    <PersianDateInput
                       value={formData.eventDate}
                       onChange={(date) => setFormData(prev => ({ ...prev, eventDate: date }))}
                       placeholder="انتخاب تاریخ رویداد"
