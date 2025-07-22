@@ -167,6 +167,7 @@ export default function Dashboard() {
   const isPremium =
     user?.subscriptionType === "PREMIUM" ||
     user?.subscriptionType === "BUSINESS";
+  const isBusiness = user?.subscriptionType === "BUSINESS";
   const maxEvents = isPremium ? -1 : 3;
 
   if (loading) {
@@ -500,7 +501,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-red-700 mb-4">
-                    دسترسی ادمین به مدیریت کاربران و تنظیمات سیستم
+                    دسترسی ادمین به مدی��یت کاربران و تنظیمات سیستم
                   </p>
                   <div className="space-y-2">
                     <Link to="/admin/dashboard" className="block">
