@@ -142,4 +142,49 @@
     margin-right: auto;
     margin-left: 0;
   }
+
+  /* Persian Calendar Styles */
+  .custom-calendar {
+    font-family: 'Vazirmatn', sans-serif;
+    direction: rtl;
+  }
+
+  .custom-calendar .Calendar__monthArrow {
+    color: hsl(var(--brand-600));
+  }
+
+  .custom-calendar .Calendar__monthArrow:hover {
+    background-color: hsl(var(--brand-100));
+  }
+
+  .custom-calendar .Calendar__day.-weekend {
+    color: hsl(var(--destructive));
+  }
+
+  .custom-calendar .Calendar__day:hover {
+    background-color: hsl(var(--brand-100));
+    color: hsl(var(--brand-700));
+  }
+
+  .today-highlight {
+    background-color: hsl(var(--brand-200)) !important;
+    color: hsl(var(--brand-800)) !important;
+    font-weight: 600;
+  }
+
+  .selected-day {
+    background-color: hsl(var(--brand-600)) !important;
+    color: white !important;
+    font-weight: 600;
+  }
+
+  .custom-calendar .Calendar__monthText {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+
+  .custom-calendar .Calendar__weekDay {
+    color: hsl(var(--muted-foreground));
+    font-weight: 500;
+  }
 }
