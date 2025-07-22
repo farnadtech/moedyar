@@ -280,7 +280,7 @@ export default function Dashboard() {
                 <p className="text-gray-600 text-center mb-4">
                   {isPremium
                     ? "رویداد نامحدود اضافه کنید و همیشه در جریان باشید"
-                    : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
+                    : `می‌توانید ��ا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
                 </p>
                 <Link to="/add-event">
                   <Button
@@ -480,7 +480,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">روی��ادهای گذشته:</span>
+                    <span className="text-gray-600">رویدادهای گذشته:</span>
                     <span className="font-medium text-red-600">
                       {events.filter((e) => getDaysUntil(e.eventDate) < 0).length}
                     </span>
