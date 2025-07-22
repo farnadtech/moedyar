@@ -4,7 +4,7 @@ import { Calendar, ArrowRight, Mail, Lock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { apiService } from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -76,7 +76,7 @@ export default function Login() {
       } else {
         toast({
           title: "خطا در ورود",
-          description: response.message || "ایمی�� یا رمز عبور اشتباه است",
+          description: response.message || "ایمیل یا رمز عبور اشتباه است",
           variant: "destructive"
         });
       }
