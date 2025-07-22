@@ -90,7 +90,7 @@ export default function Premium() {
     } catch (error) {
       console.error("Error loading premium data:", error);
       toast({
-        title: "خطا در بارگذاری اطلاعات",
+        title: "خ��ا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
         variant: "destructive",
       });
@@ -596,7 +596,7 @@ export default function Premium() {
                 <tr>
                   <td className="px-6 py-4 font-medium">مدیریت چند کاربره</td>
                   <td className="px-6 py-4 text-center">❌</td>
-                  <td className="px-6 py-4 text-center">���</td>
+                  <td className="px-6 py-4 text-center">✅</td>
                   <td className="px-6 py-4 text-center">✅</td>
                 </tr>
                 <tr className="bg-gray-50">
@@ -626,7 +626,7 @@ export default function Premium() {
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
             <span>🔒 SSL محافظت شده</span>
-            <span>💳 تمام کارت‌های بانکی</span>
+            <span>💳 تمام کارت‌های ��انکی</span>
             <span>📱 پرداخت موبایلی</span>
           </div>
         </div>
