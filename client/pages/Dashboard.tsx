@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Bell, Plus, Settings, Crown, User, LogOut, Trash2, Edit } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiService } from "@/lib/api";
 
 interface Event {
   id: string;
@@ -21,7 +23,7 @@ export default function Dashboard() {
       date: "2024-03-15",
       type: "بیمه",
       reminderDays: [30, 7, 1],
-      description: "تمدید بیمه پژو ۲۰۶ پلاک ۱۲ج ۳۴۵"
+      description: "ت��دید بیمه پژو ۲۰۶ پلاک ۱۲ج ۳۴۵"
     },
     {
       id: "2", 
@@ -308,7 +310,7 @@ export default function Dashboard() {
                   <ul className="space-y-2 text-sm text-brand-700">
                     <li>• رویدادهای نامحدود</li>
                     <li>• یادآوری پیامک</li>
-                    <li>• یادآوری واتس‌اپ</li>
+                    <li>• یادآوری و��تس‌اپ</li>
                     <li>• پشتیبانی اولویت‌دار</li>
                     <li>• گزارش‌گیری پیشرفته</li>
                   </ul>
