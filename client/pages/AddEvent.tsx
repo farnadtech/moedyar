@@ -40,6 +40,7 @@ export default function AddEvent() {
     title: "",
     description: "",
     eventDate: "",
+    eventTime: "",
     eventType: "CUSTOM",
   });
 
@@ -280,6 +281,7 @@ export default function AddEvent() {
         title: formData.title,
         description: formData.description,
         eventDate: formData.eventDate,
+        eventTime: formData.eventTime || "09:00",
         eventType: formData.eventType,
         reminderDays: selectedReminderDays,
         reminderMethods: selectedReminderMethods,
@@ -413,28 +415,45 @@ export default function AddEvent() {
                   />
                 </div>
 
-                {/* Event Date */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    تاریخ رویداد *
-                  </label>
-                  <input
-                    type="date"
-                    name="eventDate"
-                    value={formData.eventDate}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.eventDate
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                    required
-                  />
-                  {errors.eventDate && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.eventDate}
+                {/* Event Date & Time */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      تاریخ رویداد *
+                    </label>
+                    <input
+                      type="date"
+                      name="eventDate"
+                      value={formData.eventDate}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
+                        errors.eventDate
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                      required
+                    />
+                    {errors.eventDate && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.eventDate}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      ساعت رویداد (اختیاری)
+                    </label>
+                    <input
+                      type="time"
+                      name="eventTime"
+                      value={formData.eventTime}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      در صورت عدم انتخاب، ساعت ۰۹:۰۰ در نظر گرفته می‌شود
                     </p>
-                  )}
+                  </div>
                 </div>
 
                 {/* Event Type */}
