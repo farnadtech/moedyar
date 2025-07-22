@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { db } from '../lib/db';
 import { authenticateToken, AuthRequest } from '../lib/auth';
+import { requestPayment, verifyPayment, getPaymentStatusMessage } from '../lib/zarinpal';
 
 const router = Router();
 
