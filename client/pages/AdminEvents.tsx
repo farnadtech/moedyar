@@ -132,7 +132,7 @@ export default function AdminEvents() {
             </Link>
             <Link to="/admin/settings">
               <Button variant="outline">
-                <Calendar className="w-4 h-4 mr-2" />
+                <Settings className="w-4 h-4 mr-2" />
                 تنظیمات سیستم
               </Button>
             </Link>
