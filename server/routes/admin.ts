@@ -13,9 +13,8 @@ const requireAdmin = (req: AuthRequest, res: Response, next: any) => {
     });
   }
 
-  // Check if user is admin (you can implement this based on your needs)
-  // For now, we'll check if email contains 'admin'
-  if (!req.user.email.includes('admin')) {
+  // Only allow the specific admin email
+  if (req.user.email !== 'farnadadmin@gmail.com') {
     return res.status(403).json({
       success: false,
       message: 'دسترسی ادمین لازم است'
