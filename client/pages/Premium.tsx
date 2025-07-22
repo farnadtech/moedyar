@@ -441,7 +441,7 @@ export default function Premium() {
                   {upgrading === "PREMIUM" ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      در حا�� پردازش...
+                      در حال پردازش...
                     </div>
                   ) : (
                     <>
@@ -573,7 +573,7 @@ export default function Premium() {
                   <td className="px-6 py-4 font-medium">تعداد رویداد</td>
                   <td className="px-6 py-4 text-center">۳</td>
                   <td className="px-6 py-4 text-center">نامحدود</td>
-                  <td className="px-6 py-4 text-center">نامحدود</td>
+                  <td className="px-6 py-4 text-center">نامحدو��</td>
                 </tr>
                 <tr className="bg-gray-50">
                   <td className="px-6 py-4 font-medium">یادآوری ایمیل</td>
@@ -596,7 +596,7 @@ export default function Premium() {
                 <tr>
                   <td className="px-6 py-4 font-medium">مدیریت چند کاربره</td>
                   <td className="px-6 py-4 text-center">❌</td>
-                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">���</td>
                   <td className="px-6 py-4 text-center">✅</td>
                 </tr>
                 <tr className="bg-gray-50">
