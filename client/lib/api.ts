@@ -233,6 +233,41 @@ class ApiService {
     });
   }
 
+  // Admin Methods
+  async getAdminStats(): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/stats');
+  }
+
+  async getUsers(page: number = 1, limit: number = 10, search: string = ''): Promise<ApiResponse<any>> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(search && { search })
+    });
+    return this.request<any>(`/admin/users?${params}`);
+  }
+
+  async getUserDetails(userId: string): Promise<ApiResponse<any>> {
+    return this.request<any>(`/admin/users/${userId}`);
+  }
+
+  async updateUserSubscription(userId: string, subscriptionType: string): Promise<ApiResponse> {
+    return this.request(`/admin/users/${userId}/subscription`, {
+      method: 'PUT',
+      body: JSON.stringify({ subscriptionType }),
+    });
+  }
+
+  async deleteUser(userId: string): Promise<ApiResponse> {
+    return this.request(`/admin/users/${userId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getAdminActivities(): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/activities');
+  }
+
   // Utility Methods
   isAuthenticated(): boolean {
     return !!this.getAuthToken();
