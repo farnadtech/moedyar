@@ -295,6 +295,26 @@ class ApiService {
     return this.request<any>('/admin/activities');
   }
 
+  async getAdminEvents(page: number = 1, limit: number = 20, search: string = '', eventType: string = ''): Promise<ApiResponse<any>> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(search && { search }),
+      ...(eventType && { eventType })
+    });
+    return this.request<any>(`/admin/events?${params}`);
+  }
+
+  async getAdminTransactions(page: number = 1, limit: number = 20, search: string = '', status: string = ''): Promise<ApiResponse<any>> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(search && { search }),
+      ...(status && { status })
+    });
+    return this.request<any>(`/admin/transactions?${params}`);
+  }
+
   // Utility Methods
   isAuthenticated(): boolean {
     return !!this.getAuthToken();
