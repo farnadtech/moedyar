@@ -81,7 +81,7 @@ router.get(
       console.error("Get subscription error:", error);
       res.status(500).json({
         success: false,
-        message: "خطا در دریافت اطلاعات اشتراک",
+        message: "خطا در دریافت اطلاعات اشترا��",
       });
     }
   },
@@ -212,7 +212,12 @@ router.post(
 
       // Create ZarinPal payment request
       try {
-        const callbackUrl = `${process.env.APP_URL || "http://localhost:8080"}/api/subscriptions/verify-payment?subscription=${subscription.id}`;
+        // Get the base URL from the request
+        const protocol = req.headers['x-forwarded-proto'] || (req.connection as any).encrypted ? 'https' : 'http';
+        const host = req.headers['x-forwarded-host'] || req.headers.host;
+        const baseUrl = process.env.APP_URL || `${protocol}://${host}`;
+
+        const callbackUrl = `${baseUrl}/api/subscriptions/verify-payment?subscription=${subscription.id}`;
 
         console.log("💳 Creating ZarinPal payment request:", {
           amount,
