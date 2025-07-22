@@ -12,18 +12,86 @@ export default function RegisterPersonal() {
     password: "",
     confirmPassword: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
+    // Clear error when user starts typing
+    if (errors[e.target.name]) {
+      setErrors(prev => ({
+        ...prev,
+        [e.target.name]: ""
+      }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "نام و نام خانوادگی الزامی است";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "ایمیل الزامی است";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "فرمت ایمیل صحیح نیست";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "رمز عبور الزامی است";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "رمز عبور باید حداقل ۸ کاراکتر باشد";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "تکرار رمز عبور مطابقت ندارد";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic
-    console.log("Registration data:", formData);
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Show success message
+      toast({
+        title: "✅ ثبت نام موفق",
+        description: "حساب شما با موفقیت ایجاد شد. در حال انتقال به پنل مدیریت...",
+      });
+
+      // Redirect to dashboard after a brief delay
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+
+    } catch (error) {
+      toast({
+        title: "خطا در ثبت نام",
+        description: "لطفاً دوباره تلاش کنید",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
