@@ -202,7 +202,7 @@ export default function Dashboard() {
                 <Settings className="w-4 h-4 ml-1" />
                 تنظیمات
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 ml-1" />
                 خروج
               </Button>
@@ -359,7 +359,7 @@ export default function Dashboard() {
                     <Link to="/premium">
                       <Button className="w-full bg-brand-600 hover:bg-brand-700">
                         <Crown className="w-4 h-4 ml-1" />
-                        ارتقا به پرمیوم
+                        ا��تقا به پرمیوم
                       </Button>
                     </Link>
                   </div>
@@ -413,7 +413,7 @@ export default function Dashboard() {
                     <li>• رویدادهای نامحدود</li>
                     <li>• یادآوری پیامک</li>
                     <li>• یادآوری واتس‌اپ</li>
-                    <li>• پشتیبانی اولویت��دار</li>
+                    <li>• پشتیبانی اولویت‌دار</li>
                     <li>• گزارش‌گیری پیشرفته</li>
                   </ul>
                   <Link to="/premium" className="block mt-4">
