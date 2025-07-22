@@ -73,7 +73,7 @@ export default function Dashboard() {
       console.error('Error loading dashboard:', error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
-        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
+        description: "لطفاً صفحه را مجدداً ب��رگذاری کنید",
         variant: "destructive"
       });
     } finally {
@@ -223,21 +223,21 @@ export default function Dashboard() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">رویداد جدید اضافه کنید</h3>
                 <p className="text-gray-600 text-center mb-4">
-                  {isPremium 
+                  {isPremium
                     ? "رویداد نامحدود اضافه کنید و همیشه در جریان باشید"
-                    : `می‌توانید تا ${3 - events.length} رویداد دیگر اضافه کنید`
+                    : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`
                   }
                 </p>
                 <Link to="/add-event">
-                  <Button 
+                  <Button
                     className="bg-brand-600 hover:bg-brand-700"
-                    disabled={!isPremium && events.length >= 3}
+                    disabled={!isPremium && events.length >= maxEvents}
                   >
                     <Plus className="w-4 h-4 ml-1" />
                     افزودن رویداد
                   </Button>
                 </Link>
-                {!isPremium && events.length >= 3 && (
+                {!isPremium && events.length >= maxEvents && (
                   <p className="text-sm text-gray-500 mt-2">
                     برای افزودن رویداد بیشتر، <Link to="/premium" className="text-brand-600">ارتقا دهید</Link>
                   </p>
@@ -359,7 +359,7 @@ export default function Dashboard() {
                     <Link to="/premium">
                       <Button className="w-full bg-brand-600 hover:bg-brand-700">
                         <Crown className="w-4 h-4 ml-1" />
-                        ا��تقا به پرمیوم
+                        ارتقا به پرمیوم
                       </Button>
                     </Link>
                   </div>
