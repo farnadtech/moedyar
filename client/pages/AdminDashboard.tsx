@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowRight, Users, Crown, DollarSign, Activity, Search, MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import { Calendar, ArrowRight, Users, Crown, DollarSign, Activity, Search, MoreHorizontal, Edit, Trash2, FileText, CreditCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
         const response = await apiService.deleteUser(userId);
         if (response.success) {
           toast({
-            title: "کاربر حذف شد",
+            title: "��اربر حذف شد",
             description: "کاربر با موفقیت حذف شد"
           });
           loadAdminData();
@@ -261,7 +261,7 @@ export default function AdminDashboard() {
                           onChange={(e) => handleUserAction('upgrade', user.id, e.target.value)}
                           className="text-sm border border-gray-300 rounded px-2 py-1"
                         >
-                          <option value="FREE">رایگان</option>
+                          <option value="FREE">��ایگان</option>
                           <option value="PREMIUM">پرمیوم</option>
                           <option value="BUSINESS">کسب‌وکار</option>
                         </select>
