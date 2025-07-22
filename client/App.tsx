@@ -17,6 +17,7 @@ import Premium from "./pages/Premium";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminEvents from "./pages/AdminEvents";
 import AdminTransactions from "./pages/AdminTransactions";
+import AdminSettings from "./pages/AdminSettings";
 import AdminSetup from "./pages/AdminSetup";
 import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
