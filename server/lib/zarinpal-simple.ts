@@ -82,6 +82,17 @@ export async function verifyPayment(authority: string, amount: number): Promise<
   try {
     const merchantId = process.env.ZARINPAL_MERCHANT_ID || 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
 
+    // For development/testing, return a mock successful response
+    if (process.env.NODE_ENV === 'development' &&
+        (merchantId === 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' || process.env.ZARINPAL_SANDBOX === 'true')) {
+      console.log('🧪 ZarinPal sandbox mode - returning mock verification');
+
+      return {
+        status: 100,
+        refId: 'TEST' + Date.now().toString()
+      };
+    }
+
     const requestBody = {
       merchant_id: merchantId,
       amount: amount,
