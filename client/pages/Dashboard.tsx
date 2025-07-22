@@ -21,6 +21,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
+import { formatPersianDate, formatPersianRelativeTime, formatPersianTime } from "@/lib/persian-date";
 
 interface Event {
   id: string;
@@ -129,12 +130,19 @@ export default function Dashboard() {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("fa-IR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(date);
+    return formatPersianDate(dateString, { format: 'long' });
+  };
+
+  const formatDateTime = (dateString: string) => {
+    return formatPersianDate(dateString, { format: 'long', includeTime: true });
+  };
+
+  const formatRelativeDate = (dateString: string) => {
+    const daysUntil = getDaysUntil(dateString);
+    if (daysUntil === 0) return "امروز";
+    if (daysUntil === 1) return "فردا";
+    if (daysUntil === -1) return "دیروز";
+    return formatPersianRelativeTime(dateString);
   };
 
   const getDaysUntil = (dateString: string) => {
@@ -191,7 +199,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
-                  خوش آمدید، {user.fullName}
+                  ��وش آمدید، {user.fullName}
                 </h1>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-600">
@@ -237,7 +245,7 @@ export default function Dashboard() {
                     className="text-red-600 border-red-600 hover:bg-red-50"
                   >
                     <User className="w-4 h-4 ml-1" />
-                    ��نل ادمین
+                    پنل ادمین
                   </Button>
                 </Link>
               )}
@@ -333,9 +341,14 @@ export default function Dashboard() {
                               <CardTitle className="text-lg">
                                 {event.title}
                               </CardTitle>
-                              <CardDescription>
-                                {formatDate(event.eventDate)} •{" "}
-                                {getEventTypeLabel(event.eventType)}
+                              <CardDescription className="flex flex-col gap-1">
+                                <span>
+                                  {formatDateTime(event.eventDate)} •{" "}
+                                  {getEventTypeLabel(event.eventType)}
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                  {formatRelativeDate(event.eventDate)}
+                                </span>
                               </CardDescription>
                             </div>
                           </div>
@@ -408,7 +421,7 @@ export default function Dashboard() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">ن��ع حساب:</span>
+                    <span className="text-gray-600">نوع حساب:</span>
                     <span className="font-medium">
                       {isPremium ? "پرمیوم" : "رایگان"}
                     </span>
