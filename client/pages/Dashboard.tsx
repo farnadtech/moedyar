@@ -305,7 +305,7 @@ export default function Dashboard() {
                   <CardContent className="text-center py-12">
                     <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-500 mb-2">
-                      هنوز رویدادی ندارید
+                      هنوز ر��یدادی ندارید
                     </h3>
                     <p className="text-gray-400">
                       اولین رویدادتان را اضافه کنید
@@ -340,9 +340,11 @@ export default function Dashboard() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm">
-                              <Edit className="w-4 h-4" />
-                            </Button>
+                            <Link to={`/edit-event/${event.id}`}>
+                              <Button variant="ghost" size="sm">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            </Link>
                             <Button
                               variant="ghost"
                               size="sm"
@@ -450,7 +452,7 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای امروز:</span>
                     <span className="font-medium text-yellow-600">
-                      {events.filter((e) => getDaysUntil(e.date) === 0).length}
+                      {events.filter((e) => getDaysUntil(e.eventDate) === 0).length}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -458,7 +460,7 @@ export default function Dashboard() {
                     <span className="font-medium text-blue-600">
                       {
                         events.filter((e) => {
-                          const days = getDaysUntil(e.date);
+                          const days = getDaysUntil(e.eventDate);
                           return days >= 0 && days <= 7;
                         }).length
                       }
@@ -467,7 +469,7 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای گذشته:</span>
                     <span className="font-medium text-red-600">
-                      {events.filter((e) => getDaysUntil(e.date) < 0).length}
+                      {events.filter((e) => getDaysUntil(e.eventDate) < 0).length}
                     </span>
                   </div>
                 </div>
