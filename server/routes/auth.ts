@@ -126,7 +126,7 @@ router.post('/login', validateRequest(loginSchema), async (req: Request, res: Re
 
     res.json({
       success: true,
-      message: 'ورود موفق��ت‌آمیز',
+      message: 'ورود موفقیت‌آمیز',
       data: {
         user: {
           ...userData,
@@ -199,6 +199,78 @@ router.get('/me', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'خطا در دریافت اطلاعات کاربر'
+    });
+  }
+});
+
+// Update user profile
+router.put('/profile', async (req: Request, res: Response) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'توکن دسترسی ارائه نشده است'
+      });
+    }
+
+    const { verifyToken } = await import('../lib/auth');
+    const decoded = verifyToken(token);
+
+    const { fullName, phone } = req.body;
+
+    // Validate input
+    if (!fullName || fullName.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: 'نام باید حداقل ۲ کاراکتر باشد'
+      });
+    }
+
+    const updateData: any = {
+      fullName: fullName.trim()
+    };
+
+    if (phone) {
+      // Validate phone number (simple validation)
+      const phoneRegex = /^09\d{9}$/;
+      if (!phoneRegex.test(phone)) {
+        return res.status(400).json({
+          success: false,
+          message: 'شماره تلفن باید با 09 شروع شده و ۱۱ رقم باشد'
+        });
+      }
+      updateData.phone = phone;
+    }
+
+    const user = await db.user.update({
+      where: { id: decoded.userId },
+      data: updateData,
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        phone: true,
+        accountType: true,
+        subscriptionType: true,
+        isEmailVerified: true,
+        createdAt: true
+      }
+    });
+
+    res.json({
+      success: true,
+      message: 'پروفایل با موفقیت به‌روزرسانی شد',
+      data: { user }
+    });
+
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در به‌روزرسانی پروفایل'
     });
   }
 });
