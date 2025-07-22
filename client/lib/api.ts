@@ -196,6 +196,20 @@ class ApiService {
     });
   }
 
+  // Notification Methods
+  async testNotification(method: 'EMAIL' | 'SMS' | 'WHATSAPP' = 'EMAIL'): Promise<ApiResponse> {
+    return this.request('/notifications/test', {
+      method: 'POST',
+      body: JSON.stringify({ method }),
+    });
+  }
+
+  async triggerNotificationCheck(): Promise<ApiResponse> {
+    return this.request('/notifications/trigger-check', {
+      method: 'POST',
+    });
+  }
+
   // Utility Methods
   isAuthenticated(): boolean {
     return !!this.getAuthToken();
