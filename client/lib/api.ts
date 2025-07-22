@@ -42,26 +42,47 @@ class ApiService {
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
-      // Check if response is JSON
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Non-JSON response:', text);
-        return {
-          success: false,
-          message: 'سرور پاسخ نامعتبر ارسال کرد'
-        };
-      }
-
-      const data: ApiResponse<T> = await response.json();
-
-      // Handle authentication errors
+      // Handle authentication errors first
       if (response.status === 401 || response.status === 403) {
         this.removeAuthToken();
         window.location.href = '/login';
+        return {
+          success: false,
+          message: 'نیاز به احراز هویت مجدد'
+        };
       }
 
-      return data;
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        // If not JSON, read as text and return error
+        try {
+          const text = await response.text();
+          console.error('Non-JSON response:', text);
+          return {
+            success: false,
+            message: 'سرور پاسخ نامعتبر ارسال کرد'
+          };
+        } catch {
+          return {
+            success: false,
+            message: 'خطا در خواندن پاسخ سرور'
+          };
+        }
+      }
+
+      // If it's JSON, parse it
+      try {
+        const data: ApiResponse<T> = await response.json();
+        return data;
+      } catch (jsonError) {
+        console.error('JSON parse error:', jsonError);
+        return {
+          success: false,
+          message: 'خطا در تجزیه پاسخ سرور'
+        };
+      }
+
     } catch (error) {
       console.error('API Request Error:', error);
       return {
