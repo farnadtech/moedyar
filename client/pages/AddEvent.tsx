@@ -422,7 +422,7 @@ export default function AddEvent() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       تاریخ رویداد *
                     </label>
-                    <PersianDateInput
+                    <PersianCalendarPicker
                       value={formData.eventDate}
                       onChange={(date) => setFormData(prev => ({ ...prev, eventDate: date }))}
                       placeholder="انتخاب تاریخ رویداد"
@@ -505,7 +505,7 @@ export default function AddEvent() {
                       ))}
                     </div>
                     <p className="text-xs text-gray-500 mt-2">
-                      این اطلاعات اختیاری هستند و به شما در یادآوری رویداد کمک
+                      این اط��اعات اختیاری هستند و به شما در یادآوری رویداد کمک
                       می‌کنند
                     </p>
                   </div>
