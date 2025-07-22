@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PersianCalendar } from "@/components/ui/persian-calendar";
+import { PersianDateInput } from "@/components/ui/persian-date-input";
 import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -306,7 +306,7 @@ export default function AddEvent() {
           });
         } else {
           toast({
-            title: "خطا در ایجاد رویداد",
+            title: "خطا در ایجاد ر��یداد",
             description: response.message || "لطفاً دوباره تلاش کنید",
             variant: "destructive",
           });
