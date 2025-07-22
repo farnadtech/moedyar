@@ -169,18 +169,20 @@ export default function Dashboard() {
                 <Calendar className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">رویداد یار</h1>
+                <h1 className="text-xl font-bold text-gray-900">خوش آمدید، {user.fullName}</h1>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">حساب شخصی</span>
+                  <span className="text-sm text-gray-600">
+                    {user.accountType === 'PERSONAL' ? 'حساب شخصی' : 'حساب کسب‌وکار'}
+                  </span>
                   {!isPremium && (
                     <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
-                      رایگان ({events.length}/۳)
+                      رایگان ({events.length}/{maxEvents})
                     </span>
                   )}
                   {isPremium && (
                     <span className="px-2 py-1 bg-brand-100 text-brand-700 text-xs rounded-full flex items-center gap-1">
                       <Crown className="w-3 h-3" />
-                      پرمیوم
+                      {user.subscriptionType === 'PREMIUM' ? 'پرمیوم' : 'کسب‌وکار'}
                     </span>
                   )}
                 </div>
@@ -411,7 +413,7 @@ export default function Dashboard() {
                     <li>• رویدادهای نامحدود</li>
                     <li>• یادآوری پیامک</li>
                     <li>• یادآوری واتس‌اپ</li>
-                    <li>• پشتیبانی اولویت‌دار</li>
+                    <li>• پشتیبانی اولویت��دار</li>
                     <li>• گزارش‌گیری پیشرفته</li>
                   </ul>
                   <Link to="/premium" className="block mt-4">
