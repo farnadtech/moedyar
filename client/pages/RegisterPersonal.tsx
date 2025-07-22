@@ -4,6 +4,7 @@ import { Calendar, ArrowRight, Mail, Lock, User, CheckCircle } from "lucide-reac
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { apiService } from "@/lib/api";
 
 export default function RegisterPersonal() {
   const [formData, setFormData] = useState({
