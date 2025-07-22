@@ -469,7 +469,7 @@ export default function Premium() {
               <CardDescription>ماهانه - پیشرفته</CardDescription>
               {currentPlan === "BUSINESS" && (
                 <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
-                  پکیج فعلی شما
+                  پکیج فعل�� شما
                 </div>
               )}
             </CardHeader>
@@ -481,19 +481,23 @@ export default function Premium() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>مدیریت چند کاربره</span>
+                  <span>مدیریت تیم (تا ۱۰ نفر)</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>تقویم مشترک</span>
+                  <span>تقویم مشترک و هماهنگی</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>گزارش‌گیری پیشرفته</span>
+                  <span>گزارش‌گیری و آنالیز تیم</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>پشتیبانی اختصاصی</span>
+                  <span>نقش‌های دسترسی (مدیر/عضو/بیننده)</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span>پشتیبانی اختصاصی ۲۴/۷</span>
                 </li>
               </ul>
 
@@ -626,7 +630,7 @@ export default function Premium() {
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
             <span>🔒 SSL محافظت شده</span>
-            <span>💳 تمام کار��‌های بانکی</span>
+            <span>💳 تمام کار����های بانکی</span>
             <span>📱 پرداخت موبایلی</span>
           </div>
         </div>
