@@ -155,11 +155,16 @@ export default function Login() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pr-10 pl-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                    className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
+                      errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
                     placeholder="رمز عبور خود را وارد کنید"
                     required
                   />
                 </div>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
 
               <div className="flex items-center justify-between">
