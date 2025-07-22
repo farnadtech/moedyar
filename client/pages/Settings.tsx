@@ -118,7 +118,7 @@ export default function Settings() {
       console.error('Profile update error:', error);
       toast({
         title: "خطا در به‌روزرسانی",
-        description: "خطا در ارتباط با ��رور",
+        description: "خطا در ارتباط با ����رور",
         variant: "destructive"
       });
     } finally {
@@ -638,7 +638,7 @@ export default function Settings() {
                   <CardContent>
                     <div className="space-y-6">
                       <div className="border border-gray-200 rounded-lg p-4">
-                        <h3 className="font-medium mb-2">تغی��ر رمز عبور</h3>
+                        <h3 className="font-medium mb-2">تغییر رمز عبور</h3>
                         <p className="text-sm text-gray-600 mb-4">
                           برای امنیت بیشتر، رمز عبور خود را به‌طور مرتب تغییر دهید
                         </p>
@@ -663,7 +663,11 @@ export default function Settings() {
                         <p className="text-sm text-gray-600 mb-4">
                           حذف دائمی حساب کاربری و تمام اطلاعات مرتبط
                         </p>
-                        <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
+                        <Button
+                          variant="outline"
+                          className="text-red-600 border-red-200 hover:bg-red-50"
+                          onClick={handleDeleteAccount}
+                        >
                           حذف حساب
                         </Button>
                       </div>
