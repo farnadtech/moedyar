@@ -17,9 +17,9 @@ export interface VerifyResponse {
   refId?: string;
 }
 
-const ZARINPAL_REQUEST_URL = 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json';
-const ZARINPAL_VERIFY_URL = 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json';
-const ZARINPAL_PAYMENT_URL = 'https://sandbox.zarinpal.com/pg/StartPay/';
+const ZARINPAL_REQUEST_URL = 'https://api.zarinpal.com/pg/v4/payment/request.json';
+const ZARINPAL_VERIFY_URL = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
+const ZARINPAL_PAYMENT_URL = 'https://www.zarinpal.com/pg/StartPay/';
 
 export async function requestPayment(paymentData: PaymentRequest): Promise<PaymentResponse> {
   try {
@@ -102,8 +102,8 @@ export function getPaymentStatusMessage(status: number): string {
     '-33': 'رقم تراکنش با رقم پرداخت شده مطابقت ندارد',
     '-34': 'سقف تقسیم تراکنش از لحاظ تعداد یا رقم عبور کرده',
     '-40': 'اجازه دسترسی به متد مربوطه وجود ندارد',
-    '-41': 'اطل��عات ارسال شده مربوط به Additional Data غیر معتبر می‌باشد',
-    '-42': 'مدت زمان معتبر طول عمر شناسه پرداخت بایستی بین 30 دقیقه تا 45 روز مشخص گردد',
+    '-41': 'اطلاعات ارسال شده مربوط به Additional Data غیر معتبر می‌باشد',
+    '-42': 'مدت زمان معتبر طول عمر شناسه پرداخت بایستی بین 30 دقیقه تا 45 رو�� مشخص گردد',
     '-54': 'درخواست مورد نظر یافت نشد'
   };
 
