@@ -42,8 +42,9 @@ export async function requestPayment(
       const mockAuthority = "SANDBOX" + Date.now().toString();
       const subscriptionId = paymentData.callbackUrl.split("subscription=")[1];
 
-      // Get the base URL properly
-      const baseUrl = process.env.APP_URL || "http://localhost:8080";
+      // Get the base URL from callback URL
+      const callbackUrlObj = new URL(paymentData.callbackUrl);
+      const baseUrl = `${callbackUrlObj.protocol}//${callbackUrlObj.host}`;
 
       // Return a sandbox payment page URL that will simulate payment
       return {
