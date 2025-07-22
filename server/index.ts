@@ -39,6 +39,9 @@ export function createServer() {
   // Notification routes
   app.use("/api/notifications", notificationRoutes);
 
+  // Admin routes
+  app.use("/api/admin", adminRoutes);
+
   // Error handling middleware
   app.use((err: any, req: any, res: any, next: any) => {
     console.error('API Error:', err);
