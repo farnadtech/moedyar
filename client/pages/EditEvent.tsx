@@ -69,7 +69,7 @@ export default function EditEvent() {
           {
             key: "gift_idea",
             label: "ایده کادو",
-            placeholder: "چه کادویی ��خرید؟",
+            placeholder: "چه کادویی بخرید؟",
             required: false,
           },
         ];
