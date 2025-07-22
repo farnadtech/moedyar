@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PersianCalendar } from "@/components/ui/persian-calendar";
 import { Calendar, ArrowRight, Save, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -281,7 +282,7 @@ export default function EditEvent() {
     if (!methodData?.free && userSubscription?.currentType === "FREE") {
       toast({
         title: "نیاز به حساب پرمیوم",
-        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
+        description: `برای اس��فاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
         variant: "destructive",
       });
       return;
