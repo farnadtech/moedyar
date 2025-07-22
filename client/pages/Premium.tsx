@@ -147,7 +147,7 @@ export default function Premium() {
       if (response.success) {
         toast({
           title: "✅ اشتراک لغو شد",
-          description: "اشتراک شما با موفقیت لغو شد و به پکیج رایگان منتقل شدید",
+          description: "اشتراک شما با موفقیت لغو شد و به پکیج رایگان ��نتقل شدید",
         });
 
         // Reload data to reflect changes
@@ -364,13 +364,40 @@ export default function Premium() {
               </ul>
               
               {currentPlan === 'PREMIUM' ? (
-                <Button variant="outline" className="w-full" disabled>
-                  پکیج فعلی شما
-                </Button>
+                <div className="space-y-2">
+                  <Button variant="outline" className="w-full" disabled>
+                    پکیج فعلی شم��
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={handleCancelSubscription}
+                    disabled={cancelling}
+                  >
+                    {cancelling ? "در حال لغو..." : "لغو اشتراک"}
+                  </Button>
+                </div>
               ) : currentPlan === 'BUSINESS' ? (
-                <Button variant="outline" className="w-full" disabled>
-                  شما پکیج کسب‌وکار دارید
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleChangePlan('PREMIUM')}
+                    disabled={changingPlan}
+                  >
+                    {changingPlan ? "در حال تغییر..." : "تغییر به پرمیوم"}
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full text-xs"
+                    onClick={handleCancelSubscription}
+                    disabled={cancelling}
+                  >
+                    {cancelling ? "در حال لغو..." : "لغو اشتراک"}
+                  </Button>
+                </div>
               ) : (
                 <Button 
                   className="w-full bg-brand-600 hover:bg-brand-700"
@@ -426,7 +453,7 @@ export default function Premium() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>گزارش‌گیری پیشرفته</span>
+                  <span>گزارش‌گیری پی��رفته</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
@@ -436,7 +463,7 @@ export default function Premium() {
               
               {currentPlan === 'BUSINESS' ? (
                 <Button variant="outline" className="w-full" disabled>
-                  پ��یج فعلی شما
+                  پکیج فعلی شما
                 </Button>
               ) : (
                 <Button 
@@ -528,7 +555,7 @@ export default function Premium() {
           <Shield className="w-12 h-12 text-brand-600 mx-auto mb-4" />
           <h3 className="text-2xl font-bold mb-4">پرداخت امن با زرین‌پال</h3>
           <p className="text-gray-600 mb-6">
-            تمام پرداخت‌ها از طریق درگاه معتبر زرین‌پال انجام می‌شود. اطلاعات شما کاملاً محفوظ است.
+            تمام پرداخت‌ها از طریق درگاه معتبر ��رین‌پال انجام می‌شود. اطلاعات شما کاملاً محفوظ است.
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
             <span>🔒 SSL محافظت شده</span>
