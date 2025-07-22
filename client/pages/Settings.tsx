@@ -575,7 +575,7 @@ export default function Settings() {
                             تست یادآوری
                           </h4>
                           <p className="text-sm text-blue-700 mb-3">
-                            برای اطمینان از عملکرد سیستم، یادآوری تستی ارسال
+                            برای اطمینان از عملکرد سیستم، یادآوری تستی ار��ال
                             کنید
                           </p>
                           <div className="flex gap-2 mb-3">
@@ -790,7 +790,7 @@ export default function Settings() {
                   <CardContent>
                     <div className="space-y-6">
                       <div className="border border-gray-200 rounded-lg p-4">
-                        <h3 className="font-medium mb-2">��غییر رمز عبور</h3>
+                        <h3 className="font-medium mb-2">تغییر رمز عبور</h3>
                         <p className="text-sm text-gray-600 mb-4">
                           برای امنیت بیشتر، رمز عبور خود را به‌طور مرتب تغییر
                           دهید
