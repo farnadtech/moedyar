@@ -17,12 +17,30 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Example API routes
+  // API routes
   app.get("/api/ping", (_req, res) => {
     res.json({ message: "Hello from Express server v2!" });
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Auth routes
+  app.use("/api/auth", authRoutes);
+
+  // Event routes
+  app.use("/api/events", eventRoutes);
+
+  // Subscription routes
+  app.use("/api/subscriptions", subscriptionRoutes);
+
+  // Error handling middleware
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error('API Error:', err);
+    res.status(500).json({
+      success: false,
+      message: 'خطای داخلی سرور'
+    });
+  });
 
   return app;
 }
