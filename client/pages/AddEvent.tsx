@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PersianCalendar } from "@/components/ui/persian-calendar";
 import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -67,7 +68,7 @@ export default function AddEvent() {
           },
           {
             key: "gift_idea",
-            label: "ایده کادو",
+            label: "اید�� کادو",
             placeholder: "چه کادویی بخرید؟",
             required: false,
           },
@@ -451,7 +452,7 @@ export default function AddEvent() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      در صورت عدم انتخاب، ساعت ۰۹:۰۰ در نظر گرفته می‌شود
+                      در صورت عدم انتخاب، ��اعت ۰۹:۰۰ در نظر گرفته می‌شود
                     </p>
                   </div>
                 </div>
