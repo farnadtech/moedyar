@@ -72,7 +72,7 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error loading dashboard:', error);
       toast({
-        title: "خطا در بارگذاری اطلاعات",
+        title: "خطا در بارگ��اری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
         variant: "destructive"
       });
@@ -195,6 +195,14 @@ export default function Dashboard() {
                   <Button variant="outline" size="sm" className="text-brand-600 border-brand-600 hover:bg-brand-50">
                     <Crown className="w-4 h-4 ml-1" />
                     ارتقا به پرمیوم
+                  </Button>
+                </Link>
+              )}
+              {user?.email?.includes('admin') && (
+                <Link to="/admin">
+                  <Button variant="outline" size="sm" className="text-red-600 border-red-600 hover:bg-red-50">
+                    <User className="w-4 h-4 ml-1" />
+                    پنل ادمین
                   </Button>
                 </Link>
               )}
