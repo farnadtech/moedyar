@@ -320,7 +320,7 @@ export default function EditEvent() {
     }
 
     if (selectedReminderDays.length === 0) {
-      newErrors.reminderDays = "حداقل یک روز یادآوری انتخاب کنید";
+      newErrors.reminderDays = "ح��اقل یک روز یادآوری انتخاب کنید";
     }
 
     if (selectedReminderMethods.length === 0) {
@@ -475,7 +475,7 @@ export default function EditEvent() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       تاریخ رویداد *
                     </label>
-                    <PersianDateInput
+                    <PersianCalendarPicker
                       value={formData.eventDate}
                       onChange={(date) => setFormData(prev => ({ ...prev, eventDate: date }))}
                       placeholder="انتخاب تاریخ رویداد"
