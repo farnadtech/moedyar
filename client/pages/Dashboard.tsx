@@ -92,7 +92,7 @@ export default function Dashboard() {
       console.error("Error loading dashboard:", error);
       toast({
         title: "خطا در بارگذاری اطلاعات",
-        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
+        description: "لطفاً صفحه را مجددا�� بارگذاری کنید",
         variant: "destructive",
       });
     } finally {
@@ -295,7 +295,9 @@ export default function Dashboard() {
                 <p className="text-gray-600 text-center mb-4">
                   {isPremium
                     ? "رویداد نامحدود اضافه کنید و همیشه در جریان باشید"
-                    : `می‌توانید ��ا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
+                    : events.length >= maxEvents
+                      ? "شما به حداکثر رویداد در پلن رایگان رسیده‌اید"
+                      : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
                 </p>
                 <Link to="/add-event">
                   <Button
