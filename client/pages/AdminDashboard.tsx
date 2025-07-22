@@ -67,7 +67,7 @@ export default function AdminDashboard() {
         if (response.success) {
           toast({
             title: "کاربر حذف شد",
-            description: "کاربر با موفقیت حذف شد"
+            description: "کاربر با موفقیت ��ذف شد"
           });
           loadAdminData();
         } else {
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
             </Link>
             <Link to="/admin/settings">
               <Button variant="outline">
-                <Activity className="w-4 h-4 mr-2" />
+                <Settings className="w-4 h-4 mr-2" />
                 تنظیمات سیستم
               </Button>
             </Link>
