@@ -162,8 +162,9 @@ export default function Settings() {
 
       if (response.success) {
         toast({
-          title: "✅ یادآوری تست ارسال شد",
-          description: `یادآوری تست از طریق ${method === 'EMAIL' ? 'ایمیل' : method === 'SMS' ? 'پیامک' : 'واتساپ'} ارسال شد`
+          title: response.data?.demoMode ? "📧 حالت دمو" : "✅ یادآوری تست ارسال شد",
+          description: response.message,
+          variant: response.data?.demoMode ? "default" : "default"
         });
       } else {
         toast({
@@ -336,7 +337,7 @@ export default function Settings() {
                       تنظیمات یادآوری
                     </CardTitle>
                     <CardDescription>
-                      نحوه دریافت یادآور��‌ها را تنظیم کنید
+                      نحوه دریافت یادآوری‌ها را تنظیم کنید
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
