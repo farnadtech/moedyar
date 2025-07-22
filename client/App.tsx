@@ -66,6 +66,21 @@ const App = () => (
                 <AdminDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/admin/dashboard" element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/events" element={
+              <ProtectedRoute>
+                <AdminEvents />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/transactions" element={
+              <ProtectedRoute>
+                <AdminTransactions />
+              </ProtectedRoute>
+            } />
             <Route path="/admin/setup" element={
               <ProtectedRoute>
                 <AdminSetup />
