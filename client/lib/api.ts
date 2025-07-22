@@ -1,0 +1,206 @@
+// API service for communicating with backend
+
+const API_BASE_URL = '/api';
+
+interface ApiResponse<T = any> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  errors?: Array<{ field: string; message: string }>;
+  upgradeRequired?: boolean;
+}
+
+class ApiService {
+  private getAuthToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
+  private setAuthToken(token: string): void {
+    localStorage.setItem('authToken', token);
+  }
+
+  private removeAuthToken(): void {
+    localStorage.removeItem('authToken');
+  }
+
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<ApiResponse<T>> {
+    const token = this.getAuthToken();
+    
+    const config: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+      const data: ApiResponse<T> = await response.json();
+      
+      // Handle authentication errors
+      if (response.status === 401 || response.status === 403) {
+        this.removeAuthToken();
+        window.location.href = '/login';
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('API Request Error:', error);
+      return {
+        success: false,
+        message: 'خطا در ارتباط با سرور'
+      };
+    }
+  }
+
+  // Auth Methods
+  async register(userData: {
+    fullName: string;
+    email: string;
+    password: string;
+    accountType?: 'PERSONAL' | 'BUSINESS';
+  }): Promise<ApiResponse<{ user: any; token: string }>> {
+    const response = await this.request<{ user: any; token: string }>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+
+    if (response.success && response.data?.token) {
+      this.setAuthToken(response.data.token);
+    }
+
+    return response;
+  }
+
+  async login(credentials: {
+    email: string;
+    password: string;
+  }): Promise<ApiResponse<{ user: any; token: string }>> {
+    const response = await this.request<{ user: any; token: string }>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+
+    if (response.success && response.data?.token) {
+      this.setAuthToken(response.data.token);
+    }
+
+    return response;
+  }
+
+  async getCurrentUser(): Promise<ApiResponse<{ user: any }>> {
+    return this.request<{ user: any }>('/auth/me');
+  }
+
+  logout(): void {
+    this.removeAuthToken();
+    window.location.href = '/';
+  }
+
+  // Event Methods
+  async getEvents(): Promise<ApiResponse<{ events: any[] }>> {
+    return this.request<{ events: any[] }>('/events');
+  }
+
+  async getEvent(id: string): Promise<ApiResponse<{ event: any }>> {
+    return this.request<{ event: any }>(`/events/${id}`);
+  }
+
+  async createEvent(eventData: {
+    title: string;
+    description?: string;
+    eventDate: string;
+    eventType?: string;
+    reminderDays?: number[];
+    reminderMethods?: string[];
+  }): Promise<ApiResponse<{ event: any }>> {
+    return this.request<{ event: any }>('/events', {
+      method: 'POST',
+      body: JSON.stringify(eventData),
+    });
+  }
+
+  async updateEvent(id: string, eventData: Partial<{
+    title: string;
+    description?: string;
+    eventDate: string;
+    eventType?: string;
+    reminderDays?: number[];
+    reminderMethods?: string[];
+  }>): Promise<ApiResponse<{ event: any }>> {
+    return this.request<{ event: any }>(`/events/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(eventData),
+    });
+  }
+
+  async deleteEvent(id: string): Promise<ApiResponse> {
+    return this.request(`/events/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getEventStats(): Promise<ApiResponse<{ stats: any }>> {
+    return this.request<{ stats: any }>('/events/stats/overview');
+  }
+
+  // Subscription Methods
+  async getCurrentSubscription(): Promise<ApiResponse<{ 
+    subscription: any; 
+    currentType: string; 
+    eventCount: number; 
+    limits: any; 
+  }>> {
+    return this.request<{ 
+      subscription: any; 
+      currentType: string; 
+      eventCount: number; 
+      limits: any; 
+    }>('/subscriptions/current');
+  }
+
+  async getSubscriptionPlans(): Promise<ApiResponse<{ plans: any }>> {
+    return this.request<{ plans: any }>('/subscriptions/plans');
+  }
+
+  async upgradeSubscription(planType: 'PREMIUM' | 'BUSINESS'): Promise<ApiResponse<{
+    subscriptionId: string;
+    amount: number;
+    paymentUrl: string;
+  }>> {
+    return this.request<{
+      subscriptionId: string;
+      amount: number;
+      paymentUrl: string;
+    }>('/subscriptions/upgrade', {
+      method: 'POST',
+      body: JSON.stringify({ planType }),
+    });
+  }
+
+  async confirmPayment(subscriptionId: string, paymentStatus: 'success' | 'failed'): Promise<ApiResponse> {
+    return this.request('/subscriptions/confirm-payment', {
+      method: 'POST',
+      body: JSON.stringify({ subscriptionId, paymentStatus }),
+    });
+  }
+
+  async cancelSubscription(): Promise<ApiResponse> {
+    return this.request('/subscriptions/cancel', {
+      method: 'POST',
+    });
+  }
+
+  // Utility Methods
+  isAuthenticated(): boolean {
+    return !!this.getAuthToken();
+  }
+}
+
+export const apiService = new ApiService();
+export default apiService;
