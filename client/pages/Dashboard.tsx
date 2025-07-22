@@ -72,7 +72,7 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error loading dashboard:', error);
       toast({
-        title: "خطا در بارگ��اری اطلاعات",
+        title: "خطا در بارگذاری اطلاعات",
         description: "لطفاً صفحه را مجدداً بارگذاری کنید",
         variant: "destructive"
       });
@@ -198,7 +198,7 @@ export default function Dashboard() {
                   </Button>
                 </Link>
               )}
-              {user?.email?.includes('admin') && (
+              {user?.email === 'farnadadmin@gmail.com' && (
                 <Link to="/admin">
                   <Button variant="outline" size="sm" className="text-red-600 border-red-600 hover:bg-red-50">
                     <User className="w-4 h-4 ml-1" />
