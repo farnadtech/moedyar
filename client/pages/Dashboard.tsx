@@ -250,6 +250,18 @@ export default function Dashboard() {
                   </Button>
                 </Link>
               )}
+              {isBusiness && (
+                <Link to="/team">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                  >
+                    <Users className="w-4 h-4 ml-1" />
+                    مدیریت تیم
+                  </Button>
+                </Link>
+              )}
               <Link to="/settings">
                 <Button variant="ghost" size="sm">
                   <Settings className="w-4 h-4 ml-1" />
@@ -393,7 +405,7 @@ export default function Dashboard() {
                             {[...new Set(event.reminders.map((r) => r.daysBefore))]
                               .sort((a, b) => a - b)
                               .join("، ")}{" "}
-                            روز قبل
+                            روز قب��
                           </div>
                         </div>
                         {event.description && (
@@ -428,7 +440,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">رویدادها:</span>
+                    <span className="text-gray-600">روی��ادها:</span>
                     <span className="font-medium">
                       {isPremium
                         ? `${events.length} رویداد`
@@ -501,7 +513,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-red-700 mb-4">
-                    دسترسی ادمین به مدی��یت کاربران و تنظیمات سیستم
+                    دسترسی ادمین به مدیریت کاربران و تنظیمات سیستم
                   </p>
                   <div className="space-y-2">
                     <Link to="/admin/dashboard" className="block">
@@ -514,7 +526,7 @@ export default function Dashboard() {
                     </Link>
                     <Link to="/admin/settings" className="block">
                       <Button className="w-full bg-red-600 hover:bg-red-700">
-                        تنظیمات سیستم
+                        تنظیمات سی��تم
                       </Button>
                     </Link>
                   </div>
