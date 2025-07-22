@@ -5,6 +5,7 @@ import { handleDemo } from "./routes/demo";
 import authRoutes from "./routes/auth";
 import eventRoutes from "./routes/events";
 import subscriptionRoutes from "./routes/subscriptions";
+import notificationRoutes from "./routes/notifications";
 
 // Load environment variables
 dotenv.config();
