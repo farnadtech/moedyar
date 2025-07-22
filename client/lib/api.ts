@@ -97,6 +97,16 @@ class ApiService {
     return this.request<{ user: any }>('/auth/me');
   }
 
+  async updateProfile(profileData: {
+    fullName: string;
+    phone?: string;
+  }): Promise<ApiResponse<{ user: any }>> {
+    return this.request<{ user: any }>('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(profileData),
+    });
+  }
+
   logout(): void {
     this.removeAuthToken();
     window.location.href = '/';
