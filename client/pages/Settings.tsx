@@ -184,6 +184,34 @@ export default function Settings() {
     }
   };
 
+  const handleChangePassword = () => {
+    toast({
+      title: "🔧 در حال توسعه",
+      description: "قابلیت تغییر رمز عبور به زودی اضافه خواهد شد",
+    });
+  };
+
+  const handleLogoutAllDevices = () => {
+    toast({
+      title: "خروج از همه دستگاه‌ها",
+      description: "شما از تمام دستگاه‌ها خارج شدید",
+    });
+    apiService.logout();
+  };
+
+  const handleDeleteAccount = () => {
+    const confirmed = window.confirm(
+      'آیا واقعاً می‌خواهید حساب کاربری خود را برای همیشه حذف کنید؟ این عمل غیرقابل بازگشت است.'
+    );
+
+    if (confirmed) {
+      toast({
+        title: "🔧 در حال توسعه",
+        description: "قابلیت حذف حساب به زودی اضافه خواهد ش��",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
