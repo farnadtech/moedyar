@@ -28,26 +28,39 @@ class ApiService {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const token = this.getAuthToken();
-    
+
     const config: RequestInit = {
+      method: 'GET',
+      ...options,
       headers: {
         'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
-      ...options,
     };
 
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
+        return {
+          success: false,
+          message: 'سرور پاسخ نامعتبر ارسال کرد'
+        };
+      }
+
       const data: ApiResponse<T> = await response.json();
-      
+
       // Handle authentication errors
       if (response.status === 401 || response.status === 403) {
         this.removeAuthToken();
         window.location.href = '/login';
       }
-      
+
       return data;
     } catch (error) {
       console.error('API Request Error:', error);
