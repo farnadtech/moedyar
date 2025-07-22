@@ -108,7 +108,7 @@ export default function AddEvent() {
 
   const handleReminderMethodToggle = (method: string) => {
     const methodData = reminderMethods.find(m => m.value === method);
-    
+
     // Check if method is premium and user doesn't have premium
     if (!methodData?.free && userSubscription?.currentType === 'FREE') {
       toast({
@@ -119,11 +119,24 @@ export default function AddEvent() {
       return;
     }
 
-    setSelectedReminderMethods(prev => 
-      prev.includes(method) 
+    setSelectedReminderMethods(prev =>
+      prev.includes(method)
         ? prev.filter(m => m !== method)
         : [...prev, method]
     );
+  };
+
+  const handleEventTypeChange = (newEventType: string) => {
+    setFormData(prev => ({ ...prev, eventType: newEventType }));
+    // Clear dynamic fields when event type changes
+    setDynamicFields({});
+  };
+
+  const handleDynamicFieldChange = (key: string, value: string) => {
+    setDynamicFields(prev => ({
+      ...prev,
+      [key]: value
+    }));
   };
 
   const validateForm = () => {
@@ -320,7 +333,7 @@ export default function AddEvent() {
                 {/* Event Type */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    نوع رویداد
+                    نوع ر��یداد
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {eventTypes.map((type) => (
