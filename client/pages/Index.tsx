@@ -5,6 +5,25 @@ import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Index() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Redirect authenticated users to dashboard
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white flex items-center justify-center" dir="rtl">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">در حال بارگذاری...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white" dir="rtl">
       {/* Header */}
