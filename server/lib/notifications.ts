@@ -117,9 +117,21 @@ export async function sendEmailNotification(data: NotificationData): Promise<boo
 
 export async function sendSMSNotification(data: NotificationData, phoneNumber: string): Promise<boolean> {
   try {
+    // Check if SMS is configured
+    if (!smsConfig.username || !smsConfig.password ||
+        smsConfig.username === 'your-username' || smsConfig.password === 'your-password') {
+      console.log('📱 SMS notification (DEMO MODE - not actually sent):', {
+        to: phoneNumber,
+        title: data.eventTitle,
+        daysUntil: data.daysUntil,
+        note: 'Configure SMS_USERNAME and SMS_PASSWORD in .env to send real SMS'
+      });
+      return true; // Simulate success for development
+    }
+
     const { eventTitle, daysUntil } = data;
-    
-    const message = daysUntil === 0 
+
+    const message = daysUntil === 0
       ? `🔔 رویداد یار: امروز روز "${eventTitle}" شماست! برای جزئیات بیشتر به داشبورد مراجعه کنید.`
       : `⏰ رویداد یار: ${daysUntil} روز تا "${eventTitle}" باقی مانده. داشبورد: ${process.env.APP_URL || 'http://localhost:8080'}`;
 
@@ -140,7 +152,7 @@ export async function sendSMSNotification(data: NotificationData, phoneNumber: s
     });
 
     const result = await response.json();
-    
+
     if (result.RetStatus === 1) {
       console.log('SMS sent successfully:', result);
       return true;
