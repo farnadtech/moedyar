@@ -64,6 +64,11 @@ const App = () => (
                 <AdminDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/admin/setup" element={
+              <ProtectedRoute>
+                <AdminSetup />
+              </ProtectedRoute>
+            } />
             <Route path="/api-test" element={
               <ProtectedRoute>
                 <ApiTest />
