@@ -193,7 +193,7 @@ export default function Settings() {
       }
     } catch (error) {
       toast({
-        title: "خطا ��ر ارسال تست",
+        title: "خطا در ارسال تست",
         description: "خطا در ارتباط با سرور",
         variant: "destructive",
       });
@@ -790,7 +790,7 @@ export default function Settings() {
                   <CardContent>
                     <div className="space-y-6">
                       <div className="border border-gray-200 rounded-lg p-4">
-                        <h3 className="font-medium mb-2">تغییر رمز عبور</h3>
+                        <h3 className="font-medium mb-2">��غییر رمز عبور</h3>
                         <p className="text-sm text-gray-600 mb-4">
                           برای امنیت بیشتر، رمز عبور خود را به‌طور مرتب تغییر
                           دهید
