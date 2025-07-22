@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { db } from '../lib/db';
 import { authenticateToken, AuthRequest } from '../lib/auth';
-import { requestPayment, verifyPayment, getPaymentStatusMessage } from '../lib/zarinpal';
+import { requestPayment, verifyPayment, getPaymentStatusMessage } from '../lib/zarinpal-simple';
 
 const router = Router();
 
@@ -334,7 +334,7 @@ router.post('/cancel', authenticateToken, async (req: AuthRequest, res: Response
     if (!subscription) {
       return res.status(404).json({
         success: false,
-        message: 'اشتر��ک فعالی یافت نشد'
+        message: 'اشتراک فعالی یافت نشد'
       });
     }
 
