@@ -535,6 +535,60 @@ export default function Dashboard() {
               </Card>
             )}
 
+            {/* Business Features */}
+            {isBusiness && (
+              <Card className="border-purple-200 bg-purple-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-purple-900">
+                    <Users className="w-5 h-5" />
+                    امکانات کسب‌وکار
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <Link to="/team" className="block">
+                      <Button
+                        variant="outline"
+                        className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      >
+                        <Users className="w-4 h-4 ml-1" />
+                        مدیریت تیم
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="outline"
+                      className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      onClick={() => {
+                        toast({
+                          title: "🔧 در حال توسعه",
+                          description: "تقویم مشترک به زودی اضافه می‌شود",
+                        });
+                      }}
+                    >
+                      <Calendar className="w-4 h-4 ml-1" />
+                      تقویم مشترک
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      onClick={() => {
+                        toast({
+                          title: "🔧 در حال توسعه",
+                          description: "گزارش‌گیری تیم به زودی اضافه می‌شود",
+                        });
+                      }}
+                    >
+                      <Eye className="w-4 h-4 ml-1" />
+                      گزارش‌گیری تیم
+                    </Button>
+                  </div>
+                  <p className="text-xs text-purple-600 mt-4">
+                    ✨ امکانات ویژه حساب کسب‌وکار شما
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Premium Features Preview */}
             {!isPremium && user?.email !== "farnadadmin@gmail.com" && (
               <Card className="border-brand-200 bg-brand-50">
