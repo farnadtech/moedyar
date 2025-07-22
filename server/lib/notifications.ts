@@ -1,4 +1,6 @@
-import nodemailer from 'nodemailer';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const nodemailer = require('nodemailer');
 
 // Email configuration
 const emailTransporter = nodemailer.createTransporter({
