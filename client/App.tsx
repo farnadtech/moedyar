@@ -11,7 +11,11 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import RegisterPersonal from "./pages/RegisterPersonal";
 import Dashboard from "./pages/Dashboard";
+import AddEvent from "./pages/AddEvent";
+import Settings from "./pages/Settings";
 import Placeholder from "./pages/Placeholder";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./hooks/useAuth";
 
 const queryClient = new QueryClient();
 
