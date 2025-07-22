@@ -59,12 +59,9 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await apiService.login({
-        email: formData.email,
-        password: formData.password
-      });
+      const success = await login(formData.email, formData.password);
 
-      if (response.success) {
+      if (success) {
         toast({
           title: "✅ ورود موفق",
           description: "در حال انتقال به داشبورد...",
@@ -77,7 +74,7 @@ export default function Login() {
       } else {
         toast({
           title: "خطا در ورود",
-          description: response.message || "ایمیل یا رمز عبور اشتباه است",
+          description: "ایمیل یا رمز عبور اشتباه است",
           variant: "destructive"
         });
       }
