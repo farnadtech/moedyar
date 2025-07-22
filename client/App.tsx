@@ -57,12 +57,17 @@ const App = () => (
                 <Settings />
               </ProtectedRoute>
             } />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
 
             <Route path="/premium" element={<Premium />} />
             <Route path="/demo" element={
               <Placeholder
                 title="نمایش دمو"
-                description="مشاهده ویدیوی آمو��شی و تست سیستم"
+                description="مشاهده ویدیوی آموزشی و تست سیستم"
               />
             } />
             <Route path="/contact" element={
