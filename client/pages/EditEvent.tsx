@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PersianDateInput } from "@/components/ui/persian-date-input";
+import { PersianCalendarPicker } from "@/components/ui/persian-calendar-picker";
 import { Calendar, ArrowRight, Save, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -406,7 +406,7 @@ export default function EditEvent() {
             className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
           >
             <ArrowRight className="w-4 h-4" />
-            بازگشت ��ه داشبورد
+            بازگشت به داشبورد
           </Link>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
