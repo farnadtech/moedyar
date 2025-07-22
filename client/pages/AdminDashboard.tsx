@@ -159,6 +159,12 @@ export default function AdminDashboard() {
                 تراکنش‌ها
               </Button>
             </Link>
+            <Link to="/admin/settings">
+              <Button variant="outline">
+                <Activity className="w-4 h-4 mr-2" />
+                تنظیمات سیستم
+              </Button>
+            </Link>
             <Link to="/admin/setup">
               <Button variant="outline">
                 <Activity className="w-4 h-4 mr-2" />
