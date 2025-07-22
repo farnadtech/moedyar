@@ -86,19 +86,39 @@ export default function Settings() {
     setSaving(true);
 
     try {
-      // Here you would call an API to update profile
-      // For now, we'll simulate the update
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "✅ پروفایل به‌روزرسانی شد",
-        description: "تغییرات با موفقیت ذخیره شد"
+      const response = await apiService.updateProfile({
+        fullName: profileData.fullName,
+        phone: profileData.phone
       });
 
+      if (response.success) {
+        // Update local user data
+        if (response.data?.user) {
+          setUser(response.data.user);
+          setProfileData({
+            fullName: response.data.user.fullName || "",
+            email: response.data.user.email || "",
+            phone: response.data.user.phone || ""
+          });
+        }
+
+        toast({
+          title: "✅ پروفایل به‌روزرسانی شد",
+          description: "تغییرات با موفقیت ذخیره شد"
+        });
+      } else {
+        toast({
+          title: "خطا در به‌روزرسانی",
+          description: response.message || "لطفاً دوباره تلاش کنید",
+          variant: "destructive"
+        });
+      }
+
     } catch (error) {
+      console.error('Profile update error:', error);
       toast({
         title: "خطا در به‌روزرسانی",
-        description: "لطفاً دوباره تلاش کنید",
+        description: "خطا در ارتباط با سرور",
         variant: "destructive"
       });
     } finally {
@@ -316,7 +336,7 @@ export default function Settings() {
                       تنظیمات یادآوری
                     </CardTitle>
                     <CardDescription>
-                      نحوه دریافت یادآوری‌ها را تنظیم کنید
+                      نحوه دریافت یادآور��‌ها را تنظیم کنید
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
