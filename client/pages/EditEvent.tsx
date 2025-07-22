@@ -123,7 +123,7 @@ export default function EditEvent() {
           {
             key: "renewal_terms",
             label: "شرایط تمدید",
-            placeholder: "نحوه ��مدید قرارداد",
+            placeholder: "نحوه تمدید قرارداد",
             required: false,
           },
         ];
