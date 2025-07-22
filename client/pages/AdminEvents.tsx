@@ -102,7 +102,7 @@ export default function AdminEvents() {
   };
 
   const formatDate = (dateString: string) => {
-    return formatPersianDate(dateString, { format: 'long' });
+    return formatPersianDate(dateString, { format: "long" });
   };
 
   if (loading && events.length === 0) {

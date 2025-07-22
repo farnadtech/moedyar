@@ -21,11 +21,11 @@ export default function SandboxPayment() {
 
   const handlePaymentResult = async (status: "success" | "failed") => {
     setIsProcessing(true);
-    
+
     try {
       // Simulate payment processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       if (status === "success") {
         // Redirect to verify endpoint with success status
         window.location.href = `/api/subscriptions/verify-payment?Authority=${authority}&Status=OK&subscription=${subscription}`;
@@ -50,7 +50,10 @@ export default function SandboxPayment() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center p-4" dir="rtl">
+    <div
+      className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center p-4"
+      dir="rtl"
+    >
       <div className="max-w-md w-full">
         <Card className="border-2 border-green-200 shadow-lg">
           <CardHeader className="text-center bg-green-50 rounded-t-lg">
@@ -62,16 +65,20 @@ export default function SandboxPayment() {
               🧪 محیط آزمایشی - هیچ پول واقعی دریافت نمی‌شود
             </p>
           </CardHeader>
-          
+
           <CardContent className="p-6 space-y-6">
             {/* Payment Details */}
             <div className="space-y-4">
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium text-gray-900 mb-3">جزئیات پرداخت</h3>
+                <h3 className="font-medium text-gray-900 mb-3">
+                  جزئیات پرداخت
+                </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">توضیحات:</span>
-                    <span className="font-medium">{decodeURIComponent(description || "")}</span>
+                    <span className="font-medium">
+                      {decodeURIComponent(description || "")}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">مبلغ:</span>
@@ -85,10 +92,11 @@ export default function SandboxPayment() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <p className="text-blue-800 text-sm">
-                  📝 این صفحه برای تست درگاه پرداخت طراحی شده است. در محیط واقعی، کاربران به صفحه زرین‌پال هدایت می‌شوند.
+                  📝 این صفحه برای تست درگاه پرداخت طراحی شده است. در محیط
+                  واقعی، کاربران به صفحه زرین‌پال هدایت می‌شوند.
                 </p>
               </div>
             </div>
@@ -104,7 +112,7 @@ export default function SandboxPayment() {
                   <CheckCircle className="w-5 h-5 ml-2" />
                   شبیه‌سازی پرداخت موفق
                 </Button>
-                
+
                 <Button
                   onClick={() => handlePaymentResult("failed")}
                   variant="destructive"
@@ -114,7 +122,7 @@ export default function SandboxPayment() {
                   <XCircle className="w-5 h-5 ml-2" />
                   شبیه‌سازی پرداخت ناموفق
                 </Button>
-                
+
                 <Button
                   onClick={() => navigate("/dashboard")}
                   variant="outline"

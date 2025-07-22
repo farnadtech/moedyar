@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
-import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from './button';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
-import { cn } from '@/lib/utils';
-import jalaali from 'jalaali-js';
+import { useState, useRef, useEffect } from "react";
+import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "./button";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { cn } from "@/lib/utils";
+import jalaali from "jalaali-js";
 
 interface PersianCalendarPickerProps {
   value?: string; // YYYY-MM-DD format for ISO date
@@ -16,11 +16,21 @@ interface PersianCalendarPickerProps {
 }
 
 const persianMonths = [
-  'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
-  'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+  "فروردین",
+  "اردیبهشت",
+  "خرداد",
+  "تیر",
+  "مرداد",
+  "شهریور",
+  "مهر",
+  "آبان",
+  "آذر",
+  "دی",
+  "بهمن",
+  "اسفند",
 ];
 
-const persianWeekDays = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+const persianWeekDays = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
 
 interface JalaaliDate {
   jy: number;
@@ -35,10 +45,14 @@ export function PersianCalendarPicker({
   className,
   disabled,
   name,
-  required
+  required,
 }: PersianCalendarPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [displayDate, setDisplayDate] = useState<JalaaliDate>({ jy: 1403, jm: 1, jd: 1 });
+  const [displayDate, setDisplayDate] = useState<JalaaliDate>({
+    jy: 1403,
+    jm: 1,
+    jd: 1,
+  });
   const [selectedDate, setSelectedDate] = useState<JalaaliDate | null>(null);
 
   // Convert Gregorian to Jalaali
@@ -46,10 +60,14 @@ export function PersianCalendarPicker({
     if (!gregorianDate) return null;
     try {
       const date = new Date(gregorianDate);
-      const jDate = jalaali.toJalaali(date.getFullYear(), date.getMonth() + 1, date.getDate());
+      const jDate = jalaali.toJalaali(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate(),
+      );
       return { jy: jDate.jy, jm: jDate.jm, jd: jDate.jd };
     } catch (error) {
-      console.error('Error converting to Jalaali:', error);
+      console.error("Error converting to Jalaali:", error);
       return null;
     }
   };
@@ -58,16 +76,16 @@ export function PersianCalendarPicker({
   const jalaaliToGregorian = (jDate: JalaaliDate): string => {
     try {
       const gDate = jalaali.toGregorian(jDate.jy, jDate.jm, jDate.jd);
-      return `${gDate.gy}-${String(gDate.gm).padStart(2, '0')}-${String(gDate.gd).padStart(2, '0')}`;
+      return `${gDate.gy}-${String(gDate.gm).padStart(2, "0")}-${String(gDate.gd).padStart(2, "0")}`;
     } catch (error) {
-      console.error('Error converting to Gregorian:', error);
-      return '';
+      console.error("Error converting to Gregorian:", error);
+      return "";
     }
   };
 
   // Format Persian date for display
   const formatPersianDate = (jDate: JalaaliDate | null): string => {
-    if (!jDate) return '';
+    if (!jDate) return "";
     return `${jDate.jd} ${persianMonths[jDate.jm - 1]} ${jDate.jy}`;
   };
 
@@ -98,17 +116,24 @@ export function PersianCalendarPicker({
 
     // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const isSelected = selectedDate && 
-        selectedDate.jy === displayDate.jy && 
-        selectedDate.jm === displayDate.jm && 
+      const isSelected =
+        selectedDate &&
+        selectedDate.jy === displayDate.jy &&
+        selectedDate.jm === displayDate.jm &&
         selectedDate.jd === day;
 
       const isToday = (() => {
         const today = new Date();
-        const todayJalaali = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
-        return todayJalaali.jy === displayDate.jy && 
-               todayJalaali.jm === displayDate.jm && 
-               todayJalaali.jd === day;
+        const todayJalaali = jalaali.toJalaali(
+          today.getFullYear(),
+          today.getMonth() + 1,
+          today.getDate(),
+        );
+        return (
+          todayJalaali.jy === displayDate.jy &&
+          todayJalaali.jm === displayDate.jm &&
+          todayJalaali.jd === day
+        );
       })();
 
       days.push(
@@ -118,13 +143,15 @@ export function PersianCalendarPicker({
           className={cn(
             "w-8 h-8 text-sm rounded-md hover:bg-brand-100 focus:bg-brand-100",
             isSelected && "bg-brand-600 text-white hover:bg-brand-700",
-            isToday && !isSelected && "bg-brand-200 text-brand-800 font-semibold",
-            "transition-colors"
+            isToday &&
+              !isSelected &&
+              "bg-brand-200 text-brand-800 font-semibold",
+            "transition-colors",
           )}
           onClick={() => handleDateSelect(day)}
         >
           {day}
-        </button>
+        </button>,
       );
     }
 
@@ -140,7 +167,7 @@ export function PersianCalendarPicker({
   };
 
   const handlePrevMonth = () => {
-    setDisplayDate(prev => {
+    setDisplayDate((prev) => {
       if (prev.jm === 1) {
         return { jy: prev.jy - 1, jm: 12, jd: 1 };
       } else {
@@ -150,7 +177,7 @@ export function PersianCalendarPicker({
   };
 
   const handleNextMonth = () => {
-    setDisplayDate(prev => {
+    setDisplayDate((prev) => {
       if (prev.jm === 12) {
         return { jy: prev.jy + 1, jm: 1, jd: 1 };
       } else {
@@ -175,11 +202,15 @@ export function PersianCalendarPicker({
   // Initialize display date to current month
   useEffect(() => {
     const today = new Date();
-    const todayJalaali = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    const todayJalaali = jalaali.toJalaali(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      today.getDate(),
+    );
     setDisplayDate(todayJalaali);
   }, []);
 
-  const displayValue = selectedDate ? formatPersianDate(selectedDate) : '';
+  const displayValue = selectedDate ? formatPersianDate(selectedDate) : "";
 
   return (
     <div className={cn("relative", className)}>
@@ -189,7 +220,7 @@ export function PersianCalendarPicker({
             variant="outline"
             className={cn(
               "w-full justify-start text-right font-normal",
-              !selectedDate && "text-muted-foreground"
+              !selectedDate && "text-muted-foreground",
             )}
             disabled={disabled}
           >
@@ -241,12 +272,12 @@ export function PersianCalendarPicker({
           </div>
         </PopoverContent>
       </Popover>
-      
+
       {/* Hidden input for form submission */}
       <input
         type="hidden"
         name={name}
-        value={value || ''}
+        value={value || ""}
         required={required}
       />
     </div>

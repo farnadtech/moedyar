@@ -23,7 +23,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
-import { formatPersianDate, formatPersianRelativeTime, formatPersianTime } from "@/lib/persian-date";
+import {
+  formatPersianDate,
+  formatPersianRelativeTime,
+  formatPersianTime,
+} from "@/lib/persian-date";
 
 interface Event {
   id: string;
@@ -132,11 +136,11 @@ export default function Dashboard() {
   };
 
   const formatDate = (dateString: string) => {
-    return formatPersianDate(dateString, { format: 'long' });
+    return formatPersianDate(dateString, { format: "long" });
   };
 
   const formatDateTime = (dateString: string) => {
-    return formatPersianDate(dateString, { format: 'long', includeTime: true });
+    return formatPersianDate(dateString, { format: "long", includeTime: true });
   };
 
   const formatRelativeDate = (dateString: string) => {
@@ -309,9 +313,7 @@ export default function Dashboard() {
                   </Button>
                 ) : (
                   <Link to="/add-event">
-                    <Button
-                      className="bg-brand-600 hover:bg-brand-700"
-                    >
+                    <Button className="bg-brand-600 hover:bg-brand-700">
                       <Plus className="w-4 h-4 ml-1" />
                       افزودن رویداد
                     </Button>
@@ -319,11 +321,11 @@ export default function Dashboard() {
                 )}
                 {!isPremium && events.length >= maxEvents && (
                   <p className="text-sm text-gray-500 mt-2 text-center">
-                  برای افزودن رویداد بیشتر،{" "}
-                  <Link to="/premium" className="text-brand-600 underline">
-                    ارتقا به پرمیوم
-                  </Link>
-                </p>
+                    برای افزودن رویداد بیشتر،{" "}
+                    <Link to="/premium" className="text-brand-600 underline">
+                      ارتقا به پرمیوم
+                    </Link>
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -415,7 +417,11 @@ export default function Dashboard() {
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Bell className="w-4 h-4" />
                             یادآوری:{" "}
-                            {[...new Set(event.reminders.map((r) => r.daysBefore))]
+                            {[
+                              ...new Set(
+                                event.reminders.map((r) => r.daysBefore),
+                              ),
+                            ]
                               .sort((a, b) => a - b)
                               .join("، ")}{" "}
                             روز قبل
@@ -491,7 +497,10 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای امروز:</span>
                     <span className="font-medium text-yellow-600">
-                      {events.filter((e) => getDaysUntil(e.eventDate) === 0).length}
+                      {
+                        events.filter((e) => getDaysUntil(e.eventDate) === 0)
+                          .length
+                      }
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -508,7 +517,10 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">رویدادهای گذشته:</span>
                     <span className="font-medium text-red-600">
-                      {events.filter((e) => getDaysUntil(e.eventDate) < 0).length}
+                      {
+                        events.filter((e) => getDaysUntil(e.eventDate) < 0)
+                          .length
+                      }
                     </span>
                   </div>
                 </div>

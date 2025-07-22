@@ -331,7 +331,7 @@ export default function AddEvent() {
       try {
         const [subscriptionResponse, eventsResponse] = await Promise.all([
           apiService.getCurrentSubscription(),
-          apiService.getEvents()
+          apiService.getEvents(),
         ]);
 
         if (subscriptionResponse.success) {
@@ -348,7 +348,8 @@ export default function AddEvent() {
           if (currentType === "FREE" && events.length >= 3) {
             toast({
               title: "محدودیت رویداد",
-              description: "شما به حداکثر رویداد در پلن رایگان رسیده‌اید. برای افزودن رویداد بیشتر ارتقا دهید.",
+              description:
+                "شما به حداکثر رویداد در پلن رایگان رسیده‌اید. برای افزودن رویداد بیشتر ارتقا دهید.",
               variant: "destructive",
             });
             navigate("/premium");
@@ -447,7 +448,9 @@ export default function AddEvent() {
                     </label>
                     <PersianCalendarPicker
                       value={formData.eventDate}
-                      onChange={(date) => setFormData(prev => ({ ...prev, eventDate: date }))}
+                      onChange={(date) =>
+                        setFormData((prev) => ({ ...prev, eventDate: date }))
+                      }
                       placeholder="انتخاب تاریخ رویداد"
                       className={errors.eventDate ? "border-red-500" : ""}
                       name="eventDate"

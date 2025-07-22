@@ -1,50 +1,73 @@
 // Persian/Solar calendar utility functions
 
 const persianMonths = [
-  "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
-  "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+  "فروردین",
+  "اردیبهشت",
+  "خرداد",
+  "تیر",
+  "مرداد",
+  "شهریور",
+  "مهر",
+  "آبان",
+  "آذر",
+  "دی",
+  "بهمن",
+  "اسفند",
 ];
 
 const persianWeekdays = [
-  "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه"
+  "یکشنبه",
+  "دوشنبه",
+  "سه‌شنبه",
+  "چهارشنبه",
+  "پنج‌شنبه",
+  "جمعه",
+  "شنبه",
 ];
 
 // Convert Gregorian date to Persian
-export function gregorianToPersian(date: Date | string): { year: number, month: number, day: number } {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  
+export function gregorianToPersian(date: Date | string): {
+  year: number;
+  month: number;
+  day: number;
+} {
+  const d = typeof date === "string" ? new Date(date) : date;
+
   // Simple approximation - in a real app you'd use a proper calendar library
   // This is a simplified conversion for demonstration
   const gregorianYear = d.getFullYear();
   const persianYear = gregorianYear - 621;
-  
+
   return {
     year: persianYear,
     month: d.getMonth() + 1,
-    day: d.getDate()
+    day: d.getDate(),
   };
 }
 
 // Format Persian date for display
-export function formatPersianDate(date: Date | string, options: {
-  includeWeekday?: boolean;
-  includeTime?: boolean;
-  format?: 'short' | 'long';
-} = {}): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  
+export function formatPersianDate(
+  date: Date | string,
+  options: {
+    includeWeekday?: boolean;
+    includeTime?: boolean;
+    format?: "short" | "long";
+  } = {},
+): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+
   // For now, we'll use the browser's built-in Persian locale support
   // which provides solar calendar dates
-  const formatter = new Intl.DateTimeFormat('fa-IR', {
-    year: 'numeric',
-    month: options.format === 'short' ? 'numeric' : 'long',
-    day: 'numeric',
-    ...(options.includeWeekday && { weekday: 'long' }),
-    ...(options.includeTime && { 
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    })
+  const formatter = new Intl.DateTimeFormat("fa-IR", {
+    year: "numeric",
+    month: options.format === "short" ? "numeric" : "long",
+    day: "numeric",
+    ...(options.includeWeekday && { weekday: "long" }),
+    ...(options.includeTime && {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }),
   });
 
   return formatter.format(d);
@@ -52,7 +75,7 @@ export function formatPersianDate(date: Date | string, options: {
 
 // Format relative time in Persian
 export function formatPersianRelativeTime(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
+  const d = typeof date === "string" ? new Date(date) : date;
   const now = new Date();
   const diffInMs = d.getTime() - now.getTime();
   const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
@@ -81,16 +104,16 @@ export function formatPersianRelativeTime(date: Date | string): string {
 
 // Get Persian weekday name
 export function getPersianWeekday(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
+  const d = typeof date === "string" ? new Date(date) : date;
   return persianWeekdays[d.getDay()];
 }
 
 // Format time in Persian
 export function formatPersianTime(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleTimeString('fa-IR', { 
-    hour: '2-digit', 
-    minute: '2-digit',
-    hour12: false 
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleTimeString("fa-IR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
   });
 }

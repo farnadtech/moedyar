@@ -232,7 +232,7 @@ export default function Settings() {
 
   const handleCancelSubscription = async () => {
     const confirmed = window.confirm(
-      "آیا مطمئن هستید که می‌خواهید اشتراک خود را لغو کنید؟ پس از لغو، به حساب رایگان بازمی‌گردید."
+      "آیا مطمئن هستید که می‌خواهید اشتراک خود را لغو کنید؟ پس از لغو، به حساب رایگان بازمی‌گردید.",
     );
 
     if (!confirmed) return;

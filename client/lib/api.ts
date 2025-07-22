@@ -85,12 +85,16 @@ class ApiService {
     } catch (error) {
       // Check if it's a network/fetch error (often caused by browser extensions)
       if (error instanceof TypeError && error.message.includes("fetch")) {
-        console.warn("Network fetch error (possibly due to browser extensions):", error.message);
+        console.warn(
+          "Network fetch error (possibly due to browser extensions):",
+          error.message,
+        );
         // For auth endpoints, don't treat this as an auth failure
         if (endpoint.includes("/auth/me")) {
           return {
             success: false,
-            message: "خطا در ارتباط با سرور - لطفاً صفحه را مجدداً بارگذاری کنید",
+            message:
+              "خطا در ارتباط با سرور - لطفاً صفحه را مجدداً بارگذاری کنید",
           };
         }
       }

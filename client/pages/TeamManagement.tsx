@@ -172,8 +172,8 @@ export default function TeamManagement() {
     setSaving(true);
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       saveTeamMembersToStorage(teamMembers);
       toast({
         title: "تغییرات ذخیره شد",
@@ -203,7 +203,7 @@ export default function TeamManagement() {
     }
 
     // Check if email already exists
-    if (teamMembers.some(member => member.email === inviteForm.email)) {
+    if (teamMembers.some((member) => member.email === inviteForm.email)) {
       toast({
         title: "ایمیل تکراری",
         description: "این ایمیل قبلاً در تیم وجود دارد",
@@ -225,7 +225,7 @@ export default function TeamManagement() {
       const updatedMembers = [...teamMembers, newMember];
       setTeamMembers(updatedMembers);
       saveTeamMembersToStorage(updatedMembers);
-      
+
       setInviteForm({ email: "", fullName: "", role: "MEMBER" });
       setInviteDialogOpen(false);
 
@@ -249,14 +249,14 @@ export default function TeamManagement() {
 
   const handleUpdateMember = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!editingMember) return;
 
     try {
-      const updatedMembers = teamMembers.map(member =>
-        member.id === editingMember.id ? editingMember : member
+      const updatedMembers = teamMembers.map((member) =>
+        member.id === editingMember.id ? editingMember : member,
       );
-      
+
       setTeamMembers(updatedMembers);
       saveTeamMembersToStorage(updatedMembers);
       setEditDialogOpen(false);
@@ -277,10 +277,12 @@ export default function TeamManagement() {
 
   const handleRemoveMember = async (memberId: string) => {
     try {
-      const updatedMembers = teamMembers.filter((member) => member.id !== memberId);
+      const updatedMembers = teamMembers.filter(
+        (member) => member.id !== memberId,
+      );
       setTeamMembers(updatedMembers);
       saveTeamMembersToStorage(updatedMembers);
-      
+
       toast({
         title: "عضو حذف شد",
         description: "عضو با موفقیت از تیم حذف شد",
@@ -295,17 +297,17 @@ export default function TeamManagement() {
   };
 
   const handleToggleStatus = (memberId: string) => {
-    const updatedMembers = teamMembers.map(member => {
+    const updatedMembers = teamMembers.map((member) => {
       if (member.id === memberId) {
         const newStatus = member.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
         return { ...member, status: newStatus };
       }
       return member;
     });
-    
+
     setTeamMembers(updatedMembers);
     saveTeamMembersToStorage(updatedMembers);
-    
+
     toast({
       title: "وضعیت تغییر کرد",
       description: "وضعیت عضو با موفقیت تغییر کرد",
@@ -363,7 +365,9 @@ export default function TeamManagement() {
               <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
                 <Users className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">مدیریت تیم</span>
+              <span className="text-xl font-bold text-gray-900">
+                مدیریت تیم
+              </span>
               <Badge className="bg-brand-100 text-brand-800">
                 <Crown className="w-3 h-3 ml-1" />
                 کسب‌وکار
@@ -473,7 +477,10 @@ export default function TeamManagement() {
                   مدیریت اعضای تیم و سطوح دسترسی آن‌ها
                 </CardDescription>
               </div>
-              <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
+              <Dialog
+                open={inviteDialogOpen}
+                onOpenChange={setInviteDialogOpen}
+              >
                 <DialogTrigger asChild>
                   <Button className="bg-brand-600 hover:bg-brand-700">
                     <Plus className="w-4 h-4 ml-1" />
@@ -593,7 +600,7 @@ export default function TeamManagement() {
                           آخرین فعالیت:
                           <br />
                           {new Date(member.lastActiveAt).toLocaleDateString(
-                            "fa-IR"
+                            "fa-IR",
                           )}
                         </div>
                       )}
@@ -612,12 +619,17 @@ export default function TeamManagement() {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleToggleStatus(member.id)}
-                              className={member.status === "ACTIVE" 
-                                ? "text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
-                                : "text-green-600 hover:text-green-700 hover:bg-green-50"
+                              className={
+                                member.status === "ACTIVE"
+                                  ? "text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                                  : "text-green-600 hover:text-green-700 hover:bg-green-50"
                               }
                             >
-                              {member.status === "ACTIVE" ? <UserX className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
+                              {member.status === "ACTIVE" ? (
+                                <UserX className="w-4 h-4" />
+                              ) : (
+                                <UserCheck className="w-4 h-4" />
+                              )}
                             </Button>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
@@ -631,16 +643,21 @@ export default function TeamManagement() {
                               </AlertDialogTrigger>
                               <AlertDialogContent dir="rtl">
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>حذف عضو از تیم</AlertDialogTitle>
+                                  <AlertDialogTitle>
+                                    حذف عضو از تیم
+                                  </AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    آیا مطمئن هستید که می‌خواهید {member.fullName} را از تیم حذف کنید؟
-                                    این عمل قابل بازگشت نیست.
+                                    آیا مطمئن هستید که می‌خواهید{" "}
+                                    {member.fullName} را از تیم حذف کنید؟ این
+                                    عمل قابل بازگشت نیست.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>انصراف</AlertDialogCancel>
                                   <AlertDialogAction
-                                    onClick={() => handleRemoveMember(member.id)}
+                                    onClick={() =>
+                                      handleRemoveMember(member.id)
+                                    }
                                     className="bg-red-600 hover:bg-red-700"
                                   >
                                     حذف عضو
@@ -683,9 +700,7 @@ export default function TeamManagement() {
           <DialogContent dir="rtl">
             <DialogHeader>
               <DialogTitle>ویرایش اطلاعات عضو</DialogTitle>
-              <DialogDescription>
-                اطلاعات عضو را ویرایش کنید
-              </DialogDescription>
+              <DialogDescription>اطلاعات عضو را ویرایش کنید</DialogDescription>
             </DialogHeader>
             {editingMember && (
               <form onSubmit={handleUpdateMember} className="space-y-4">
@@ -695,10 +710,14 @@ export default function TeamManagement() {
                     id="editFullName"
                     value={editingMember.fullName}
                     onChange={(e) =>
-                      setEditingMember(prev => prev ? {
-                        ...prev,
-                        fullName: e.target.value,
-                      } : null)
+                      setEditingMember((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              fullName: e.target.value,
+                            }
+                          : null,
+                      )
                     }
                     placeholder="نام و نام خانوادگی"
                     required
@@ -711,10 +730,14 @@ export default function TeamManagement() {
                     type="email"
                     value={editingMember.email}
                     onChange={(e) =>
-                      setEditingMember(prev => prev ? {
-                        ...prev,
-                        email: e.target.value,
-                      } : null)
+                      setEditingMember((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              email: e.target.value,
+                            }
+                          : null,
+                      )
                     }
                     placeholder="email@example.com"
                     required
@@ -725,10 +748,14 @@ export default function TeamManagement() {
                   <Select
                     value={editingMember.role}
                     onValueChange={(value) =>
-                      setEditingMember(prev => prev ? {
-                        ...prev,
-                        role: value as "ADMIN" | "MEMBER" | "VIEWER",
-                      } : null)
+                      setEditingMember((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              role: value as "ADMIN" | "MEMBER" | "VIEWER",
+                            }
+                          : null,
+                      )
                     }
                   >
                     <SelectTrigger>
@@ -741,9 +768,7 @@ export default function TeamManagement() {
                       <SelectItem value="MEMBER">
                         عضو - ایجاد و ویرایش رویدادها
                       </SelectItem>
-                      <SelectItem value="ADMIN">
-                        مدیر - دسترسی کامل
-                      </SelectItem>
+                      <SelectItem value="ADMIN">مدیر - دسترسی کامل</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

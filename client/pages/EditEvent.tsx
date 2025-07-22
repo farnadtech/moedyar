@@ -166,7 +166,9 @@ export default function EditEvent() {
     }
   };
 
-  const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>([]);
+  const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>(
+    [],
+  );
   const [selectedReminderMethods, setSelectedReminderMethods] = useState<
     string[]
   >([]);
@@ -192,10 +194,10 @@ export default function EditEvent() {
 
       if (response.success && response.data) {
         const event = response.data.event;
-        
+
         // Extract date and time
         const eventDateTime = new Date(event.eventDate);
-        const eventDateOnly = eventDateTime.toISOString().split('T')[0];
+        const eventDateOnly = eventDateTime.toISOString().split("T")[0];
         const eventTimeOnly = eventDateTime.toTimeString().slice(0, 5);
 
         setFormData({
@@ -214,7 +216,9 @@ export default function EditEvent() {
         // Load reminder settings
         if (event.reminders && event.reminders.length > 0) {
           const days = event.reminders.map((r: any) => r.daysBefore);
-          const methods = [...new Set(event.reminders.map((r: any) => r.method))];
+          const methods = [
+            ...new Set(event.reminders.map((r: any) => r.method)),
+          ];
           setSelectedReminderDays(days);
           setSelectedReminderMethods(methods);
         }
@@ -412,7 +416,9 @@ export default function EditEvent() {
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
               <Calendar className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">ویرایش رویداد</span>
+            <span className="text-xl font-bold text-gray-900">
+              ویرایش رویداد
+            </span>
           </div>
         </nav>
       </header>
@@ -477,7 +483,9 @@ export default function EditEvent() {
                     </label>
                     <PersianCalendarPicker
                       value={formData.eventDate}
-                      onChange={(date) => setFormData(prev => ({ ...prev, eventDate: date }))}
+                      onChange={(date) =>
+                        setFormData((prev) => ({ ...prev, eventDate: date }))
+                      }
                       placeholder="انتخاب تاریخ رویداد"
                       className={errors.eventDate ? "border-red-500" : ""}
                       name="eventDate"
