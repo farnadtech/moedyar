@@ -123,7 +123,7 @@ export default function EditEvent() {
           {
             key: "renewal_terms",
             label: "شرایط تمدید",
-            placeholder: "نحوه تمدید قرارداد",
+            placeholder: "نحوه ��مدید قرارداد",
             required: false,
           },
         ];
@@ -281,7 +281,7 @@ export default function EditEvent() {
     if (!methodData?.free && userSubscription?.currentType === "FREE") {
       toast({
         title: "نیاز به حساب پرمیوم",
-        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم داری��`,
+        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
         variant: "destructive",
       });
       return;
