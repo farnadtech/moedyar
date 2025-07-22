@@ -36,8 +36,80 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleDeleteEvent = (id: string) => {
-    setEvents(events.filter(e => e.id !== id));
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+
+      // Check if user is authenticated
+      if (!apiService.isAuthenticated()) {
+        navigate('/login');
+        return;
+      }
+
+      // Load user data, events, and subscription info in parallel
+      const [userResponse, eventsResponse, subscriptionResponse] = await Promise.all([
+        apiService.getCurrentUser(),
+        apiService.getEvents(),
+        apiService.getCurrentSubscription()
+      ]);
+
+      if (userResponse.success && userResponse.data) {
+        setUser(userResponse.data.user);
+      }
+
+      if (eventsResponse.success && eventsResponse.data) {
+        setEvents(eventsResponse.data.events);
+      }
+
+      if (subscriptionResponse.success && subscriptionResponse.data) {
+        setSubscriptionData(subscriptionResponse.data);
+      }
+
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+      toast({
+        title: "خطا در بارگذاری اطلاعات",
+        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteEvent = async (id: string) => {
+    try {
+      const response = await apiService.deleteEvent(id);
+
+      if (response.success) {
+        setEvents(events.filter(e => e.id !== id));
+        toast({
+          title: "رویداد حذف شد",
+          description: "رویداد با موفقیت حذف شد"
+        });
+      } else {
+        toast({
+          title: "خطا در حذف رویداد",
+          description: response.message || "لطفاً دوباره تلاش کنید",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      toast({
+        title: "خطا در حذف رویداد",
+        description: "خطا در ارتباط با سرور",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    apiService.logout();
   };
 
   const formatDate = (dateString: string) => {
@@ -136,7 +208,7 @@ export default function Dashboard() {
                 </Link>
                 {!isPremium && events.length >= 3 && (
                   <p className="text-sm text-gray-500 mt-2">
-                    برای ا��زودن رویداد بیشتر، <Link to="/premium" className="text-brand-600">ارتقا دهید</Link>
+                    برای افزودن رویداد بیشتر، <Link to="/premium" className="text-brand-600">ارتقا دهید</Link>
                   </p>
                 )}
               </CardContent>
@@ -272,7 +344,7 @@ export default function Dashboard() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">رویدا��های امروز:</span>
+                    <span className="text-gray-600">رویدادهای امروز:</span>
                     <span className="font-medium text-yellow-600">
                       {events.filter(e => getDaysUntil(e.date) === 0).length}
                     </span>
