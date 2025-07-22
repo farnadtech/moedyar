@@ -133,10 +133,16 @@ router.get('/plans', async (req, res: Response) => {
 // Start premium subscription with ZarinPal
 router.post('/upgrade', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
+    console.log('📦 Upgrade subscription request:', {
+      userId: req.user!.userId,
+      planType: req.body.planType
+    });
+
     const userId = req.user!.userId;
     const { planType } = req.body;
 
     if (!['PREMIUM', 'BUSINESS'].includes(planType)) {
+      console.log('❌ Invalid plan type:', planType);
       return res.status(400).json({
         success: false,
         message: 'نوع پکیج نامعتبر است'
