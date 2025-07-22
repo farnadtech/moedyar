@@ -36,6 +36,8 @@ export default function AddEvent() {
     eventDate: "",
     eventType: "CUSTOM"
   });
+
+  const [dynamicFields, setDynamicFields] = useState<Record<string, string>>({});
   
   const [selectedReminderDays, setSelectedReminderDays] = useState<number[]>([1, 7]);
   const [selectedReminderMethods, setSelectedReminderMethods] = useState<string[]>(['EMAIL']);
@@ -96,14 +98,14 @@ export default function AddEvent() {
     }
 
     if (!formData.eventDate) {
-      newErrors.eventDate = "تار��خ رویداد الزامی است";
+      newErrors.eventDate = "تاریخ رویداد الزامی است";
     } else {
       const selectedDate = new Date(formData.eventDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
       if (selectedDate < today) {
-        newErrors.eventDate = "تاریخ رویداد نمی‌تواند در گذشته باشد";
+        newErrors.eventDate = "تاریخ رویداد نمی���تواند در گذشته باشد";
       }
     }
 
@@ -306,7 +308,7 @@ export default function AddEvent() {
                 {/* Reminder Days */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    زمان‌های یادآوری *
+                    زمان‌های یاد��وری *
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {reminderDaysOptions.map((option) => (
