@@ -129,7 +129,7 @@ export default function Premium() {
         console.error("❌ Upgrade failed:", errorMessage);
 
         toast({
-          title: "خطا در ایجاد درخواست پرداخت",
+          title: "خطا در ایجاد درخواست پردا��ت",
           description: errorMessage,
           variant: "destructive",
         });
@@ -642,7 +642,7 @@ export default function Premium() {
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
             <span>🔒 SSL محافظت شده</span>
-            <span>💳 تمام کار����های بانکی</span>
+            <span>💳 تمام کارت‌های بانکی</span>
             <span>📱 پرداخت موبایلی</span>
           </div>
         </div>
