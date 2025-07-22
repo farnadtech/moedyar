@@ -90,7 +90,7 @@ class ApiService {
         if (endpoint.includes("/auth/me")) {
           return {
             success: false,
-            message: "خطا در ارتباط با سرور - لطفاً صفحه را مجدداً بارگذاری کنید",
+            message: "خطا در ارتباط با سرور - لطفا�� صفحه را مجدداً بارگذاری کنید",
           };
         }
       }
@@ -258,12 +258,6 @@ class ApiService {
     return this.request("/subscriptions/confirm-payment", {
       method: "POST",
       body: JSON.stringify({ subscriptionId, paymentStatus }),
-    });
-  }
-
-  async cancelSubscription(): Promise<ApiResponse> {
-    return this.request("/subscriptions/cancel", {
-      method: "POST",
     });
   }
 
