@@ -573,7 +573,7 @@ export default function Premium() {
                   <td className="px-6 py-4 font-medium">تعداد رویداد</td>
                   <td className="px-6 py-4 text-center">۳</td>
                   <td className="px-6 py-4 text-center">نامحدود</td>
-                  <td className="px-6 py-4 text-center">نامحدو��</td>
+                  <td className="px-6 py-4 text-center">نامحدود</td>
                 </tr>
                 <tr className="bg-gray-50">
                   <td className="px-6 py-4 font-medium">یادآوری ایمیل</td>
