@@ -90,24 +90,41 @@ export default function Premium() {
     try {
       setUpgrading(planType);
 
+      console.log('🚀 Starting upgrade process for:', planType);
+
       const response = await apiService.upgradeSubscription(planType);
 
-      if (response.success && response.data) {
-        // Redirect to ZarinPal
-        window.location.href = response.data.paymentUrl;
+      console.log('📦 Upgrade response:', response);
+
+      if (response.success && response.data?.paymentUrl) {
+        toast({
+          title: "در حال انتقال به درگاه پرداخت",
+          description: "لطفاً کمی صبر کنید...",
+        });
+
+        // Add a small delay to ensure the toast is shown
+        setTimeout(() => {
+          window.location.href = response.data.paymentUrl;
+        }, 1000);
       } else {
+        const errorMessage = response.message || "لطفاً دوباره تلاش کنید";
+        console.error('❌ Upgrade failed:', errorMessage);
+
         toast({
           title: "خطا در ایجاد درخواست پرداخت",
-          description: response.message || "لطفاً دوباره تلاش کنید",
+          description: errorMessage,
           variant: "destructive"
         });
       }
 
-    } catch (error) {
-      console.error('Upgrade error:', error);
+    } catch (error: any) {
+      console.error('💥 Upgrade error:', error);
+
+      const errorMessage = error?.message || "خطا در ارتباط با سرور";
+
       toast({
         title: "خطا در ارتقا",
-        description: "خطا در ارتباط با سرور",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -279,7 +296,7 @@ export default function Premium() {
                   {upgrading === 'PREMIUM' ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      در حال پردازش...
+                      در حا�� پردازش...
                     </div>
                   ) : (
                     <>
