@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowRight, Mail, Lock, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Calendar, ArrowRight, Mail, Lock, User, CheckCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function RegisterPersonal() {
   const [formData, setFormData] = useState({
