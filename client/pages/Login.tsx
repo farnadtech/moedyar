@@ -11,18 +11,86 @@ export default function Login() {
     email: "",
     password: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
+    // Clear error when user starts typing
+    if (errors[e.target.name]) {
+      setErrors(prev => ({
+        ...prev,
+        [e.target.name]: ""
+      }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = "ایمیل الزامی است";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "فرمت ایمیل صحیح نیست";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "رمز عبور الزامی است";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log("Login data:", formData);
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await apiService.login({
+        email: formData.email,
+        password: formData.password
+      });
+
+      if (response.success) {
+        toast({
+          title: "✅ ورود موفق",
+          description: "در حال انتقال به پنل مدیریت...",
+        });
+
+        // Redirect to dashboard
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 500);
+      } else {
+        toast({
+          title: "خطا در ورود",
+          description: response.message || "ایمیل یا رمز عبور اشتباه است",
+          variant: "destructive"
+        });
+      }
+
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        title: "خطا در ورود",
+        description: "خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
