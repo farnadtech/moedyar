@@ -535,7 +535,7 @@ export default function Settings() {
                                subscription?.currentType === 'PREMIUM' ? 'حساب پرمیوم' : 'حساب کسب‌وکار'}
                             </h3>
                             <p className="text-brand-700">
-                              {subscription?.currentType === 'FREE' ? 'محدود به ۳ رویداد' : 'رویدادهای نامح��ود'}
+                              {subscription?.currentType === 'FREE' ? 'محدود به ۳ رویداد' : 'رویدادهای نامحدود'}
                             </p>
                           </div>
                           {subscription?.currentType !== 'FREE' && (
@@ -638,7 +638,7 @@ export default function Settings() {
                   <CardContent>
                     <div className="space-y-6">
                       <div className="border border-gray-200 rounded-lg p-4">
-                        <h3 className="font-medium mb-2">تغییر رمز عبور</h3>
+                        <h3 className="font-medium mb-2">تغی��ر رمز عبور</h3>
                         <p className="text-sm text-gray-600 mb-4">
                           برای امنیت بیشتر، رمز عبور خود را به‌طور مرتب تغییر دهید
                         </p>
@@ -653,7 +653,7 @@ export default function Settings() {
                         <p className="text-sm text-gray-600 mb-4">
                           از تمام دستگاه‌های متصل به حساب خود خارج شوید
                         </p>
-                        <Button variant="outline" onClick={handleLogout}>
+                        <Button variant="outline" onClick={handleLogoutAllDevices}>
                           خروج از همه دستگاه‌ها
                         </Button>
                       </div>
