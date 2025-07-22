@@ -218,7 +218,7 @@ export default function AddEvent() {
       console.error('Create event error:', error);
       toast({
         title: "خطا در ایجاد رویداد",
-        description: "خطا ��ر ارتباط با سرور",
+        description: "خطا در ارتباط با سرور",
         variant: "destructive"
       });
     } finally {
@@ -353,6 +353,34 @@ export default function AddEvent() {
                     ))}
                   </div>
                 </div>
+
+                {/* Dynamic Fields based on Event Type */}
+                {getDynamicFields(formData.eventType).length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      اطلاعات تکمیلی (اختیاری)
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {getDynamicFields(formData.eventType).map((field) => (
+                        <div key={field.key}>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">
+                            {field.label}
+                          </label>
+                          <input
+                            type="text"
+                            value={dynamicFields[field.key] || ''}
+                            onChange={(e) => handleDynamicFieldChange(field.key, e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent text-sm"
+                            placeholder={field.placeholder}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      این اطلاعات اختیاری هستند و به شما در یادآوری رویداد کمک می‌کنند
+                    </p>
+                  </div>
+                )}
 
                 {/* Reminder Days */}
                 <div>
