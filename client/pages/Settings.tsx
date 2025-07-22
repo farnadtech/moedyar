@@ -133,7 +133,7 @@ export default function Settings() {
       console.error("Profile update error:", error);
       toast({
         title: "خطا در به‌روزرسانی",
-        description: "خطا در ارتباط با ����رور",
+        description: "خطا در ارتباط با سرور",
         variant: "destructive",
       });
     } finally {
