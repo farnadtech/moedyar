@@ -134,6 +134,88 @@ export default function Premium() {
     }
   };
 
+  const handleCancelSubscription = async () => {
+    if (!isAuthenticated || currentPlan === 'FREE') {
+      return;
+    }
+
+    try {
+      setCancelling(true);
+
+      const response = await apiService.cancelSubscription();
+
+      if (response.success) {
+        toast({
+          title: "✅ اشتراک لغو شد",
+          description: "اشتراک شما با موفقیت لغو شد و به پکیج رایگان منتقل شدید",
+        });
+
+        // Reload data to reflect changes
+        await loadData();
+      } else {
+        toast({
+          title: "خطا در لغو اشتراک",
+          description: response.message || "لطفاً دوباره تلاش کنید",
+          variant: "destructive"
+        });
+      }
+
+    } catch (error: any) {
+      console.error('Cancel subscription error:', error);
+      toast({
+        title: "خطا در لغو اشتراک",
+        description: error?.message || "خطا در ارتباط با سرور",
+        variant: "destructive"
+      });
+    } finally {
+      setCancelling(false);
+    }
+  };
+
+  const handleChangePlan = async (newPlan: 'PREMIUM' | 'BUSINESS') => {
+    if (!isAuthenticated || currentPlan === newPlan) {
+      return;
+    }
+
+    try {
+      setChangingPlan(true);
+
+      // If downgrading or changing plan, we need to cancel current and upgrade
+      if (currentPlan !== 'FREE') {
+        const cancelResponse = await apiService.cancelSubscription();
+        if (!cancelResponse.success) {
+          throw new Error(cancelResponse.message || 'خطا در لغو اشتراک فعلی');
+        }
+      }
+
+      // Now upgrade to new plan
+      const upgradeResponse = await apiService.upgradeSubscription(newPlan);
+
+      if (upgradeResponse.success && upgradeResponse.data?.paymentUrl) {
+        toast({
+          title: "در حال انتقال به درگاه پرداخت",
+          description: "لطفاً کمی صبر کنید...",
+        });
+
+        setTimeout(() => {
+          window.location.href = upgradeResponse.data.paymentUrl;
+        }, 1000);
+      } else {
+        throw new Error(upgradeResponse.message || 'خطا در تغییر پکیج');
+      }
+
+    } catch (error: any) {
+      console.error('Change plan error:', error);
+      toast({
+        title: "خطا در تغییر پکیج",
+        description: error?.message || "خطا در ارتباط با سرور",
+        variant: "destructive"
+      });
+    } finally {
+      setChangingPlan(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
@@ -354,7 +436,7 @@ export default function Premium() {
               
               {currentPlan === 'BUSINESS' ? (
                 <Button variant="outline" className="w-full" disabled>
-                  پکیج فعلی شما
+                  پ��یج فعلی شما
                 </Button>
               ) : (
                 <Button 
