@@ -13,6 +13,7 @@ import {
   Settings,
   Crown,
   User,
+  Users,
   LogOut,
   Trash2,
   Edit,
@@ -405,7 +406,7 @@ export default function Dashboard() {
                             {[...new Set(event.reminders.map((r) => r.daysBefore))]
                               .sort((a, b) => a - b)
                               .join("، ")}{" "}
-                            روز قب��
+                            روز قبل
                           </div>
                         </div>
                         {event.description && (
@@ -440,7 +441,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">روی��ادها:</span>
+                    <span className="text-gray-600">رویدادها:</span>
                     <span className="font-medium">
                       {isPremium
                         ? `${events.length} رویداد`
@@ -526,7 +527,7 @@ export default function Dashboard() {
                     </Link>
                     <Link to="/admin/settings" className="block">
                       <Button className="w-full bg-red-600 hover:bg-red-700">
-                        تنظیمات سی��تم
+                        تنظیمات سیستم
                       </Button>
                     </Link>
                   </div>
