@@ -598,9 +598,21 @@ export default function Premium() {
                   <td className="px-6 py-4 text-center">✅</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-4 font-medium">مدیریت چند کاربره</td>
+                  <td className="px-6 py-4 font-medium">مدیریت تیم</td>
+                  <td className="px-6 py-4 text-center">❌</td>
                   <td className="px-6 py-4 text-center">❌</td>
                   <td className="px-6 py-4 text-center">✅</td>
+                </tr>
+                <tr className="bg-gray-50">
+                  <td className="px-6 py-4 font-medium">تقویم مشترک</td>
+                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">✅</td>
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 font-medium">نقش‌های دسترسی</td>
+                  <td className="px-6 py-4 text-center">❌</td>
+                  <td className="px-6 py-4 text-center">❌</td>
                   <td className="px-6 py-4 text-center">✅</td>
                 </tr>
                 <tr className="bg-gray-50">
