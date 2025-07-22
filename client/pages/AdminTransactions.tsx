@@ -137,7 +137,7 @@ export default function AdminTransactions() {
             </Button>
             <Link to="/admin/settings">
               <Button variant="outline">
-                <CreditCard className="w-4 h-4 mr-2" />
+                <Settings className="w-4 h-4 mr-2" />
                 تنظیمات سیستم
               </Button>
             </Link>
