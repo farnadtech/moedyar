@@ -42,7 +42,7 @@ export default function RegisterPersonal() {
     if (!formData.email.trim()) {
       newErrors.email = "ایمیل الزامی است";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "ف��مت ایمیل صحیح نیست";
+      newErrors.email = "فرمت ایمیل صحیح نیست";
     }
 
     if (!formData.password) {
@@ -117,7 +117,7 @@ export default function RegisterPersonal() {
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">ثبت نام رایگان</CardTitle>
             <CardDescription>
-              فقط چند قدم تا مدیریت هوشمند رویدادهایتان
+              فقط چند قدم تا مد��ریت هوشمند رویدادهایتان
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -156,11 +156,16 @@ export default function RegisterPersonal() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pr-10 pl-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+                    className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
+                      errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                    }`}
                     placeholder="your-email@example.com"
                     required
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div>
