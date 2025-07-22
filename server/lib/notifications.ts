@@ -3,7 +3,7 @@ const require = createRequire(import.meta.url);
 const nodemailer = require('nodemailer');
 
 // Email configuration
-const emailTransporter = nodemailer.createTransporter({
+const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
