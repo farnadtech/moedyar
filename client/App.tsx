@@ -15,6 +15,7 @@ import AddEvent from "./pages/AddEvent";
 import Settings from "./pages/Settings";
 import Premium from "./pages/Premium";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminSetup from "./pages/AdminSetup";
 import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -91,7 +92,7 @@ const App = () => (
             <Route path="/terms" element={
               <Placeholder
                 title="شرایط استفاده"
-                description="قوانین و مقررات استفاده از سروی��"
+                description="قوانین و مقررات استفاده از سرویس"
               />
             } />
             <Route path="/privacy" element={
