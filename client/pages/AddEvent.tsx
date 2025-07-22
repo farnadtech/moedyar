@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PersianDateInput } from "@/components/ui/persian-date-input";
+import { PersianCalendarPicker } from "@/components/ui/persian-calendar-picker";
 import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
