@@ -328,4 +328,150 @@ router.get('/activities', authenticateToken, requireAdmin, async (req: AuthReque
   }
 });
 
+// Get all events with pagination and user details
+router.get('/events', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const search = req.query.search as string || '';
+    const eventType = req.query.eventType as string || '';
+
+    const skip = (page - 1) * limit;
+
+    const where: any = { isActive: true };
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' as const } },
+        { description: { contains: search, mode: 'insensitive' as const } },
+        { user: {
+          OR: [
+            { fullName: { contains: search, mode: 'insensitive' as const } },
+            { email: { contains: search, mode: 'insensitive' as const } }
+          ]
+        }}
+      ];
+    }
+
+    if (eventType) {
+      where.eventType = eventType;
+    }
+
+    const [events, total] = await Promise.all([
+      db.event.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              id: true,
+              fullName: true,
+              email: true,
+              subscriptionType: true
+            }
+          },
+          reminders: {
+            orderBy: { reminderDate: 'asc' }
+          }
+        },
+        orderBy: { eventDate: 'asc' }
+      }),
+      db.event.count({ where })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        events,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Get admin events error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت لیست رویدادها'
+    });
+  }
+});
+
+// Get all transactions/subscriptions with pagination
+router.get('/transactions', authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const search = req.query.search as string || '';
+    const status = req.query.status as string || '';
+
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        { paymentId: { contains: search, mode: 'insensitive' as const } },
+        { user: {
+          OR: [
+            { fullName: { contains: search, mode: 'insensitive' as const } },
+            { email: { contains: search, mode: 'insensitive' as const } }
+          ]
+        }}
+      ];
+    }
+
+    if (status === 'active') {
+      where.isActive = true;
+    } else if (status === 'inactive') {
+      where.isActive = false;
+    }
+
+    const [transactions, total] = await Promise.all([
+      db.subscription.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              id: true,
+              fullName: true,
+              email: true,
+              subscriptionType: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' }
+      }),
+      db.subscription.count({ where })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        transactions,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Get admin transactions error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت لیست تراکنش‌ها'
+    });
+  }
+});
+
 export default router;
