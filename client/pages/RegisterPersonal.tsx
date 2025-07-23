@@ -99,7 +99,7 @@ export default function RegisterPersonal() {
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "تکر��ر رمز عبور مطابقت ندارد";
+      newErrors.confirmPassword = "تکرار رمز عبور مطابقت ندارد";
     }
 
     setErrors(newErrors);
@@ -248,10 +248,11 @@ export default function RegisterPersonal() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    disabled={!!inviteToken}
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
                       errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    }`}
-                    placeholder="your-email@example.com"
+                    } ${inviteToken ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : ''}`}
+                    placeholder={inviteToken ? "ایمیل دعوت شما" : "your-email@example.com"}
                     required
                   />
                 </div>
