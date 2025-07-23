@@ -53,12 +53,12 @@ interface User {
 
 export default function Dashboard() {
   const [events, setEvents] = useState<Event[]>([]);
-  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [subscriptionData, setSubscriptionData] = useState<any>(null);
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     loadDashboardData();
