@@ -50,6 +50,8 @@ export default function Premium() {
       });
       // Refresh user data to get updated subscription
       refreshUser();
+      // Reload subscription data
+      loadData();
       // Clean URL
       window.history.replaceState({}, "", "/premium");
     } else if (paymentStatus === "failed" && reason) {
@@ -270,7 +272,7 @@ export default function Premium() {
               <Crown className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900">
-              ا��تقا به پرمیوم
+              ارتقا به پرمیوم
             </span>
           </div>
         </nav>
@@ -537,7 +539,7 @@ export default function Premium() {
                   {upgrading === "BUSINESS" ? (
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-                      در حال پردازش...
+                      در حال پرداز��...
                     </div>
                   ) : (
                     <>
