@@ -39,41 +39,70 @@ class ApiService {
   // Fallback fetch using XMLHttpRequest for when browser extensions block fetch
   private async fallbackFetch(url: string, config: RequestInit): Promise<Response> {
     return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open(config.method || 'GET', url, true);
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open(config.method || 'GET', url, true);
 
-      // Set headers
-      if (config.headers) {
-        Object.entries(config.headers).forEach(([key, value]) => {
-          xhr.setRequestHeader(key, value as string);
-        });
-      }
-
-      xhr.onload = () => {
-        // Create a response-like object that includes the ok property
-        const responseHeaders = new Headers();
-        const response = {
-          ok: xhr.status >= 200 && xhr.status < 300,
-          status: xhr.status,
-          statusText: xhr.statusText,
-          headers: responseHeaders,
-          json: async () => {
+        // Set headers with error handling
+        if (config.headers) {
+          Object.entries(config.headers).forEach(([key, value]) => {
             try {
-              return JSON.parse(xhr.responseText);
-            } catch (e) {
-              throw new Error('Invalid JSON response');
+              xhr.setRequestHeader(key, value as string);
+            } catch (headerError) {
+              console.warn(`Failed to set header ${key}:`, headerError);
             }
-          },
-          text: async () => xhr.responseText
-        } as Response;
-        resolve(response);
-      };
+          });
+        }
 
-      xhr.onerror = () => reject(new Error('Network error'));
-      xhr.ontimeout = () => reject(new Error('Request timeout'));
+        xhr.onload = () => {
+          try {
+            // Create a response-like object that includes the ok property
+            const responseHeaders = new Headers();
+            const response = {
+              ok: xhr.status >= 200 && xhr.status < 300,
+              status: xhr.status,
+              statusText: xhr.statusText,
+              headers: responseHeaders,
+              json: async () => {
+                try {
+                  return JSON.parse(xhr.responseText);
+                } catch (e) {
+                  throw new Error('Invalid JSON response');
+                }
+              },
+              text: async () => xhr.responseText
+            } as Response;
+            resolve(response);
+          } catch (responseError) {
+            reject(new Error(`Response processing error: ${responseError.message}`));
+          }
+        };
 
-      xhr.timeout = 30000; // 30 second timeout
-      xhr.send(config.body as string);
+        xhr.onerror = (event) => {
+          console.error('XMLHttpRequest error event:', event);
+          reject(new Error('XMLHttpRequest network error'));
+        };
+
+        xhr.ontimeout = () => {
+          console.error('XMLHttpRequest timeout');
+          reject(new Error('XMLHttpRequest timeout'));
+        };
+
+        xhr.onabort = () => {
+          console.error('XMLHttpRequest aborted');
+          reject(new Error('XMLHttpRequest aborted'));
+        };
+
+        xhr.timeout = 15000; // 15 second timeout (reduced from 30)
+
+        try {
+          xhr.send(config.body as string);
+        } catch (sendError) {
+          reject(new Error(`XMLHttpRequest send error: ${sendError.message}`));
+        }
+      } catch (setupError) {
+        reject(new Error(`XMLHttpRequest setup error: ${setupError.message}`));
+      }
     });
   }
 
