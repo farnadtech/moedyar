@@ -244,7 +244,7 @@ export default function Premium() {
     );
   }
 
-  const currentPlan = userSubscription?.currentType || "FREE";
+  const currentPlan = user?.subscriptionType || "FREE";
   const isPremium = currentPlan === "PREMIUM";
   const isBusiness = currentPlan === "BUSINESS";
 
