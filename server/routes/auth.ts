@@ -32,6 +32,20 @@ router.post(
       // Hash password
       const hashedPassword = await hashPassword(password);
 
+      // Check for team invitation
+      const teamInvitation = await db.teamInvitation.findFirst({
+        where: {
+          email: email,
+          isAccepted: false,
+          expiresAt: {
+            gt: new Date()
+          }
+        },
+        include: {
+          team: true
+        }
+      });
+
       // Create user
       const user = await db.user.create({
         data: {
@@ -40,6 +54,7 @@ router.post(
           password: hashedPassword,
           accountType: accountType || "PERSONAL",
           subscriptionType: "FREE",
+          teamId: teamInvitation?.teamId || null, // Auto-join team if invited
         },
         select: {
           id: true,
