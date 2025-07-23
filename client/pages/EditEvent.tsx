@@ -454,7 +454,7 @@ export default function EditEvent() {
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="مثال: تمدید بیمه خودرو"
+                    placeholder="مثال: ت��دید بیمه خودرو"
                     required
                   />
                   {errors.title && (
@@ -671,7 +671,7 @@ export default function EditEvent() {
                       {errors.reminderMethods}
                     </p>
                   )}
-                  {userSubscription?.currentType === "FREE" && (
+                  {user?.subscriptionType === "FREE" && (
                     <p className="text-sm text-gray-600 mt-2">
                       برای استفاده از پیامک و واتس‌اپ،{" "}
                       <Link to="/premium" className="text-brand-600">
