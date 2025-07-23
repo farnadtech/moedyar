@@ -85,6 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await apiService.getCurrentUser();
       if (response.success && response.data) {
+        console.log("Auth: Setting user data:", {
+          id: response.data.user.id,
+          email: response.data.user.email,
+          subscriptionType: response.data.user.subscriptionType,
+          teamId: response.data.user.teamId
+        });
         setUser(response.data.user);
       } else {
         // If refresh fails and it's not a network error, logout
