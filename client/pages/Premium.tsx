@@ -199,7 +199,7 @@ export default function Premium() {
       if (currentPlan !== "FREE") {
         const cancelResponse = await apiService.cancelSubscription();
         if (!cancelResponse.success) {
-          throw new Error(cancelResponse.message || "خطا در لغو اشتراک فعلی");
+          throw new Error(cancelResponse.message || "��طا در لغو اشتراک فعلی");
         }
       }
 
@@ -420,7 +420,7 @@ export default function Premium() {
                     onClick={() => handleChangePlan("PREMIUM")}
                     disabled={changingPlan}
                   >
-                    {changingPlan ? "در حال تغییر..." : "تغییر به پرمیوم"}
+                    {changingPlan ? "در حال تغییر..." : "تغییر ب�� پرمیوم"}
                   </Button>
                   <Button
                     variant="destructive"
