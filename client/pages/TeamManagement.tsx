@@ -288,18 +288,12 @@ export default function TeamManagement() {
               <p className="text-gray-600 mb-4">
                 شما هنوز تیمی ایجاد نکرده‌اید. با ایجاد تیم می‌توانید اعضا را دعوت کنید و به صورت مشترک رویدادها را مدیریت کنید.
               </p>
-              <Button 
-                className="w-full bg-purple-600 hover:bg-purple-700"
-                onClick={() => {
-                  toast({
-                    title: "🔧 در حال توسعه",
-                    description: "ایجاد تیم به زودی فعال می‌شود",
-                  });
-                }}
-              >
-                <Plus className="w-4 h-4 ml-1" />
-                ایجاد تیم
-              </Button>
+              <Link to="/team/create">
+                <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                  <Plus className="w-4 h-4 ml-1" />
+                  ایجاد تیم
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ) : (
