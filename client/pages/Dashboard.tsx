@@ -60,6 +60,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, isAuthenticated, logout } = useAuth();
+  const { canCreateEvents, canEditEvents, canDeleteEvents } = usePermissions();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -482,7 +483,7 @@ export default function Dashboard() {
                     <Link to="/premium">
                       <Button className="w-full bg-brand-600 hover:bg-brand-700">
                         <Crown className="w-4 h-4 ml-1" />
-                        ارتقا به پ��میوم
+                        ارتقا به پرمیوم
                       </Button>
                     </Link>
                   </div>
