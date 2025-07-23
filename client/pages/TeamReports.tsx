@@ -72,7 +72,15 @@ export default function TeamReports() {
       }
 
       if (response.success && response.data) {
-        const events = response.data.events;
+        // Add user data for events that don't have it (fallback case)
+        const events = response.data.events.map((event: any) => ({
+          ...event,
+          user: event.user || {
+            id: event.userId || "current-user",
+            fullName: "کاربر فعلی",
+            email: "current@user.com",
+          },
+        }));
 
         // Calculate comprehensive stats
         const now = new Date();
