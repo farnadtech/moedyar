@@ -170,7 +170,8 @@ export default function Premium() {
             "اشتراک شما با موفقیت لغو شد و به پکیج رایگان منتقل شدید",
         });
 
-        // Reload data to reflect changes
+        // Refresh user and reload data to reflect changes
+        await refreshUser();
         await loadData();
       } else {
         toast({
@@ -646,7 +647,7 @@ export default function Premium() {
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
             <span>🔒 SSL محافظت شده</span>
-            <span>💳 تمام کارت‌های بانکی</span>
+            <span>💳 تمام کارت‌های بانک��</span>
             <span>📱 پرداخت موبایلی</span>
           </div>
         </div>
