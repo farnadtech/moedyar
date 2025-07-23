@@ -131,7 +131,7 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
             <ArrowRight className="w-4 h-4" />
           </Button>
           <CardTitle>
-            {monthNames[month]} {year}
+            {persianMonthNames[currentPersianDate.month - 1]} {currentPersianDate.year}
           </CardTitle>
           <Button variant="outline" size="sm" onClick={goToNextMonth}>
             <ArrowRight className="w-4 h-4 rotate-180" />
