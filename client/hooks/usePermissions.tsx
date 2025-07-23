@@ -92,6 +92,11 @@ export function usePermissions() {
   };
 
   const canRemoveMembers = (): boolean => {
+    // Team owner always can remove members
+    if (isTeamOwner()) {
+      return true;
+    }
+    // Admin role can also remove members
     return isTeamAdmin();
   };
 
