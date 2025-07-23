@@ -220,20 +220,41 @@ class ApiService {
         );
         console.log("API Request Error:", error);
 
-        // For critical auth endpoints, offer to auto-reload the page
+        // For critical auth endpoints, offer emergency options
         if (endpoint.includes("/auth/me")) {
-          // For auth endpoints, offer auto-reload after a delay
-          setTimeout(() => {
-            if (confirm("خطا در ارتباط با سرور. آیا می‌خواهید صفحه را مجدداً بارگذاری کنید؟")) {
-              window.location.reload();
-            }
-          }, 2000);
+          // Store failure count in sessionStorage
+          const failureKey = 'auth_failures';
+          const currentFailures = parseInt(sessionStorage.getItem(failureKey) || '0');
+          sessionStorage.setItem(failureKey, (currentFailures + 1).toString());
 
-          return {
-            success: false,
-            message:
-              "خطا در ارتباط با سرور - احتمالاً به دلیل افزونه‌های مرورگر. صفحه به زودی مجدداً بارگذاری خواهد شد.",
-          };
+          // If we've failed multiple times, offer to clear everything and start fresh
+          if (currentFailures >= 2) {
+            setTimeout(() => {
+              if (confirm("مشکل در ارتباط با سرور تداوم دارد. آیا می‌خواهید تمام اطلاعات محلی را پاک کرده و مجدداً تلاش کنید؟")) {
+                // Clear all local storage and reload
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = '/login';
+              }
+            }, 1500);
+
+            return {
+              success: false,
+              message: "مشکل مداوم در ارتباط. بازنشانی سیستم پیشنهاد می‌شود.",
+            };
+          } else {
+            // First failure, just suggest reload
+            setTimeout(() => {
+              if (confirm("خطا در ارتباط با سرور. آیا می‌خواهید صفحه را مجدداً بارگذاری کنید؟")) {
+                window.location.reload();
+              }
+            }, 2000);
+
+            return {
+              success: false,
+              message: "خطا در ارتباط با سرور - احتمالاً به دلیل افزونه‌های مرورگر.",
+            };
+          }
         }
 
         // For other endpoints, provide helpful error message
