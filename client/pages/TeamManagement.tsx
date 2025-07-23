@@ -200,6 +200,12 @@ export default function TeamManagement() {
           title: "عضو حذف شد",
           description: `${memberName} از تیم حذف شد`,
         });
+
+        // If user removed themselves, refresh user data
+        if (memberId === user?.id) {
+          await refreshUser();
+        }
+
         loadTeamInfo(); // Reload team data
       } else {
         toast({
@@ -373,7 +379,7 @@ export default function TeamManagement() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="ADMIN">ادمی��</SelectItem>
+                                <SelectItem value="ADMIN">ادمین</SelectItem>
                                 <SelectItem value="MEMBER">عضو</SelectItem>
                                 <SelectItem value="VIEWER">
                                   مشاهده‌گر
