@@ -12,6 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { usePermissions } from "@/hooks/usePermissions";
 import { apiService } from "@/lib/api";
 
 const eventTypes = [
@@ -214,7 +215,7 @@ export default function AddEvent() {
     if (!methodData?.free && user?.subscriptionType === "FREE") {
       toast({
         title: "نیاز به حساب پرمیوم",
-        description: `برای استفاده از ${methodData?.label} نیاز به ارت��ا به حساب پرمیوم دارید`,
+        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
         variant: "destructive",
       });
       return;
@@ -260,7 +261,7 @@ export default function AddEvent() {
     }
 
     if (selectedReminderDays.length === 0) {
-      newErrors.reminderDays = "��داقل یک روز یادآوری انتخاب کنید";
+      newErrors.reminderDays = "حداقل یک روز یادآوری انتخاب کنید";
     }
 
     if (selectedReminderMethods.length === 0) {
@@ -437,7 +438,7 @@ export default function AddEvent() {
                     value={formData.description}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                    placeholder="جزئیات بیشتر در مورد رویداد..."
+                    placeholder="جز��یات بیشتر در مورد رویداد..."
                     rows={3}
                   />
                 </div>
