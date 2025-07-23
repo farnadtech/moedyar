@@ -40,6 +40,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const response = await apiService.getCurrentUser();
 
         if (response.success && response.data) {
+          console.log("RefreshUser: Setting user data:", {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            subscriptionType: response.data.user.subscriptionType,
+            teamId: response.data.user.teamId
+          });
           setUser(response.data.user);
         } else {
           // Only logout if it's a clear auth failure, not a network error
