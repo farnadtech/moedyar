@@ -82,9 +82,10 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
     });
   };
 
-  const isToday = (day: number) => {
-    const dayDate = new Date(year, month, day);
-    return dayDate.toDateString() === today.toDateString();
+  const isToday = (persianDay: number) => {
+    const gregorianDay = jalaali.toGregorian(currentPersianDate.year, currentPersianDate.month, persianDay);
+    const dayDate = new Date(gregorianDay.gy, gregorianDay.gm - 1, gregorianDay.gd);
+    return dayDate.toDateString() === todayGregorian.toDateString();
   };
 
   const goToPreviousMonth = () => {
