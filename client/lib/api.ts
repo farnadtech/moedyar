@@ -384,6 +384,41 @@ class ApiService {
     });
   }
 
+  // Team Methods
+  async createTeam(teamData: {
+    name: string;
+    description?: string;
+  }): Promise<ApiResponse<{ team: any }>> {
+    return this.request<{ team: any }>("/teams/create", {
+      method: "POST",
+      body: JSON.stringify(teamData),
+    });
+  }
+
+  async getTeamInfo(): Promise<ApiResponse<{ team: any }>> {
+    return this.request<{ team: any }>("/teams/info");
+  }
+
+  async inviteTeamMember(memberData: {
+    email: string;
+    role?: "ADMIN" | "MEMBER" | "VIEWER";
+  }): Promise<ApiResponse<{ membership: any }>> {
+    return this.request<{ membership: any }>("/teams/invite", {
+      method: "POST",
+      body: JSON.stringify(memberData),
+    });
+  }
+
+  async getTeamEvents(): Promise<ApiResponse<{ events: any[] }>> {
+    return this.request<{ events: any[] }>("/teams/events");
+  }
+
+  async removeTeamMember(memberId: string): Promise<ApiResponse> {
+    return this.request(`/teams/members/${memberId}`, {
+      method: "DELETE",
+    });
+  }
+
   // Utility Methods
   isAuthenticated(): boolean {
     return !!this.getAuthToken();
