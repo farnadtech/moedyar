@@ -344,7 +344,7 @@ export default function Dashboard() {
                       هنوز رویدادی ندارید
                     </h3>
                     <p className="text-gray-400">
-                      اولین رویدادتان را اضافه کنید
+                      اولین رویدادتان را اضافه کنی��
                     </p>
                   </CardContent>
                 </Card>
@@ -579,32 +579,24 @@ export default function Dashboard() {
                         مدیریت تیم
                       </Button>
                     </Link>
-                    <Button
-                      variant="outline"
-                      className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
-                      onClick={() => {
-                        toast({
-                          title: "🔧 در حال توسعه",
-                          description: "تقویم مشترک به زودی اضافه می‌شود",
-                        });
-                      }}
-                    >
-                      <Calendar className="w-4 h-4 ml-1" />
-                      تقویم مشترک
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
-                      onClick={() => {
-                        toast({
-                          title: "🔧 در حال توسعه",
-                          description: "گزارش‌گیری تیم به زودی اضافه می‌شود",
-                        });
-                      }}
-                    >
-                      <Eye className="w-4 h-4 ml-1" />
-                      گزارش‌گیری تیم
-                    </Button>
+                    <Link to="/team/calendar" className="block">
+                      <Button
+                        variant="outline"
+                        className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      >
+                        <Calendar className="w-4 h-4 ml-1" />
+                        مشاهده تقویم تیم
+                      </Button>
+                    </Link>
+                    <Link to="/team/reports" className="block">
+                      <Button
+                        variant="outline"
+                        className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                      >
+                        <Eye className="w-4 h-4 ml-1" />
+                        مشاهده گزارش کار
+                      </Button>
+                    </Link>
                   </div>
                   <p className="text-xs text-purple-600 mt-4">
                     ✨ امکانات ویژه حساب کسب‌وکار شما
