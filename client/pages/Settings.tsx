@@ -56,25 +56,19 @@ export default function Settings() {
     try {
       setLoading(true);
 
-      if (!apiService.isAuthenticated()) {
+      if (!user) {
         navigate("/login");
         return;
       }
 
-      const [userResponse, subscriptionResponse] = await Promise.all([
-        apiService.getCurrentUser(),
-        apiService.getCurrentSubscription(),
-      ]);
+      const subscriptionResponse = await apiService.getCurrentSubscription();
 
-      if (userResponse.success && userResponse.data) {
-        const userData = userResponse.data.user;
-        setUser(userData);
-        setProfileData({
-          fullName: userData.fullName || "",
-          email: userData.email || "",
-          phone: userData.phone || "",
-        });
-      }
+      // Set profile data from useAuth user
+      setProfileData({
+        fullName: user.fullName || "",
+        email: user.email || "",
+        phone: user.phone || "",
+      });
 
       if (subscriptionResponse.success && subscriptionResponse.data) {
         setSubscription(subscriptionResponse.data);
@@ -246,7 +240,7 @@ export default function Settings() {
       if (response.success) {
         toast({
           title: "✅ اشتراک لغو شد",
-          description: "اشتراک شما با موفقیت لغو شد. به حساب رایگان بازگشتید.",
+          description: "اشتراک شما با موفقیت لغو شد. به ��ساب رایگان بازگشتید.",
         });
         // Reload user data to reflect changes
         await loadUserData();
@@ -289,7 +283,7 @@ export default function Settings() {
 
   const tabs = [
     { id: "profile", label: "پروفایل", icon: User },
-    { id: "notifications", label: "یادآوری‌ها", icon: Bell },
+    { id: "notifications", label: "��ادآوری‌ها", icon: Bell },
     { id: "subscription", label: "اشتراک", icon: Crown },
     { id: "security", label: "امنیت", icon: Shield },
   ];
@@ -587,7 +581,7 @@ export default function Settings() {
                               onClick={() => handleTestNotification("EMAIL")}
                               disabled={saving}
                             >
-                              تست ایمیل
+                              تست ای��یل
                             </Button>
                             {subscription?.currentType !== "FREE" && (
                               <>
@@ -613,7 +607,7 @@ export default function Settings() {
                             )}
                           </div>
                           <div className="text-xs text-blue-600 bg-blue-100 p-2 rounded">
-                            💡 <strong>توجه:</strong> در حال حاضر سیستم در حالت
+                            💡 <strong>توجه:</strong> در حال حاضر سیستم در ��الت
                             دمو قرار دارد. برای ارسال واقعی ایمیل، مدیر سیستم
                             باید تنظیمات SMTP را پیکربندی کند.
                           </div>
@@ -666,7 +660,7 @@ export default function Settings() {
                             </h3>
                             <p className="text-brand-700">
                               {subscription?.currentType === "FREE"
-                                ? "محدود به ۳ رویداد"
+                                ? "محدود به �� رویداد"
                                 : "رویدادهای نامحدود"}
                             </p>
                           </div>
@@ -749,7 +743,7 @@ export default function Settings() {
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                               <tr>
-                                <td className="px-4 py-3">تعداد رویداد</td>
+                                <td className="px-4 py-3">ت��داد رویداد</td>
                                 <td className="px-4 py-3 text-center">۳</td>
                                 <td className="px-4 py-3 text-center">
                                   نامحدود
@@ -826,7 +820,7 @@ export default function Settings() {
                           حذف حساب
                         </h3>
                         <p className="text-sm text-gray-600 mb-4">
-                          حذف دائمی حساب کاربری و تمام اطلاعات مرتبط
+                          حذف دائمی حساب کاربری و تمام اطلاعات م��تبط
                         </p>
                         <Button
                           variant="outline"
