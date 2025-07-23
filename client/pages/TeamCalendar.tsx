@@ -140,7 +140,7 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-7 gap-1 mb-4">
-          {dayNames.map(dayName => (
+          {persianDayNames.map(dayName => (
             <div key={dayName} className="p-2 text-center font-medium text-gray-600 text-sm">
               {dayName}
             </div>
@@ -313,7 +313,7 @@ export default function TeamCalendar() {
               className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700"
             >
               <ArrowRight className="w-4 h-4" />
-              بازگشت به داشبورد
+              بازگشت به دا��بورد
             </Link>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
