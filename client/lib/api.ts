@@ -70,8 +70,21 @@ class ApiService {
       },
     };
 
+    let response: Response;
+
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+      response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    } catch (fetchError) {
+      // If fetch fails (likely due to browser extensions), try XMLHttpRequest fallback
+      console.log("Fetch failed, trying XMLHttpRequest fallback...");
+      try {
+        response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
+      } catch (fallbackError) {
+        throw fetchError; // Throw original error if fallback also fails
+      }
+    }
+
+    try {
 
       // Handle authentication errors first
       if (response.status === 401 || response.status === 403) {
