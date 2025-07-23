@@ -12,6 +12,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { usePermissions } from "@/hooks/usePermissions";
 import { apiService } from "@/lib/api";
 
 const eventTypes = [
@@ -454,7 +455,7 @@ export default function EditEvent() {
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="مثال: ت��دید بیمه خودرو"
+                    placeholder="مثال: تمدید بیمه خودرو"
                     required
                   />
                   {errors.title && (
