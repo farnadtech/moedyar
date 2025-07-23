@@ -185,7 +185,7 @@ export default function TeamCalendar() {
           "Team events failed, falling back to user events:",
           response.message,
         );
-        response = await apiService.getEvents();
+        response = await apiService.getTeamEvents();
       }
 
       if (response.success && response.data) {
@@ -202,7 +202,7 @@ export default function TeamCalendar() {
       } else {
         toast({
           title: "خطا در بارگذاری رویدادها",
-          description: response.message || "��طفاً دوباره تلاش کنید",
+          description: response.message || "لطفاً دوباره تلاش کنید",
           variant: "destructive",
         });
       }
@@ -309,7 +309,7 @@ export default function TeamCalendar() {
                   onChange={(e) => setFilterType(e.target.value)}
                   className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 >
-                  <option value="">همه انواع روی��اد</option>
+                  <option value="">همه انواع رویداد</option>
                   <option value="BIRTHDAY">تولد</option>
                   <option value="INSURANCE">بیمه</option>
                   <option value="CONTRACT">قرارداد</option>
@@ -519,7 +519,7 @@ export default function TeamCalendar() {
                         </div>
                         {event.reminders.length > 0 && (
                           <div className="text-xs text-gray-500">
-                            یادآوری:{" "}
+                            ی��دآوری:{" "}
                             {[
                               ...new Set(
                                 event.reminders.map((r) => r.daysBefore),
