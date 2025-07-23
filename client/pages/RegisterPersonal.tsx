@@ -129,8 +129,13 @@ export default function RegisterPersonal() {
       if (response.success) {
         toast({
           title: "✅ ثبت نام موفق",
-          description: "حساب شما با موفقیت ایجاد شد. در حال انتقال به پنل مدیریت...",
+          description: invitationInfo
+            ? `حساب شما با موفقیت ایجاد شد و به تیم ${invitationInfo.teamName} اضافه شدید. در حال انتقال به پنل مدیریت...`
+            : "حساب شما با موفقیت ایجاد شد. در حال انتقال به پنل مدیریت...",
         });
+
+        // Refresh user context to update auth state
+        await refreshUser();
 
         // Redirect to dashboard after a brief delay
         setTimeout(() => {
@@ -209,7 +214,7 @@ export default function RegisterPersonal() {
             </CardTitle>
             <CardDescription>
               {invitationInfo
-                ? "برای پیوستن به تیم، حساب کاربری خود را ایج��د کنید"
+                ? "برای پیوستن به تیم، حساب کاربری خود را ایجاد کنید"
                 : "فقط چند قدم تا مدیریت هوشمند رویدادهایتان"
               }
             </CardDescription>
