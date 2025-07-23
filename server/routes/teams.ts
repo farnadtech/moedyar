@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import { Router, Request, Response } from "express";
 import { db } from "../lib/db";
 import { authenticateToken, AuthRequest } from "../lib/auth";
 import { sendTeamInvitationEmail } from "../lib/notifications";
@@ -251,7 +251,7 @@ router.post(
         if (existingMembership) {
           return res.status(400).json({
             success: false,
-            message: "این کاربر قبلاً عضو تیم است",
+            message: "این کاربر قبلاً عضو ��یم است",
           });
         }
 
@@ -426,7 +426,7 @@ router.get(
       if (!user?.team) {
         return res.status(404).json({
           success: false,
-          message: "شما عضو هیچ تیمی نیستید",
+          message: "شم�� عضو هیچ تیمی نیستید",
         });
       }
 
