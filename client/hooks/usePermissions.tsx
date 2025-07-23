@@ -31,9 +31,9 @@ export function usePermissions() {
     }
 
     const membership = typedUser.teamMemberships.find(
-      m => m.teamId === typedUser.teamId
+      (m) => m.teamId === typedUser.teamId,
     );
-    
+
     return membership?.role || null;
   };
 

@@ -43,12 +43,12 @@ router.post(
             email: email,
             isAccepted: false,
             expiresAt: {
-              gt: new Date()
-            }
+              gt: new Date(),
+            },
           },
           include: {
-            team: true
-          }
+            team: true,
+          },
         });
       } else {
         // Fallback to email-based lookup for backward compatibility
@@ -57,12 +57,12 @@ router.post(
             email: email,
             isAccepted: false,
             expiresAt: {
-              gt: new Date()
-            }
+              gt: new Date(),
+            },
           },
           include: {
-            team: true
-          }
+            team: true,
+          },
         });
       }
 
@@ -92,7 +92,7 @@ router.post(
           // Mark invitation as accepted
           db.teamInvitation.update({
             where: { id: teamInvitation.id },
-            data: { isAccepted: true }
+            data: { isAccepted: true },
           }),
           // Create team membership
           db.teamMembership.create({
@@ -100,9 +100,9 @@ router.post(
               teamId: teamInvitation.teamId,
               userId: user.id,
               role: teamInvitation.role,
-              joinedAt: new Date()
-            }
-          })
+              joinedAt: new Date(),
+            },
+          }),
         ]);
       }
 
@@ -247,7 +247,7 @@ router.get("/me", async (req: Request, res: Response) => {
             name: true,
             description: true,
             ownerId: true,
-          }
+          },
         },
         teamMemberships: {
           where: { isActive: true },
@@ -255,7 +255,7 @@ router.get("/me", async (req: Request, res: Response) => {
             role: true,
             joinedAt: true,
             teamId: true,
-          }
+          },
         },
         _count: {
           select: {
@@ -288,8 +288,8 @@ router.get("/me", async (req: Request, res: Response) => {
             where: { isActive: true },
             orderBy: { createdAt: "desc" },
             take: 1,
-          }
-        }
+          },
+        },
       });
 
       if (teamOwner) {
@@ -313,8 +313,8 @@ router.get("/me", async (req: Request, res: Response) => {
       data: {
         user: {
           ...user,
-          subscriptionType: effectiveSubscriptionType
-        }
+          subscriptionType: effectiveSubscriptionType,
+        },
       },
     });
   } catch (error) {

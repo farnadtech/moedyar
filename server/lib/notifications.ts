@@ -114,7 +114,7 @@ export async function sendEmailNotification(
       subject: subject,
       html: htmlContent,
       headers: {
-        'Content-Type': 'text/html; charset=UTF-8',
+        "Content-Type": "text/html; charset=UTF-8",
       },
     };
 
@@ -313,7 +313,7 @@ export async function sendTeamInvitationEmail(
       subject: subject,
       html: htmlContent,
       headers: {
-        'Content-Type': 'text/html; charset=UTF-8',
+        "Content-Type": "text/html; charset=UTF-8",
       },
     };
 

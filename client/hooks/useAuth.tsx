@@ -43,8 +43,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(response.data.user);
         } else {
           // Only logout if it's a clear auth failure, not a network error
-          if (!response.message?.includes("خطا در ارتباط") &&
-              !response.message?.includes("سرور")) {
+          if (
+            !response.message?.includes("خطا در ارتباط") &&
+            !response.message?.includes("سرور")
+          ) {
             apiService.logout();
           }
         }

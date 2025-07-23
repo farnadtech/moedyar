@@ -32,14 +32,14 @@ export default function CreateTeam() {
   const { toast } = useToast();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
@@ -174,7 +174,9 @@ export default function CreateTeam() {
                     className={errors.description ? "border-red-500" : ""}
                   />
                   {errors.description && (
-                    <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.description}
+                    </p>
                   )}
                 </div>
 
@@ -198,12 +200,18 @@ export default function CreateTeam() {
                   </Button>
 
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-medium text-blue-900 mb-2">💡 نکته مهم</h4>
+                    <h4 className="font-medium text-blue-900 mb-2">
+                      💡 نکته مهم
+                    </h4>
                     <ul className="text-sm text-blue-700 space-y-1">
                       <li>• شما به عنوان مالک تیم تعریف خواهید شد</li>
                       <li>• می‌توانید اعضای جدید را دعوت کنید</li>
-                      <li>��� تمام اعضا می‌توانند رویدادهای تیم را مشاهده کنند</li>
-                      <li>• تنها مالک و ادمین‌ها می‌توانند اعضا را مدیریت کنند</li>
+                      <li>
+                        ��� تمام اعضا می‌توانند رویدادهای تیم را مشاهده کنند
+                      </li>
+                      <li>
+                        • تنها مالک و ادمین‌ها می‌توانند اعضا را مدیریت کنند
+                      </li>
                     </ul>
                   </div>
                 </div>

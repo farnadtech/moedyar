@@ -1,6 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowRight, Mail, Lock, User, CheckCircle, Users } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Calendar,
+  ArrowRight,
+  Mail,
+  Lock,
+  User,
+  CheckCircle,
+  Users,
+} from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -12,7 +26,7 @@ export default function RegisterPersonal() {
     fullName: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -25,7 +39,7 @@ export default function RegisterPersonal() {
   const { toast } = useToast();
   const { refreshUser } = useAuth();
   const [searchParams] = useSearchParams();
-  const inviteToken = searchParams.get('token');
+  const inviteToken = searchParams.get("token");
 
   // Check invitation info if token exists
   useEffect(() => {
@@ -36,30 +50,31 @@ export default function RegisterPersonal() {
           if (response.success && response.data) {
             setInvitationInfo({
               teamName: response.data.teamName,
-              inviterName: response.data.inviterName
+              inviterName: response.data.inviterName,
             });
             // Pre-fill and lock the email field
-            setFormData(prev => ({
+            setFormData((prev) => ({
               ...prev,
-              email: response.data.email
+              email: response.data.email,
             }));
           } else {
             toast({
               title: "خطا در دعوت‌نامه",
-              description: response.message || "دعوت‌نامه نامعتبر یا منقضی شده است",
-              variant: "destructive"
+              description:
+                response.message || "دعوت‌نامه نامعتبر یا منقضی شده است",
+              variant: "destructive",
             });
             // Redirect to regular registration
-            navigate('/register/personal');
+            navigate("/register/personal");
           }
         } catch (error) {
-          console.error('Error fetching invitation info:', error);
+          console.error("Error fetching invitation info:", error);
           toast({
             title: "خطا در دعوت‌نامه",
             description: "خطا در دریافت اطلاعات دعوت‌نامه",
-            variant: "destructive"
+            variant: "destructive",
           });
-          navigate('/register/personal');
+          navigate("/register/personal");
         }
       };
 
@@ -68,15 +83,15 @@ export default function RegisterPersonal() {
   }, [inviteToken, navigate, toast]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
     // Clear error when user starts typing
     if (errors[e.target.name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [e.target.name]: ""
+        [e.target.name]: "",
       }));
     }
   };
@@ -122,8 +137,8 @@ export default function RegisterPersonal() {
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
-        accountType: 'PERSONAL',
-        inviteToken: inviteToken || undefined
+        accountType: "PERSONAL",
+        inviteToken: inviteToken || undefined,
       });
 
       if (response.success) {
@@ -145,7 +160,7 @@ export default function RegisterPersonal() {
         // Handle validation errors from server
         if (response.errors) {
           const serverErrors: Record<string, string> = {};
-          response.errors.forEach(error => {
+          response.errors.forEach((error) => {
             serverErrors[error.field] = error.message;
           });
           setErrors(serverErrors);
@@ -153,17 +168,16 @@ export default function RegisterPersonal() {
           toast({
             title: "خطا در ثبت نام",
             description: response.message || "لطفاً دوباره تلاش کنید",
-            variant: "destructive"
+            variant: "destructive",
           });
         }
       }
-
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error("Registration error:", error);
       toast({
         title: "خطا در ثبت نام",
         description: "خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -171,11 +185,17 @@ export default function RegisterPersonal() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-white flex items-center justify-center p-4" dir="rtl">
+    <div
+      className="min-h-screen bg-gradient-to-br from-brand-50 to-white flex items-center justify-center p-4"
+      dir="rtl"
+    >
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6 text-brand-600 hover:text-brand-700">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 mb-6 text-brand-600 hover:text-brand-700"
+          >
             <ArrowRight className="w-4 h-4" />
             بازگشت به صفحه اصلی
           </Link>
@@ -189,7 +209,9 @@ export default function RegisterPersonal() {
             {invitationInfo ? "پیوستن به تیم" : "ایجاد حساب شخصی"}
           </h1>
           <p className="text-gray-600">
-            {invitationInfo ? "برای پیوستن به تیم حساب کاربری ایجاد کنید" : "شروع رایگان با ۳ رویداد"}
+            {invitationInfo
+              ? "برای پیوستن به تیم حساب کاربری ایجاد کنید"
+              : "شروع رایگان با ۳ رویداد"}
           </p>
         </div>
 
@@ -201,8 +223,9 @@ export default function RegisterPersonal() {
               <h3 className="font-medium text-blue-900">دعوت به تیم</h3>
             </div>
             <p className="text-sm text-blue-700">
-              شما به تیم <strong>{invitationInfo.teamName}</strong> توسط <strong>{invitationInfo.inviterName}</strong> دعوت شده‌اید.
-              پس از ثبت نام، به صورت خودکار به تیم اضافه خواهید شد.
+              شما به تیم <strong>{invitationInfo.teamName}</strong> توسط{" "}
+              <strong>{invitationInfo.inviterName}</strong> دعوت شده‌اید. پس از
+              ثبت نام، به صورت خودکار به تیم اضافه خواهید شد.
             </p>
           </div>
         )}
@@ -215,8 +238,7 @@ export default function RegisterPersonal() {
             <CardDescription>
               {invitationInfo
                 ? "برای پیوستن به تیم، حساب کاربری خود را ایجاد کنید"
-                : "فقط چند قدم تا مدیریت هوشمند رویدادهایتان"
-              }
+                : "فقط چند قدم تا مدیریت هوشمند رویدادهایتان"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -233,7 +255,9 @@ export default function RegisterPersonal() {
                     value={formData.fullName}
                     onChange={handleChange}
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.fullName ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      errors.fullName
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
                     }`}
                     placeholder="نام کامل خود را وارد کنید"
                     required
@@ -257,9 +281,13 @@ export default function RegisterPersonal() {
                     onChange={handleChange}
                     disabled={!!inviteToken}
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                    } ${inviteToken ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : ''}`}
-                    placeholder={inviteToken ? "ایمیل دعوت شما" : "your-email@example.com"}
+                      errors.email
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
+                    } ${inviteToken ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""}`}
+                    placeholder={
+                      inviteToken ? "ایمیل دعوت شما" : "your-email@example.com"
+                    }
                     required
                   />
                 </div>
@@ -280,7 +308,9 @@ export default function RegisterPersonal() {
                     value={formData.password}
                     onChange={handleChange}
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      errors.password
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
                     }`}
                     placeholder="حداقل ۸ کاراکتر"
                     required
@@ -304,14 +334,18 @@ export default function RegisterPersonal() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
-                      errors.confirmPassword ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      errors.confirmPassword
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
                     }`}
                     placeholder="رمز عبور را مجدداً وارد کنید"
                     required
                   />
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </div>
 
@@ -323,8 +357,21 @@ export default function RegisterPersonal() {
                   required
                 />
                 <label htmlFor="terms" className="text-sm text-gray-600">
-                  با <Link to="/terms" className="text-brand-600 hover:text-brand-700">شرایط استفاده</Link> و{" "}
-                  <Link to="/privacy" className="text-brand-600 hover:text-brand-700">حریم خصوصی</Link> موافقم
+                  با{" "}
+                  <Link
+                    to="/terms"
+                    className="text-brand-600 hover:text-brand-700"
+                  >
+                    شرایط استفاده
+                  </Link>{" "}
+                  و{" "}
+                  <Link
+                    to="/privacy"
+                    className="text-brand-600 hover:text-brand-700"
+                  >
+                    حریم خصوصی
+                  </Link>{" "}
+                  موافقم
                 </label>
               </div>
 
@@ -350,14 +397,20 @@ export default function RegisterPersonal() {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 قبلاً حساب دارید؟{" "}
-                <Link to="/login" className="text-brand-600 hover:text-brand-700 font-medium">
+                <Link
+                  to="/login"
+                  className="text-brand-600 hover:text-brand-700 font-medium"
+                >
                   وارد شوید
                 </Link>
               </p>
             </div>
 
             <div className="mt-6 text-center">
-              <Link to="/register/business" className="text-sm text-gray-500 hover:text-gray-700">
+              <Link
+                to="/register/business"
+                className="text-sm text-gray-500 hover:text-gray-700"
+              >
                 نیاز به حساب کسب‌وکار دارید؟
               </Link>
             </div>
@@ -366,7 +419,9 @@ export default function RegisterPersonal() {
 
         {/* Benefits reminder */}
         <div className="mt-6 bg-brand-50 border border-brand-200 rounded-lg p-4">
-          <h3 className="font-medium text-brand-900 mb-2">مزایای حساب رایگان شما:</h3>
+          <h3 className="font-medium text-brand-900 mb-2">
+            مزایای حساب رایگان شما:
+          </h3>
           <ul className="text-sm text-brand-700 space-y-1">
             <li>• ثبت تا ۳ رویداد</li>
             <li>• یادآوری از طریق ایمیل</li>

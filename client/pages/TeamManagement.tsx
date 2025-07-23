@@ -122,7 +122,7 @@ export default function TeamManagement() {
       }
 
       const response = await apiService.getTeamInfo();
-      
+
       if (response.success) {
         setTeam(response.data.team);
       } else {
@@ -217,12 +217,25 @@ export default function TeamManagement() {
   };
 
   const getRoleBadge = (role: string) => {
-    const roleMap: Record<string, { label: string; color: string; icon: any }> = {
-      OWNER: { label: "مالک", color: "bg-red-100 text-red-800", icon: Crown },
-      ADMIN: { label: "ادمین", color: "bg-blue-100 text-blue-800", icon: Shield },
-      MEMBER: { label: "عضو", color: "bg-green-100 text-green-800", icon: UserCheck },
-      VIEWER: { label: "مشاهده‌گر", color: "bg-gray-100 text-gray-800", icon: Eye },
-    };
+    const roleMap: Record<string, { label: string; color: string; icon: any }> =
+      {
+        OWNER: { label: "مالک", color: "bg-red-100 text-red-800", icon: Crown },
+        ADMIN: {
+          label: "ادمین",
+          color: "bg-blue-100 text-blue-800",
+          icon: Shield,
+        },
+        MEMBER: {
+          label: "عضو",
+          color: "bg-green-100 text-green-800",
+          icon: UserCheck,
+        },
+        VIEWER: {
+          label: "مشاهده‌گر",
+          color: "bg-gray-100 text-gray-800",
+          icon: Eye,
+        },
+      };
 
     const roleInfo = roleMap[role] || roleMap.MEMBER;
     const IconComponent = roleInfo.icon;
@@ -237,7 +250,10 @@ export default function TeamManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری اطلاعات تیم...</p>
@@ -286,7 +302,8 @@ export default function TeamManagement() {
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-gray-600 mb-4">
-                شما هنوز تیمی ایجاد نکرده‌اید. با ایجاد تیم می‌توانید اعضا را دعوت کنید و به صورت مشترک رویدادها را مدیریت کنید.
+                شما هنوز تیمی ایجاد نکرده‌اید. با ایجاد تیم می‌توانید اعضا را
+                دعوت کنید و به صورت مشترک رویدادها را مدیریت کنید.
               </p>
               <Link to="/team/create">
                 <Button className="w-full bg-purple-600 hover:bg-purple-700">
@@ -315,11 +332,7 @@ export default function TeamManagement() {
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={loadTeamInfo}
-                    >
+                    <Button variant="outline" size="sm" onClick={loadTeamInfo}>
                       <RefreshCw className="w-4 h-4 ml-1" />
                       بروزرسانی
                     </Button>
@@ -350,14 +363,19 @@ export default function TeamManagement() {
                           </div>
                           <div>
                             <Label htmlFor="invite-role">نقش</Label>
-                            <Select value={inviteRole} onValueChange={setInviteRole}>
+                            <Select
+                              value={inviteRole}
+                              onValueChange={setInviteRole}
+                            >
                               <SelectTrigger>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="ADMIN">ادمین</SelectItem>
                                 <SelectItem value="MEMBER">عضو</SelectItem>
-                                <SelectItem value="VIEWER">مشاهده‌گر</SelectItem>
+                                <SelectItem value="VIEWER">
+                                  مشاهده‌گر
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -391,13 +409,13 @@ export default function TeamManagement() {
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-green-600">
-                      {team.memberships.filter(m => m.isActive).length}
+                      {team.memberships.filter((m) => m.isActive).length}
                     </p>
                     <p className="text-sm text-gray-600">اعضای فعال</p>
                   </div>
                   <div className="text-center">
                     <p className="text-2xl font-bold text-blue-600">
-                      {team.memberships.filter(m => m.joinedAt).length}
+                      {team.memberships.filter((m) => m.joinedAt).length}
                     </p>
                     <p className="text-sm text-gray-600">عضو شده</p>
                   </div>
@@ -425,17 +443,27 @@ export default function TeamManagement() {
                           <Users className="w-5 h-5 text-purple-600" />
                         </div>
                         <div>
-                          <h3 className="font-medium">{membership.user.fullName}</h3>
-                          <p className="text-sm text-gray-500">{membership.user.email}</p>
+                          <h3 className="font-medium">
+                            {membership.user.fullName}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {membership.user.email}
+                          </p>
                           <div className="flex items-center gap-2 mt-1">
                             {getRoleBadge(membership.role)}
                             {membership.joinedAt ? (
-                              <Badge variant="outline" className="text-green-600 border-green-600">
+                              <Badge
+                                variant="outline"
+                                className="text-green-600 border-green-600"
+                              >
                                 <UserCheck className="w-3 h-3 ml-1" />
                                 عضو شده
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="text-yellow-600 border-yellow-600">
+                              <Badge
+                                variant="outline"
+                                className="text-yellow-600 border-yellow-600"
+                              >
                                 <Mail className="w-3 h-3 ml-1" />
                                 دعوت شده
                               </Badge>
@@ -457,16 +485,23 @@ export default function TeamManagement() {
                             </AlertDialogTrigger>
                             <AlertDialogContent dir="rtl">
                               <AlertDialogHeader>
-                                <AlertDialogTitle>حذف عضو از تیم</AlertDialogTitle>
+                                <AlertDialogTitle>
+                                  حذف عضو از تیم
+                                </AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  آیا از حذف {membership.user.fullName} از تیم اطمینان دارید؟
-                                  این عمل قابل بازگشت نیست.
+                                  آیا از حذف {membership.user.fullName} از تیم
+                                  اطمینان دارید؟ این عمل قابل بازگشت نیست.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>انصراف</AlertDialogCancel>
                                 <AlertDialogAction
-                                  onClick={() => handleRemoveMember(membership.user.id, membership.user.fullName)}
+                                  onClick={() =>
+                                    handleRemoveMember(
+                                      membership.user.id,
+                                      membership.user.fullName,
+                                    )
+                                  }
                                   className="bg-red-600 hover:bg-red-700"
                                 >
                                   حذف عضو
@@ -486,9 +521,7 @@ export default function TeamManagement() {
             <Card>
               <CardHeader>
                 <CardTitle>دسترسی سریع</CardTitle>
-                <CardDescription>
-                  عملیات مرتبط با تیم
-                </CardDescription>
+                <CardDescription>عملیات مرتبط با تیم</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

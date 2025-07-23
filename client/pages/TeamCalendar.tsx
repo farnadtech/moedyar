@@ -19,10 +19,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
-import {
-  formatPersianDate,
-  formatPersianTime,
-} from "@/lib/persian-date";
+import { formatPersianDate, formatPersianTime } from "@/lib/persian-date";
 
 interface TeamEvent {
   id: string;
@@ -57,25 +54,28 @@ export default function TeamCalendar() {
   const loadTeamEvents = async () => {
     try {
       setLoading(true);
-      
+
       // First try to load team events, fallback to user events
       let response = await apiService.getTeamEvents();
 
       // If team events fail (user not in team, etc.), fallback to user events
       if (!response.success) {
-        console.log("Team events failed, falling back to user events:", response.message);
+        console.log(
+          "Team events failed, falling back to user events:",
+          response.message,
+        );
         response = await apiService.getEvents();
       }
-      
+
       if (response.success && response.data) {
         // Add mock user data for events that don't have it
         const eventsWithUser = response.data.events.map((event: any) => ({
           ...event,
           user: event.user || {
-            id: 'current-user',
-            fullName: 'کاربر فعلی',
-            email: 'current@user.com'
-          }
+            id: "current-user",
+            fullName: "کاربر فعلی",
+            email: "current@user.com",
+          },
         }));
         setEvents(eventsWithUser);
       } else {
@@ -127,18 +127,24 @@ export default function TeamCalendar() {
     return diffDays;
   };
 
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = events.filter((event) => {
     if (!filterType) return true;
     return event.eventType === filterType;
   });
 
   const upcomingEvents = filteredEvents
-    .filter(event => getDaysUntil(event.eventDate) >= 0)
-    .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
+    .filter((event) => getDaysUntil(event.eventDate) >= 0)
+    .sort(
+      (a, b) =>
+        new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime(),
+    );
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری تقویم تیم...</p>
@@ -164,9 +170,7 @@ export default function TeamCalendar() {
               <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">
-                تقویم تیم
-              </span>
+              <span className="text-xl font-bold text-gray-900">تقویم تیم</span>
             </div>
           </div>
         </div>
@@ -220,7 +224,9 @@ export default function TeamCalendar() {
                 onClick={loadTeamEvents}
                 disabled={loading}
               >
-                <RefreshCw className={`w-4 h-4 ml-1 ${loading ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ml-1 ${loading ? "animate-spin" : ""}`}
+                />
                 بروزرسانی
               </Button>
               <Link to="/add-event">
@@ -240,7 +246,9 @@ export default function TeamCalendar() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">کل رویدادها</p>
-                  <p className="text-2xl font-bold text-purple-600">{filteredEvents.length}</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {filteredEvents.length}
+                  </p>
                 </div>
                 <Calendar className="w-8 h-8 text-purple-400" />
               </div>
@@ -252,7 +260,9 @@ export default function TeamCalendar() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">رویدادهای آینده</p>
-                  <p className="text-2xl font-bold text-green-600">{upcomingEvents.length}</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {upcomingEvents.length}
+                  </p>
                 </div>
                 <Eye className="w-8 h-8 text-green-400" />
               </div>
@@ -265,7 +275,11 @@ export default function TeamCalendar() {
                 <div>
                   <p className="text-sm text-gray-600">این هفته</p>
                   <p className="text-2xl font-bold text-yellow-600">
-                    {upcomingEvents.filter(e => getDaysUntil(e.eventDate) <= 7).length}
+                    {
+                      upcomingEvents.filter(
+                        (e) => getDaysUntil(e.eventDate) <= 7,
+                      ).length
+                    }
                   </p>
                 </div>
                 <Calendar className="w-8 h-8 text-yellow-400" />
@@ -279,7 +293,11 @@ export default function TeamCalendar() {
                 <div>
                   <p className="text-sm text-gray-600">امروز</p>
                   <p className="text-2xl font-bold text-red-600">
-                    {upcomingEvents.filter(e => getDaysUntil(e.eventDate) === 0).length}
+                    {
+                      upcomingEvents.filter(
+                        (e) => getDaysUntil(e.eventDate) === 0,
+                      ).length
+                    }
                   </p>
                 </div>
                 <Calendar className="w-8 h-8 text-red-400" />
@@ -304,7 +322,9 @@ export default function TeamCalendar() {
                     رویدادی یافت نشد
                   </h3>
                   <p className="text-gray-400">
-                    {filterType ? "فیلتر مورد نظر را تغییر دهید" : "هنوز رویدادی در تیم وجود ندارد"}
+                    {filterType
+                      ? "فیلتر مورد نظر را تغییر دهید"
+                      : "هنوز رویدادی در تیم وجود ندارد"}
                   </p>
                 </CardContent>
               </Card>
@@ -321,8 +341,8 @@ export default function TeamCalendar() {
                       isToday
                         ? "border-red-200 bg-red-50"
                         : isThisWeek
-                        ? "border-yellow-200 bg-yellow-50"
-                        : ""
+                          ? "border-yellow-200 bg-yellow-50"
+                          : ""
                     }`}
                   >
                     <CardHeader className="pb-3">
@@ -333,25 +353,32 @@ export default function TeamCalendar() {
                               isToday
                                 ? "bg-red-500"
                                 : isThisWeek
-                                ? "bg-yellow-500"
-                                : "bg-green-500"
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
                             }`}
                           />
                           <div>
-                            <CardTitle className="text-lg">{event.title}</CardTitle>
+                            <CardTitle className="text-lg">
+                              {event.title}
+                            </CardTitle>
                             <CardDescription className="flex flex-col gap-1">
                               <span>
-                                {formatPersianDate(event.eventDate, { format: "long", includeTime: true })} •{" "}
-                                {getEventTypeLabel(event.eventType)}
+                                {formatPersianDate(event.eventDate, {
+                                  format: "long",
+                                  includeTime: true,
+                                })}{" "}
+                                • {getEventTypeLabel(event.eventType)}
                               </span>
                               <span className="text-xs flex items-center gap-1">
                                 <Users className="w-3 h-3" />
-                                {event.user?.fullName || 'کاربر ناشناس'}
+                                {event.user?.fullName || "کاربر ناشناس"}
                               </span>
                             </CardDescription>
                           </div>
                         </div>
-                        <div className={`px-3 py-1 rounded-full text-xs font-medium border ${getEventTypeColor(event.eventType)}`}>
+                        <div
+                          className={`px-3 py-1 rounded-full text-xs font-medium border ${getEventTypeColor(event.eventType)}`}
+                        >
                           {getEventTypeLabel(event.eventType)}
                         </div>
                       </div>
@@ -360,19 +387,33 @@ export default function TeamCalendar() {
                       <div className="flex items-center justify-between">
                         <div className="text-sm">
                           {isToday ? (
-                            <span className="text-red-600 font-medium">امروز!</span>
+                            <span className="text-red-600 font-medium">
+                              امروز!
+                            </span>
                           ) : (
-                            <span className="text-gray-600">{daysUntil} روز مانده</span>
+                            <span className="text-gray-600">
+                              {daysUntil} روز مانده
+                            </span>
                           )}
                         </div>
                         {event.reminders.length > 0 && (
                           <div className="text-xs text-gray-500">
-                            یادآوری: {[...new Set(event.reminders.map(r => r.daysBefore))].sort((a, b) => a - b).join(", ")} روز قبل
+                            یادآوری:{" "}
+                            {[
+                              ...new Set(
+                                event.reminders.map((r) => r.daysBefore),
+                              ),
+                            ]
+                              .sort((a, b) => a - b)
+                              .join(", ")}{" "}
+                            روز قبل
                           </div>
                         )}
                       </div>
                       {event.description && (
-                        <p className="text-sm text-gray-600 mt-2">{event.description}</p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          {event.description}
+                        </p>
                       )}
                     </CardContent>
                   </Card>
@@ -394,10 +435,7 @@ export default function TeamCalendar() {
               <p className="text-gray-500 mb-4">
                 نمای تقویمی پیشرفته در حال توسعه است
               </p>
-              <Button
-                variant="outline"
-                onClick={() => setViewMode("list")}
-              >
+              <Button variant="outline" onClick={() => setViewMode("list")}>
                 بازگشت به نمای فهرست
               </Button>
             </CardContent>

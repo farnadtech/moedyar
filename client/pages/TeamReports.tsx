@@ -61,35 +61,44 @@ export default function TeamReports() {
   const loadTeamStats = async () => {
     try {
       setLoading(true);
-      
+
       // Load events and calculate stats
       const response = await apiService.getEvents();
-      
+
       if (response.success && response.data) {
         const events = response.data.events;
-        
+
         // Calculate comprehensive stats
         const now = new Date();
         const startOfWeek = new Date(now);
         startOfWeek.setDate(now.getDate() - now.getDay());
-        
+
         const totalEvents = events.length;
-        const upcomingEvents = events.filter(e => new Date(e.eventDate) >= now).length;
-        const overdueEvents = events.filter(e => new Date(e.eventDate) < now).length;
-        const thisWeekEvents = events.filter(e => {
+        const upcomingEvents = events.filter(
+          (e) => new Date(e.eventDate) >= now,
+        ).length;
+        const overdueEvents = events.filter(
+          (e) => new Date(e.eventDate) < now,
+        ).length;
+        const thisWeekEvents = events.filter((e) => {
           const eventDate = new Date(e.eventDate);
-          return eventDate >= startOfWeek && eventDate <= new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000);
+          return (
+            eventDate >= startOfWeek &&
+            eventDate <=
+              new Date(startOfWeek.getTime() + 7 * 24 * 60 * 60 * 1000)
+          );
         }).length;
 
         // Events by type
         const eventsByType: Record<string, number> = {};
-        events.forEach(event => {
-          eventsByType[event.eventType] = (eventsByType[event.eventType] || 0) + 1;
+        events.forEach((event) => {
+          eventsByType[event.eventType] =
+            (eventsByType[event.eventType] || 0) + 1;
         });
 
         // Events by user
         const userEventMap: Record<string, any> = {};
-        events.forEach(event => {
+        events.forEach((event) => {
           if (!userEventMap[event.userId]) {
             userEventMap[event.userId] = {
               userId: event.userId,
@@ -100,9 +109,9 @@ export default function TeamReports() {
               overdueCount: 0,
             };
           }
-          
+
           userEventMap[event.userId].eventCount++;
-          
+
           if (new Date(event.eventDate) >= now) {
             userEventMap[event.userId].upcomingCount++;
           } else {
@@ -119,14 +128,16 @@ export default function TeamReports() {
           date.setMonth(date.getMonth() - i);
           const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
           const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-          
-          const monthEvents = events.filter(e => {
+
+          const monthEvents = events.filter((e) => {
             const eventDate = new Date(e.eventDate);
             return eventDate >= monthStart && eventDate <= monthEnd;
           }).length;
 
           monthlyTrend.push({
-            month: formatPersianDate(monthStart.toISOString(), { format: "month-year" }),
+            month: formatPersianDate(monthStart.toISOString(), {
+              format: "month-year",
+            }),
             count: monthEvents,
           });
         }
@@ -182,17 +193,19 @@ export default function TeamReports() {
       `رویدادهای این هفته,${stats.thisWeekEvents}`,
       "",
       "نوع رویداد,تعداد",
-      ...Object.entries(stats.eventsByType).map(([type, count]) => 
-        `${getEventTypeLabel(type)},${count}`
+      ...Object.entries(stats.eventsByType).map(
+        ([type, count]) => `${getEventTypeLabel(type)},${count}`,
       ),
     ].join("\n");
 
     // Download CSV with proper UTF-8 BOM for Excel compatibility
-    const BOM = '\uFEFF';
-    const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
+    const BOM = "\uFEFF";
+    const blob = new Blob([BOM + csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `team-report-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `team-report-${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
 
     toast({
@@ -203,7 +216,10 @@ export default function TeamReports() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">در حال بارگذاری گزارش‌ها...</p>
@@ -290,7 +306,9 @@ export default function TeamReports() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-2">کل رویدادها</p>
-                      <p className="text-3xl font-bold text-purple-600">{stats.totalEvents}</p>
+                      <p className="text-3xl font-bold text-purple-600">
+                        {stats.totalEvents}
+                      </p>
                     </div>
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                       <Calendar className="w-6 h-6 text-purple-600" />
@@ -303,8 +321,12 @@ export default function TeamReports() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 mb-2">رویدادهای آینده</p>
-                      <p className="text-3xl font-bold text-green-600">{stats.upcomingEvents}</p>
+                      <p className="text-sm text-gray-600 mb-2">
+                        رویدادهای آینده
+                      </p>
+                      <p className="text-3xl font-bold text-green-600">
+                        {stats.upcomingEvents}
+                      </p>
                     </div>
                     <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                       <CheckCircle className="w-6 h-6 text-green-600" />
@@ -318,7 +340,9 @@ export default function TeamReports() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-2">این هفته</p>
-                      <p className="text-3xl font-bold text-yellow-600">{stats.thisWeekEvents}</p>
+                      <p className="text-3xl font-bold text-yellow-600">
+                        {stats.thisWeekEvents}
+                      </p>
                     </div>
                     <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                       <Clock className="w-6 h-6 text-yellow-600" />
@@ -332,7 +356,9 @@ export default function TeamReports() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 mb-2">گذشته</p>
-                      <p className="text-3xl font-bold text-red-600">{stats.overdueEvents}</p>
+                      <p className="text-3xl font-bold text-red-600">
+                        {stats.overdueEvents}
+                      </p>
                     </div>
                     <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
                       <AlertTriangle className="w-6 h-6 text-red-600" />
@@ -350,16 +376,19 @@ export default function TeamReports() {
                     <PieChart className="w-5 h-5" />
                     توزیع انواع رویداد
                   </CardTitle>
-                  <CardDescription>
-                    تحلیل رویدادها بر اساس نوع
-                  </CardDescription>
+                  <CardDescription>تحلیل رویدادها بر اساس نوع</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {Object.entries(stats.eventsByType).map(([type, count]) => {
-                      const percentage = Math.round((count / stats.totalEvents) * 100);
+                      const percentage = Math.round(
+                        (count / stats.totalEvents) * 100,
+                      );
                       return (
-                        <div key={type} className="flex items-center justify-between">
+                        <div
+                          key={type}
+                          className="flex items-center justify-between"
+                        >
                           <div className="flex items-center gap-3">
                             <div className="w-4 h-4 bg-purple-500 rounded"></div>
                             <span className="text-sm font-medium">
@@ -367,8 +396,12 @@ export default function TeamReports() {
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">{count}</span>
-                            <span className="text-xs text-gray-400">({percentage}%)</span>
+                            <span className="text-sm text-gray-600">
+                              {count}
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              ({percentage}%)
+                            </span>
                           </div>
                         </div>
                       );
@@ -391,14 +424,19 @@ export default function TeamReports() {
                 <CardContent>
                   <div className="space-y-4">
                     {stats.monthlyTrend.map((trend, index) => {
-                      const maxCount = Math.max(...stats.monthlyTrend.map(t => t.count));
-                      const percentage = maxCount > 0 ? (trend.count / maxCount) * 100 : 0;
-                      
+                      const maxCount = Math.max(
+                        ...stats.monthlyTrend.map((t) => t.count),
+                      );
+                      const percentage =
+                        maxCount > 0 ? (trend.count / maxCount) * 100 : 0;
+
                       return (
                         <div key={index} className="space-y-2">
                           <div className="flex items-center justify-between text-sm">
                             <span className="font-medium">{trend.month}</span>
-                            <span className="text-gray-600">{trend.count} رویداد</span>
+                            <span className="text-gray-600">
+                              {trend.count} رویداد
+                            </span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div
@@ -439,20 +477,28 @@ export default function TeamReports() {
                           </div>
                           <div>
                             <h3 className="font-medium">{user.userName}</h3>
-                            <p className="text-sm text-gray-500">{user.userEmail}</p>
+                            <p className="text-sm text-gray-500">
+                              {user.userEmail}
+                            </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-6 text-sm">
                           <div className="text-center">
-                            <p className="font-medium text-gray-900">{user.eventCount}</p>
+                            <p className="font-medium text-gray-900">
+                              {user.eventCount}
+                            </p>
                             <p className="text-gray-500">کل</p>
                           </div>
                           <div className="text-center">
-                            <p className="font-medium text-green-600">{user.upcomingCount}</p>
+                            <p className="font-medium text-green-600">
+                              {user.upcomingCount}
+                            </p>
                             <p className="text-gray-500">آینده</p>
                           </div>
                           <div className="text-center">
-                            <p className="font-medium text-red-600">{user.overdueCount}</p>
+                            <p className="font-medium text-red-600">
+                              {user.overdueCount}
+                            </p>
                             <p className="text-gray-500">گذشته</p>
                           </div>
                         </div>
@@ -490,7 +536,8 @@ export default function TeamReports() {
                 onClick={() => {
                   toast({
                     title: "🔧 در حال توسعه",
-                    description: "گزارش‌های پیشرفته بیشتر به زودی اضافه می‌شوند",
+                    description:
+                      "گزارش‌های پیشرفته بیشتر به زودی اضافه می‌شوند",
                   });
                 }}
               >
