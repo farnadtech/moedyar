@@ -87,11 +87,17 @@ class ApiService {
       response = await fetch(`${API_BASE_URL}${endpoint}`, config);
     } catch (fetchError) {
       // If fetch fails (likely due to browser extensions), try XMLHttpRequest fallback
-      console.log("Fetch failed, trying XMLHttpRequest fallback...");
+      console.log("Fetch failed, trying XMLHttpRequest fallback...", fetchError);
       try {
         response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
+        console.log("XMLHttpRequest fallback succeeded");
       } catch (fallbackError) {
-        throw fetchError; // Throw original error if fallback also fails
+        console.error("Both fetch and XMLHttpRequest fallback failed:", {
+          fetchError,
+          fallbackError
+        });
+        // Create a custom error that explains the situation
+        throw new Error("Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.");
       }
     }
 
