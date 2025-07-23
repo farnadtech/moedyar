@@ -181,6 +181,7 @@ export default function AddEvent() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { canCreateEvents } = usePermissions();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -438,7 +439,7 @@ export default function AddEvent() {
                     value={formData.description}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-                    placeholder="جز��یات بیشتر در مورد رویداد..."
+                    placeholder="جزئیات بیشتر در مورد رویداد..."
                     rows={3}
                   />
                 </div>
@@ -580,7 +581,7 @@ export default function AddEvent() {
                 {/* Reminder Methods */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    روش‌های یادآوری *
+                    رو��‌های یادآوری *
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {reminderMethods.map((method) => {
