@@ -52,38 +52,31 @@ class ApiService {
         };
       }
 
-      // Clone response for multiple reads if needed
-      const responseClone = response.clone();
+      // Handle non-ok responses first
+      if (!response.ok) {
+        try {
+          // Try to get error details from JSON
+          const errorData = await response.json();
+          return errorData;
+        } catch {
+          // If not JSON, return generic error
+          return {
+            success: false,
+            message: `خطای سرور: ${response.status} - ${response.statusText}`,
+          };
+        }
+      }
 
-      // Try to parse as JSON first
+      // For ok responses, try to parse as JSON
       try {
         const data: ApiResponse<T> = await response.json();
         return data;
       } catch (jsonError) {
-        // If JSON parsing fails, try to read as text for better error info
-        try {
-          const text = await responseClone.text();
-          console.error("Non-JSON response received:", text);
-
-          // Handle common error cases
-          if (!response.ok) {
-            return {
-              success: false,
-              message: `خطای سرور: ${response.status} - ${response.statusText}`,
-            };
-          }
-
-          return {
-            success: false,
-            message: "پاسخ سرور قابل تجزیه نیست",
-          };
-        } catch (textError) {
-          console.error("Could not read response as text either:", textError);
-          return {
-            success: false,
-            message: "خطا در خواندن پاسخ سرور",
-          };
-        }
+        console.error("JSON parse error:", jsonError);
+        return {
+          success: false,
+          message: "پاسخ سرور قابل تجزیه نیست",
+        };
       }
     } catch (error) {
       // Check if it's a network/fetch error (often caused by browser extensions)
