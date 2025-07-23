@@ -274,6 +274,16 @@ router.get("/me", async (req: Request, res: Response) => {
       });
     }
 
+    // Debug logging
+    console.log("User data in /me endpoint:", {
+      id: user.id,
+      email: user.email,
+      teamId: user.teamId,
+      subscriptionType: user.subscriptionType,
+      teamMemberships: user.teamMemberships,
+      team: user.team
+    });
+
     // Determine effective subscription type
     let effectiveSubscriptionType = user.subscriptionType;
 
