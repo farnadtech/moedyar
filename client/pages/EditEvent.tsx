@@ -79,7 +79,7 @@ export default function EditEvent() {
         return [
           {
             key: "insurance_type",
-            label: "نوع بیمه",
+            label: "نو�� بیمه",
             placeholder: "مثال: خودرو، درمان، آتش‌سوزی",
             required: false,
           },
@@ -183,11 +183,11 @@ export default function EditEvent() {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (id) {
+    if (id && isAuthenticated) {
       loadEventData();
       loadSubscriptionData();
     }
-  }, [id]);
+  }, [id, isAuthenticated]);
 
   const loadEventData = async () => {
     try {
@@ -454,7 +454,7 @@ export default function EditEvent() {
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="مثال: تمدید بیمه خودرو"
+                    placeholder="مثال: تمدید بی��ه خودرو"
                     required
                   />
                   {errors.title && (
@@ -511,7 +511,7 @@ export default function EditEvent() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      در صورت عدم انتخاب، ساعت فعلی حفظ می‌شود
+                      در صورت عدم انت��اب، ساعت فعلی حفظ می‌شود
                     </p>
                   </div>
                 </div>
