@@ -179,6 +179,7 @@ export default function AddEvent() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -213,7 +214,7 @@ export default function AddEvent() {
     if (!methodData?.free && userSubscription?.currentType === "FREE") {
       toast({
         title: "نیاز به حساب پرمیوم",
-        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
+        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا ��ه حساب پرمیوم دارید`,
         variant: "destructive",
       });
       return;
