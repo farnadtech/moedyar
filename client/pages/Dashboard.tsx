@@ -69,22 +69,16 @@ export default function Dashboard() {
       setLoading(true);
 
       // Check if user is authenticated
-      if (!apiService.isAuthenticated()) {
+      if (!isAuthenticated) {
         navigate("/login");
         return;
       }
 
-      // Load user data, events, and subscription info in parallel
-      const [userResponse, eventsResponse, subscriptionResponse] =
-        await Promise.all([
-          apiService.getCurrentUser(),
-          apiService.getEvents(),
-          apiService.getCurrentSubscription(),
-        ]);
-
-      if (userResponse.success && userResponse.data) {
-        setUser(userResponse.data.user);
-      }
+      // Load events and subscription info in parallel
+      const [eventsResponse, subscriptionResponse] = await Promise.all([
+        apiService.getEvents(),
+        apiService.getCurrentSubscription(),
+      ]);
 
       if (eventsResponse.success && eventsResponse.data) {
         setEvents(eventsResponse.data.events);
