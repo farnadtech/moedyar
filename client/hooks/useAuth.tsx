@@ -72,6 +72,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await apiService.login({ email, password });
       if (response.success && response.data) {
+        console.log("Login: Setting user data:", {
+          id: response.data.user.id,
+          email: response.data.user.email,
+          subscriptionType: response.data.user.subscriptionType,
+          teamId: response.data.user.teamId
+        });
         setUser(response.data.user);
         return true;
       }
