@@ -213,8 +213,8 @@ export default function AddEvent() {
     // Check if method is premium and user doesn't have premium
     if (!methodData?.free && user?.subscriptionType === "FREE") {
       toast({
-        title: "نیاز به ح��اب پرمیوم",
-        description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
+        title: "نیاز به حساب پرمیوم",
+        description: `برای استفاده از ${methodData?.label} نیاز به ارت��ا به حساب پرمیوم دارید`,
         variant: "destructive",
       });
       return;
@@ -260,7 +260,7 @@ export default function AddEvent() {
     }
 
     if (selectedReminderDays.length === 0) {
-      newErrors.reminderDays = "حداقل یک روز یادآوری انتخاب کنید";
+      newErrors.reminderDays = "��داقل یک روز یادآوری انتخاب کنید";
     }
 
     if (selectedReminderMethods.length === 0) {
@@ -636,7 +636,7 @@ export default function AddEvent() {
                       {errors.reminderMethods}
                     </p>
                   )}
-                  {userSubscription?.currentType === "FREE" && (
+                  {user?.subscriptionType === "FREE" && (
                     <p className="text-sm text-gray-600 mt-2">
                       برای اس��فاده از پیامک و واتس‌اپ،{" "}
                       <Link to="/premium" className="text-brand-600">
