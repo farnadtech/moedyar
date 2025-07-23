@@ -151,3 +151,21 @@ model TeamMembership {
   @@unique([teamId, userId])
   @@map("team_memberships")
 }
+
+model TeamInvitation {
+  id              String           @id @default(uuid())
+  teamId          String
+  email           String
+  role            TeamRole         @default(MEMBER)
+  isAccepted      Boolean          @default(false)
+  inviteToken     String           @unique
+  expiresAt       DateTime
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Relations
+  team            Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, email])
+  @@map("team_invitations")
+}
