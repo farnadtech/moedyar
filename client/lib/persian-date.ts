@@ -1,4 +1,5 @@
 // Persian/Solar calendar utility functions
+import jalaali from "jalaali-js";
 
 const persianMonths = [
   "فروردین",
@@ -25,7 +26,7 @@ const persianWeekdays = [
   "شنبه",
 ];
 
-// Convert Gregorian date to Persian
+// Convert Gregorian date to Persian using jalaali-js
 export function gregorianToPersian(date: Date | string): {
   year: number;
   month: number;
@@ -33,16 +34,24 @@ export function gregorianToPersian(date: Date | string): {
 } {
   const d = typeof date === "string" ? new Date(date) : date;
 
-  // Simple approximation - in a real app you'd use a proper calendar library
-  // This is a simplified conversion for demonstration
-  const gregorianYear = d.getFullYear();
-  const persianYear = gregorianYear - 621;
+  try {
+    const persianDate = jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate());
+    return {
+      year: persianDate.jy,
+      month: persianDate.jm,
+      day: persianDate.jd,
+    };
+  } catch (error) {
+    // Fallback to simple approximation
+    const gregorianYear = d.getFullYear();
+    const persianYear = gregorianYear - 621;
 
-  return {
-    year: persianYear,
-    month: d.getMonth() + 1,
-    day: d.getDate(),
-  };
+    return {
+      year: persianYear,
+      month: d.getMonth() + 1,
+      day: d.getDate(),
+    };
+  }
 }
 
 // Format Persian date for display
