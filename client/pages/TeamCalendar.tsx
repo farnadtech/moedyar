@@ -89,7 +89,7 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
   };
 
   const monthNames = [
-    "ژانویه", "فوریه", "مارس", "آوریل", "می", "ژوئن",
+    "ژ��نویه", "فوریه", "مارس", "آوریل", "می", "ژوئن",
     "ژوئیه", "آگوست", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
   ];
 
@@ -185,7 +185,7 @@ export default function TeamCalendar() {
           "Team events failed, falling back to user events:",
           response.message,
         );
-        response = await apiService.getTeamEvents();
+        response = await apiService.getEvents();
       }
 
       if (response.success && response.data) {
