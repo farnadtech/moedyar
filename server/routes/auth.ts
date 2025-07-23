@@ -15,7 +15,7 @@ router.post(
   validateRequest(registerSchema),
   async (req: Request, res: Response) => {
     try {
-      const { fullName, email, password, accountType } = req.body;
+      const { fullName, email, password, accountType, inviteToken } = req.body;
 
       // Check if user already exists
       const existingUser = await db.user.findUnique({
@@ -202,7 +202,7 @@ router.get("/me", async (req: Request, res: Response) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "توکن دسترسی ارائه نشده است",
+        message: "توکن دسترسی ��رائه نشده است",
       });
     }
 
