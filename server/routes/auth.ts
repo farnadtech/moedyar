@@ -326,6 +326,14 @@ router.get("/me", async (req: Request, res: Response) => {
       }
     }
 
+    console.log("Final subscription calculation:", {
+      userId: user.id,
+      originalSubscriptionType: user.subscriptionType,
+      effectiveSubscriptionType: effectiveSubscriptionType,
+      hasTeam: !!user.team,
+      teamId: user.teamId
+    });
+
     res.json({
       success: true,
       data: {
