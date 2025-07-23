@@ -32,19 +32,39 @@ router.post(
       // Hash password
       const hashedPassword = await hashPassword(password);
 
-      // Check for team invitation
-      const teamInvitation = await db.teamInvitation.findFirst({
-        where: {
-          email: email,
-          isAccepted: false,
-          expiresAt: {
-            gt: new Date()
+      // Check for team invitation (prioritize token-based lookup)
+      let teamInvitation = null;
+
+      if (inviteToken) {
+        // If invite token provided, look up by token
+        teamInvitation = await db.teamInvitation.findFirst({
+          where: {
+            inviteToken: inviteToken,
+            email: email,
+            isAccepted: false,
+            expiresAt: {
+              gt: new Date()
+            }
+          },
+          include: {
+            team: true
           }
-        },
-        include: {
-          team: true
-        }
-      });
+        });
+      } else {
+        // Fallback to email-based lookup for backward compatibility
+        teamInvitation = await db.teamInvitation.findFirst({
+          where: {
+            email: email,
+            isAccepted: false,
+            expiresAt: {
+              gt: new Date()
+            }
+          },
+          include: {
+            team: true
+          }
+        });
+      }
 
       // Create user
       const user = await db.user.create({
@@ -202,7 +222,7 @@ router.get("/me", async (req: Request, res: Response) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "توکن دسترسی ��رائه نشده است",
+        message: "توکن دسترسی ارائه نشده است",
       });
     }
 
