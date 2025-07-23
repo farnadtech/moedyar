@@ -3,7 +3,8 @@ import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { cn } from "@/lib/utils";
-import * as jalaali from "jalaali-js";
+// @ts-ignore
+const jalaali = require("jalaali-js");
 
 interface PersianCalendarPickerProps {
   value?: string; // YYYY-MM-DD format for ISO date
