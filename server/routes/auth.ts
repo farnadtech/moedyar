@@ -66,6 +66,26 @@ router.post(
         },
       });
 
+      // If user was invited to team, accept invitation and create membership
+      if (teamInvitation) {
+        await db.$transaction([
+          // Mark invitation as accepted
+          db.teamInvitation.update({
+            where: { id: teamInvitation.id },
+            data: { isAccepted: true }
+          }),
+          // Create team membership
+          db.teamMembership.create({
+            data: {
+              teamId: teamInvitation.teamId,
+              userId: user.id,
+              role: teamInvitation.role,
+              joinedAt: new Date()
+            }
+          })
+        ]);
+      }
+
       // Generate token
       const token = generateToken({
         userId: user.id,
@@ -266,7 +286,7 @@ router.put("/profile", async (req: Request, res: Response) => {
       if (!phoneRegex.test(phone)) {
         return res.status(400).json({
           success: false,
-          message: "شماره تلفن باید با 09 شروع شده و ۱۱ رقم باشد",
+          message: "شماره تلفن باید با 09 ��روع شده و ۱۱ رقم باشد",
         });
       }
       updateData.phone = phone;
