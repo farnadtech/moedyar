@@ -92,7 +92,8 @@ export default function RegisterPersonal() {
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
-        accountType: 'PERSONAL'
+        accountType: 'PERSONAL',
+        inviteToken: inviteToken || undefined
       });
 
       if (response.success) {
@@ -157,7 +158,7 @@ export default function RegisterPersonal() {
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">ثبت نام رایگان</CardTitle>
             <CardDescription>
-              فقط چند قدم تا مدیریت هو��مند رویدادهایتان
+              فقط چند قدم تا مدیریت هوشمند رویدادهایتان
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -289,7 +290,7 @@ export default function RegisterPersonal() {
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">
-                قبلاً حساب دارید؟{" "}
+                قبلاً حساب دارید��{" "}
                 <Link to="/login" className="text-brand-600 hover:text-brand-700 font-medium">
                   وارد شوید
                 </Link>
