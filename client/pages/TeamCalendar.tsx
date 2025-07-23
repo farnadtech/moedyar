@@ -341,7 +341,7 @@ export default function TeamCalendar() {
                               </span>
                               <span className="text-xs flex items-center gap-1">
                                 <Users className="w-3 h-3" />
-                                {event.user.fullName}
+                                {event.user?.fullName || 'کاربر ناشناس'}
                               </span>
                             </CardDescription>
                           </div>
