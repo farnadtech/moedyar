@@ -107,7 +107,7 @@ router.post("/create", authenticateToken, async (req: AuthRequest, res: Response
     console.error("Create team error:", error);
     res.status(500).json({
       success: false,
-      message: "خطا در ایجاد تی��"
+      message: "خطا در ایجاد تیم"
     });
   }
 });
@@ -209,7 +209,7 @@ router.post("/invite", authenticateToken, async (req: AuthRequest, res: Response
     if (!validation.success) {
       return res.status(400).json({
         success: false,
-        message: "داده‌های ورودی نامعتبر",
+        message: "داده‌های ��رودی نامعتبر",
         errors: validation.error.issues.map(issue => ({
           field: issue.path[0],
           message: issue.message
@@ -262,7 +262,7 @@ router.post("/invite", authenticateToken, async (req: AuthRequest, res: Response
 
       res.json({
         success: true,
-        message: "کاربر ب�� موفقیت به تیم اضافه شد",
+        message: "کاربر با موفقیت به تیم اضافه شد",
         data: { 
           type: "direct_add",
           user: {
@@ -518,6 +518,59 @@ router.delete("/members/:memberId", authenticateToken, async (req: AuthRequest, 
     res.status(500).json({
       success: false,
       message: "خطا در حذف عضو"
+    });
+  }
+});
+
+// Get invitation info by token (for registration page)
+router.get("/invitation/:token", async (req: Request, res: Response) => {
+  try {
+    const { token } = req.params;
+
+    const invitation = await db.teamInvitation.findFirst({
+      where: {
+        inviteToken: token,
+        isAccepted: false,
+        expiresAt: {
+          gt: new Date()
+        }
+      },
+      include: {
+        team: {
+          select: {
+            name: true,
+            owner: {
+              select: {
+                fullName: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!invitation) {
+      return res.status(404).json({
+        success: false,
+        message: "دعوت‌نامه یافت نشد یا منقضی شده است"
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        email: invitation.email,
+        teamName: invitation.team.name,
+        inviterName: invitation.team.owner.fullName,
+        expiresAt: invitation.expiresAt
+      }
+    });
+
+  } catch (error) {
+    console.error("Get invitation info error:", error);
+    res.status(500).json({
+      success: false,
+      message: "خطا در دریافت اطلاعات دعوت"
     });
   }
 });
