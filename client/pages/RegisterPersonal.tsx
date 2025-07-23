@@ -23,6 +23,7 @@ export default function RegisterPersonal() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { refreshUser } = useAuth();
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get('token');
 
@@ -204,11 +205,11 @@ export default function RegisterPersonal() {
         <Card className="border-2 border-brand-100">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">
-              {invitationInfo ? "ثبت نام و پیوستن به تیم" : "ثب�� نام رایگان"}
+              {invitationInfo ? "ثبت نام و پیوستن به تیم" : "ثبت نام رایگان"}
             </CardTitle>
             <CardDescription>
               {invitationInfo
-                ? "برای پیوستن به تیم، حساب کاربری خود را ایجاد کنید"
+                ? "برای پیوستن به تیم، حساب کاربری خود را ایج��د کنید"
                 : "فقط چند قدم تا مدیریت هوشمند رویدادهایتان"
               }
             </CardDescription>
@@ -229,7 +230,7 @@ export default function RegisterPersonal() {
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
                       errors.fullName ? 'border-red-500 bg-red-50' : 'border-gray-300'
                     }`}
-                    placeholder="نام کامل خود را و��رد کنید"
+                    placeholder="نام کامل خود را وارد کنید"
                     required
                   />
                 </div>
