@@ -623,7 +623,7 @@ export default function EditEvent() {
                       );
                       const isPremiumOnly = !method.free;
                       const hasAccess =
-                        method.free || userSubscription?.currentType !== "FREE";
+                        method.free || user?.subscriptionType !== "FREE";
 
                       return (
                         <button
