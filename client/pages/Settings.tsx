@@ -106,9 +106,11 @@ export default function Settings() {
       });
 
       if (response.success) {
-        // Update local user data
+        // Refresh user data from useAuth
+        await refreshUser();
+
+        // Update profile form data if we have updated user data
         if (response.data?.user) {
-          setUser(response.data.user);
           setProfileData({
             fullName: response.data.user.fullName || "",
             email: response.data.user.email || "",
@@ -249,7 +251,7 @@ export default function Settings() {
       } else {
         toast({
           title: "خطا در لغو اشتراک",
-          description: response.message || "لطفاً دوباره تلاش کنید",
+          description: response.message || "لطفاً دوباره تلاش ک��ید",
           variant: "destructive",
         });
       }
@@ -412,7 +414,7 @@ export default function Settings() {
                           placeholder="09123456789"
                         />
                         <p className="text-sm text-gray-500 mt-1">
-                          برای در��افت پیامک و واتس‌اپ لازم است
+                          برای در��افت پیامک و وا��س‌اپ لازم است
                         </p>
                       </div>
 
