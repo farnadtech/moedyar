@@ -23,6 +23,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { usePermissions } from "@/hooks/usePermissions";
 import { apiService } from "@/lib/api";
 import {
   formatPersianDate,
@@ -481,7 +482,7 @@ export default function Dashboard() {
                     <Link to="/premium">
                       <Button className="w-full bg-brand-600 hover:bg-brand-700">
                         <Crown className="w-4 h-4 ml-1" />
-                        ارتقا به پرمیوم
+                        ارتقا به پ��میوم
                       </Button>
                     </Link>
                   </div>
