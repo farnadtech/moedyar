@@ -36,18 +36,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuthStatus = async () => {
     try {
+      console.log("Checking auth status...", {
+        isAuthenticated: apiService.isAuthenticated(),
+        hasToken: !!localStorage.getItem("authToken")
+      });
+
       if (apiService.isAuthenticated()) {
         const response = await apiService.getCurrentUser();
+        console.log("getCurrentUser response:", response);
+
         if (response.success && response.data) {
           setUser(response.data.user);
+          console.log("User set successfully:", response.data.user);
         } else {
+          console.log("Auth check failed, response:", response);
           // Only logout if it's a clear auth failure, not a network error
           if (!response.message?.includes("خطا در ارتباط")) {
+            console.log("Logging out due to auth failure");
             apiService.logout();
           }
         }
+      } else {
+        console.log("No auth token found");
       }
     } catch (error) {
+      console.error("Auth check error:", error);
       // Only logout for non-network errors
       if (!(error instanceof TypeError && error.message.includes("fetch"))) {
         console.error("Auth check failed:", error);
