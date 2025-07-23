@@ -85,12 +85,14 @@ class ApiService {
           "Network fetch error (possibly due to browser extensions):",
           error.message,
         );
-        // For auth endpoints, don't treat this as an auth failure
-        if (endpoint.includes("/auth/me")) {
+        console.log("API Request Error:", error);
+
+        // For auth or team endpoints, provide a more helpful error message
+        if (endpoint.includes("/auth/me") || endpoint.includes("/teams/")) {
           return {
             success: false,
             message:
-              "خطا در ارتباط با سرور - لطفاً صفحه را مجدداً بارگذاری کنید",
+              "خطا در ارتباط با سرور - این ممکن است به دلیل مسدودسازی توسط افزونه‌های مرورگر باشد. لطفاً صفحه را مجدداً بارگذاری کنید یا افزونه‌های مرورگر را موقتاً غیرفعال کنید.",
           };
         }
       }
