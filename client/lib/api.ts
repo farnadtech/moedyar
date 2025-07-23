@@ -158,11 +158,11 @@ class ApiService {
         }
       }
 
-      // Retry mechanism for fetch errors (browser extension interference)
-      if (error instanceof TypeError && error.message.includes("fetch") && retryCount < 2) {
+      // Retry mechanism for any network errors (browser extension interference)
+      if ((error instanceof TypeError || error.message.includes("Network request failed")) && retryCount < 2) {
         console.log(`Retrying API request (attempt ${retryCount + 1}): ${endpoint}`);
         // Wait a short time before retrying
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
         return this.request<T>(endpoint, options, retryCount + 1);
       }
 
