@@ -150,8 +150,12 @@ export default function RegisterPersonal() {
             </div>
             <span className="text-2xl font-bold text-gray-900">رویداد یار</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">ایجاد حساب شخصی</h1>
-          <p className="text-gray-600">شروع رایگان با ۳ رویداد</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            {invitationInfo ? "پیوستن به تیم" : "ایجاد حساب شخصی"}
+          </h1>
+          <p className="text-gray-600">
+            {invitationInfo ? "برای پیوستن به تیم حساب کاربری ایجاد کنید" : "شروع رایگان با ۳ رویداد"}
+          </p>
         </div>
 
         <Card className="border-2 border-brand-100">
@@ -290,7 +294,7 @@ export default function RegisterPersonal() {
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">
-                قبلاً حساب دارید��{" "}
+                قبلاً حساب دارید؟{" "}
                 <Link to="/login" className="text-brand-600 hover:text-brand-700 font-medium">
                   وارد شوید
                 </Link>
