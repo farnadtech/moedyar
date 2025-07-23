@@ -15,6 +15,27 @@ class ApiService {
     return localStorage.getItem("authToken");
   }
 
+  // Alternative fetch method that bypasses some browser extension blocking
+  private async alternativeFetch(url: string, config: RequestInit): Promise<Response> {
+    // Try using a different fetch approach first
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const response = await fetch(url, {
+        ...config,
+        signal: controller.signal,
+        cache: 'no-store',
+        credentials: 'same-origin'
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (e) {
+      clearTimeout(timeoutId);
+      throw e;
+    }
+  }
+
   // Fallback fetch using XMLHttpRequest for when browser extensions block fetch
   private async fallbackFetch(url: string, config: RequestInit): Promise<Response> {
     return new Promise((resolve, reject) => {
