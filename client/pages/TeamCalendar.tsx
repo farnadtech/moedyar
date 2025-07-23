@@ -50,11 +50,13 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
     month: todayPersian.month
   });
 
-  // Get first day of month and number of days
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const daysInMonth = lastDay.getDate();
-  const startingDayOfWeek = firstDay.getDay();
+  // Get Persian month info
+  const daysInPersianMonth = jalaali.jalaaliMonthLength(currentPersianDate.year, currentPersianDate.month);
+
+  // Get first day of Persian month in Gregorian
+  const firstDayGregorian = jalaali.toGregorian(currentPersianDate.year, currentPersianDate.month, 1);
+  const firstDayDate = new Date(firstDayGregorian.gy, firstDayGregorian.gm - 1, firstDayGregorian.gd);
+  const startingDayOfWeek = (firstDayDate.getDay() + 1) % 7; // Adjust for Persian week (Saturday = 0)
 
   // Generate calendar days
   const days = [];
