@@ -98,6 +98,14 @@ class ApiService {
         }
       }
 
+      // Retry mechanism for fetch errors (browser extension interference)
+      if (error instanceof TypeError && error.message.includes("fetch") && retryCount < 2) {
+        console.log(`Retrying API request (attempt ${retryCount + 1}): ${endpoint}`);
+        // Wait a short time before retrying
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return this.request<T>(endpoint, options, retryCount + 1);
+      }
+
       console.error("API Request Error:", error);
       return {
         success: false,
