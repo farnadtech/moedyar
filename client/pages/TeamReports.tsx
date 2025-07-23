@@ -102,8 +102,8 @@ export default function TeamReports() {
           if (!userEventMap[event.userId]) {
             userEventMap[event.userId] = {
               userId: event.userId,
-              userName: "کاربر فعلی", // In real implementation, this would come from user data
-              userEmail: "current@user.com",
+              userName: event.user?.fullName || "کاربر", // Use actual user data from team events
+              userEmail: event.user?.email || "",
               eventCount: 0,
               upcomingCount: 0,
               overdueCount: 0,
@@ -535,7 +535,7 @@ export default function TeamReports() {
                 variant="outline"
                 onClick={() => {
                   toast({
-                    title: "🔧 در حال توسعه",
+                    title: "���� در حال توسعه",
                     description:
                       "گزارش‌های پیشرفته بیشتر به زودی اضافه می‌شوند",
                   });
