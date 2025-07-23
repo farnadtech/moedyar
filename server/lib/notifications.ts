@@ -110,6 +110,9 @@ export async function sendEmailNotification(
       to: to,
       subject: subject,
       html: htmlContent,
+      headers: {
+        'Content-Type': 'text/html; charset=UTF-8',
+      },
     };
 
     const result = await emailTransporter.sendMail(mailOptions);
@@ -146,7 +149,7 @@ export async function sendSMSNotification(
 
     const message =
       daysUntil === 0
-        ? `🔔 رویداد یار: امروز روز "${eventTitle}" شماست! برای جزئیات بیشتر به داشبورد مراجعه کنید.`
+        ? `🔔 رویداد یار: امروز روز "${eventTitle}" شماست! برای جزئی��ت بیشتر به داشبورد مراجعه کنید.`
         : `⏰ رویداد یار: ${daysUntil} روز تا "${eventTitle}" باقی مانده. داشبورد: ${process.env.APP_URL || "http://localhost:8080"}`;
 
     // MelliPayamak API call
