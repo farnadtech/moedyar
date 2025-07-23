@@ -47,6 +47,9 @@ export function createServer() {
   // Config routes
   app.use("/api/config", configRoutes);
 
+  // Team routes
+  app.use("/api/teams", teamRoutes);
+
   // Error handling middleware
   app.use((err: any, req: any, res: any, next: any) => {
     console.error("API Error:", err);
