@@ -51,13 +51,17 @@ model User {
   subscriptionType SubscriptionType @default(FREE)
   phone           String?
   isEmailVerified Boolean          @default(false)
+  teamId          String?          // Team this user belongs to
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  
+
   // Relations
   events          Event[]
   subscriptions   Subscription[]
-  
+  ownedTeam       Team?            @relation("TeamOwner")
+  team            Team?            @relation("TeamMembers", fields: [teamId], references: [id])
+  teamMemberships TeamMembership[]
+
   @@map("users")
 }
 
