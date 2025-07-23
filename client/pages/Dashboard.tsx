@@ -307,7 +307,15 @@ export default function Dashboard() {
                       ? "شما به حداکثر رویداد در پلن رایگان رسیده‌اید"
                       : `می‌توانید تا ${maxEvents - events.length} رویداد دیگر اضافه کنید`}
                 </p>
-                {!isPremium && events.length >= maxEvents ? (
+                {!canCreateEvents() ? (
+                  <Button
+                    className="bg-gray-400 cursor-not-allowed"
+                    disabled={true}
+                  >
+                    <Plus className="w-4 h-4 ml-1" />
+                    فقط مشاهده
+                  </Button>
+                ) : !isPremium && events.length >= maxEvents ? (
                   <Button
                     className="bg-gray-400 cursor-not-allowed"
                     disabled={true}
