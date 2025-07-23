@@ -28,7 +28,7 @@ export default function Premium() {
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState<string | null>(null);
 
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, refreshUser } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [cancelling, setCancelling] = useState(false);
@@ -282,7 +282,7 @@ export default function Premium() {
             <span className="text-brand-600 block">تجربه کنی��</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            با ارتقا به حساب پرمیوم، از امکانات پیشرفته و یادآوری‌های چندگانه
+            با ارتقا به حساب پرمیوم، ا�� امکانات پیشرفته و یادآوری‌های چندگانه
             بهره‌مند شوید
           </p>
 
@@ -622,7 +622,7 @@ export default function Premium() {
                   <td className="px-6 py-4 text-center">کامل</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-4 font-medium">پشتیبانی</td>
+                  <td className="px-6 py-4 font-medium">��شتیبانی</td>
                   <td className="px-6 py-4 text-center">ایمیل</td>
                   <td className="px-6 py-4 text-center">اولویت‌دار</td>
                   <td className="px-6 py-4 text-center">اختصاصی</td>
