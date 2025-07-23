@@ -89,11 +89,31 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
   };
 
   const goToPreviousMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
+    if (currentPersianDate.month === 1) {
+      setCurrentPersianDate({
+        year: currentPersianDate.year - 1,
+        month: 12
+      });
+    } else {
+      setCurrentPersianDate({
+        year: currentPersianDate.year,
+        month: currentPersianDate.month - 1
+      });
+    }
   };
 
   const goToNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
+    if (currentPersianDate.month === 12) {
+      setCurrentPersianDate({
+        year: currentPersianDate.year + 1,
+        month: 1
+      });
+    } else {
+      setCurrentPersianDate({
+        year: currentPersianDate.year,
+        month: currentPersianDate.month + 1
+      });
+    }
   };
 
   const monthNames = [
