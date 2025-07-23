@@ -182,6 +182,7 @@ export default function EditEvent() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
+  const { canEditEvents } = usePermissions();
 
   useEffect(() => {
     if (id && isAuthenticated) {
@@ -455,7 +456,7 @@ export default function EditEvent() {
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="مثال: تمدید بیمه خودرو"
+                    placeholder="مثا��: تمدید بیمه خودرو"
                     required
                   />
                   {errors.title && (
