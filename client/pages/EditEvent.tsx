@@ -180,6 +180,7 @@ export default function EditEvent() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -674,7 +675,7 @@ export default function EditEvent() {
                     <p className="text-sm text-gray-600 mt-2">
                       برای استفاده از پیامک و واتس‌اپ،{" "}
                       <Link to="/premium" className="text-brand-600">
-                        حساب خود را ارتقا دهید
+                        حساب خود را ار��قا دهید
                       </Link>
                     </p>
                   )}
