@@ -58,9 +58,13 @@ export default function TeamCalendar() {
     try {
       setLoading(true);
       
-      // For now, we'll load all events - in a real implementation,
-      // this would be filtered to team members only
-      const response = await apiService.getEvents();
+      // First try to load team events, fallback to user events
+      let response = await apiService.getTeamEvents();
+
+      if (!response.success || !response.data) {
+        // Fallback to user's own events if not part of a team
+        response = await apiService.getEvents();
+      }
       
       if (response.success && response.data) {
         // Add mock user data for events that don't have it
