@@ -107,7 +107,7 @@ router.post("/create", authenticateToken, async (req: AuthRequest, res: Response
     console.error("Create team error:", error);
     res.status(500).json({
       success: false,
-      message: "خطا در ایجاد تیم"
+      message: "خطا در ایجاد تی��"
     });
   }
 });
@@ -262,7 +262,7 @@ router.post("/invite", authenticateToken, async (req: AuthRequest, res: Response
 
       res.json({
         success: true,
-        message: "کاربر با موفقیت به تیم اضافه شد",
+        message: "کاربر ب�� موفقیت به تیم اضافه شد",
         data: { 
           type: "direct_add",
           user: {
@@ -275,7 +275,7 @@ router.post("/invite", authenticateToken, async (req: AuthRequest, res: Response
 
     } else {
       // User doesn't exist - create invitation instead of placeholder user
-      
+
       // Check if invitation already exists
       const existingInvitation = await db.teamInvitation.findUnique({
         where: {
@@ -286,46 +286,98 @@ router.post("/invite", authenticateToken, async (req: AuthRequest, res: Response
         }
       });
 
+      let invitation;
+
       if (existingInvitation) {
-        return res.status(400).json({
-          success: false,
-          message: "این ایمیل قبلاً دعوت شده است"
-        });
-      }
+        // Update existing invitation with new token and expiration
+        const inviteToken = Math.random().toString(36).substring(2, 15) +
+                           Math.random().toString(36).substring(2, 15);
 
-      // Create invitation
-      const inviteToken = Math.random().toString(36).substring(2, 15) + 
-                         Math.random().toString(36).substring(2, 15);
-      
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7); // Expires in 7 days
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7); // Expires in 7 days
 
-      const invitation = await db.teamInvitation.create({
-        data: {
-          teamId: user.team.id,
-          email: email,
-          role: role as any,
-          inviteToken,
-          expiresAt
-        },
-        include: {
-          team: {
-            select: {
-              name: true,
-              owner: {
-                select: {
-                  fullName: true
+        invitation = await db.teamInvitation.update({
+          where: { id: existingInvitation.id },
+          data: {
+            role: role as any,
+            inviteToken,
+            expiresAt,
+            isAccepted: false // Reset acceptance status
+          },
+          include: {
+            team: {
+              select: {
+                name: true,
+                owner: {
+                  select: {
+                    fullName: true
+                  }
                 }
               }
             }
           }
+        });
+
+        console.log("Updated existing invitation for:", email);
+      } else {
+        // Create new invitation
+        const inviteToken = Math.random().toString(36).substring(2, 15) +
+                           Math.random().toString(36).substring(2, 15);
+
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7); // Expires in 7 days
+
+        invitation = await db.teamInvitation.create({
+          data: {
+            teamId: user.team.id,
+            email: email,
+            role: role as any,
+            inviteToken,
+            expiresAt
+          },
+          include: {
+            team: {
+              select: {
+                name: true,
+                owner: {
+                  select: {
+                    fullName: true
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        console.log("Created new invitation for:", email);
+      }
+
+      // Send invitation email
+      try {
+        const emailSent = await sendTeamInvitationEmail({
+          to: invitation.email,
+          teamName: invitation.team.name,
+          inviterName: invitation.team.owner.fullName,
+          inviteToken: invitation.inviteToken,
+          expiresAt: invitation.expiresAt
+        });
+
+        if (emailSent) {
+          console.log("Team invitation email sent successfully to:", email);
+        } else {
+          console.warn("Failed to send team invitation email to:", email);
         }
-      });
+      } catch (emailError) {
+        console.error("Error sending team invitation email:", emailError);
+        // Don't fail the invitation creation if email fails
+      }
 
       res.json({
         success: true,
-        message: "دعوت‌نامه ایجاد شد. کاربر می‌تواند با این ایمیل ثبت نام کند",
-        data: { 
+        message: existingInvitation
+          ? "دعوت‌نامه به‌روزرسانی شد و ایمیل جدید ارسال شد"
+          : "دعوت‌نامه ایجاد شد و ایمیل ارسال شد",
+        data: {
           type: "invitation",
           invitation: {
             email: invitation.email,
