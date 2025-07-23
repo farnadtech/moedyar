@@ -24,6 +24,8 @@ import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
 import SandboxPayment from "./pages/SandboxPayment";
 import TeamManagement from "./pages/TeamManagement";
+import TeamCalendar from "./pages/TeamCalendar";
+import TeamReports from "./pages/TeamReports";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
 
@@ -149,6 +151,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <TeamManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/calendar"
+              element={
+                <ProtectedRoute>
+                  <TeamCalendar />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/reports"
+              element={
+                <ProtectedRoute>
+                  <TeamReports />
                 </ProtectedRoute>
               }
             />
