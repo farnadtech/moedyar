@@ -9,6 +9,9 @@ const emailTransporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 // SMS Configuration (MelliPayamak)
@@ -110,6 +113,9 @@ export async function sendEmailNotification(
       to: to,
       subject: subject,
       html: htmlContent,
+      headers: {
+        "Content-Type": "text/html; charset=UTF-8",
+      },
     };
 
     const result = await emailTransporter.sendMail(mailOptions);
@@ -146,7 +152,7 @@ export async function sendSMSNotification(
 
     const message =
       daysUntil === 0
-        ? `🔔 رویداد یار: امروز روز "${eventTitle}" شماست! برای جزئیات بیشتر به داشبورد مراجعه کنید.`
+        ? `🔔 رویداد یار: امروز روز "${eventTitle}" شماست! برای جزئی��ت بیشتر به داشبورد مراجعه کنید.`
         : `⏰ رویداد یار: ${daysUntil} روز تا "${eventTitle}" باقی مانده. داشبورد: ${process.env.APP_URL || "http://localhost:8080"}`;
 
     // MelliPayamak API call
@@ -219,6 +225,103 @@ export async function sendWhatsAppNotification(
     return true;
   } catch (error) {
     console.error("WhatsApp sending failed:", error);
+    return false;
+  }
+}
+
+export interface TeamInvitationData {
+  to: string;
+  teamName: string;
+  inviterName: string;
+  inviteToken: string;
+  expiresAt: Date;
+}
+
+export async function sendTeamInvitationEmail(
+  data: TeamInvitationData,
+): Promise<boolean> {
+  try {
+    // Check if email is configured
+    if (
+      !process.env.EMAIL_USER ||
+      !process.env.EMAIL_PASS ||
+      process.env.EMAIL_USER === "your-email@gmail.com"
+    ) {
+      console.log("📧 Team invitation email (DEMO MODE - not actually sent):", {
+        to: data.to,
+        teamName: data.teamName,
+        inviterName: data.inviterName,
+        note: "Configure EMAIL_USER and EMAIL_PASS in .env to send real emails",
+      });
+      return true; // Simulate success for development
+    }
+
+    const { to, teamName, inviterName, inviteToken, expiresAt } = data;
+
+    const registrationUrl = `${process.env.APP_URL || "http://localhost:8080"}/register?token=${inviteToken}`;
+
+    const subject = `دعوت به تیم ${teamName}`;
+
+    const htmlContent = `
+      <div dir="rtl" style="font-family: 'Tahoma', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+          <h1 style="margin: 0; font-size: 24px;">👥 رویداد یار</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">دعوت به تیم</p>
+        </div>
+
+        <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <h2 style="color: #333; margin-top: 0;">سلام!</h2>
+
+          <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #1d4ed8; margin: 0 0 10px 0;">🎉 شما به تیم دعوت شده‌اید!</h3>
+            <p style="color: #1d4ed8; margin: 0; font-size: 16px;"><strong>${inviterName}</strong> شما را به تیم <strong>${teamName}</strong> دعوت کرده است.</p>
+          </div>
+
+          <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h4 style="color: #374151; margin: 0 0 15px 0;">برای پیوستن به تیم:</h4>
+            <p style="color: #6b7280; margin: 5px 0;">1. روی دکمه زیر کلیک کنید</p>
+            <p style="color: #6b7280; margin: 5px 0;">2. حساب کاربری خود را ایجاد کنید</p>
+            <p style="color: #6b7280; margin: 5px 0;">3. به صورت خودکار به تیم اضافه خواهید شد</p>
+          </div>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${registrationUrl}"
+               style="background: #10b981; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">
+              پیوستن به تیم ${teamName}
+            </a>
+          </div>
+
+          <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <p style="color: #92400e; margin: 0; font-size: 14px;">
+              ⚠️ این دعوت‌نامه تا تاریخ <strong>${expiresAt.toLocaleDateString("fa-IR")}</strong> معتبر است.
+            </p>
+          </div>
+
+          <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px; text-align: center;">
+            <p style="color: #9ca3af; font-size: 14px; margin: 0;">
+              این دعوت‌نامه از طرف <strong>رویداد یار</strong> ارسال شده است.<br>
+              اگر شما این دعوت را درخواست نکرده‌اید، این پیام را نادیده بگیرید.
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const mailOptions = {
+      from: `"رویداد یار" <${process.env.EMAIL_USER}>`,
+      to: to,
+      subject: subject,
+      html: htmlContent,
+      headers: {
+        "Content-Type": "text/html; charset=UTF-8",
+      },
+    };
+
+    const result = await emailTransporter.sendMail(mailOptions);
+    console.log("Team invitation email sent successfully:", result.messageId);
+    return true;
+  } catch (error) {
+    console.error("Team invitation email sending failed:", error);
     return false;
   }
 }

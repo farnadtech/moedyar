@@ -38,11 +38,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       if (apiService.isAuthenticated()) {
         const response = await apiService.getCurrentUser();
+
         if (response.success && response.data) {
           setUser(response.data.user);
         } else {
           // Only logout if it's a clear auth failure, not a network error
-          if (!response.message?.includes("خطا در ارتباط")) {
+          if (
+            !response.message?.includes("خطا در ارتباط") &&
+            !response.message?.includes("سرور")
+          ) {
             apiService.logout();
           }
         }
@@ -51,9 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Only logout for non-network errors
       if (!(error instanceof TypeError && error.message.includes("fetch"))) {
         console.error("Auth check failed:", error);
-        apiService.logout();
-      } else {
-        console.warn("Network error during auth check, keeping user logged in");
+        // Don't auto-logout on server errors
       }
     } finally {
       setIsLoading(false);

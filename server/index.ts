@@ -8,6 +8,7 @@ import subscriptionRoutes from "./routes/subscriptions";
 import notificationRoutes from "./routes/notifications";
 import adminRoutes from "./routes/admin";
 import configRoutes from "./routes/config";
+import teamRoutes from "./routes/teams";
 import { startNotificationScheduler } from "./lib/scheduler";
 
 // Load environment variables
@@ -45,6 +46,9 @@ export function createServer() {
 
   // Config routes
   app.use("/api/config", configRoutes);
+
+  // Team routes
+  app.use("/api/teams", teamRoutes);
 
   // Error handling middleware
   app.use((err: any, req: any, res: any, next: any) => {

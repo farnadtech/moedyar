@@ -52,26 +52,22 @@ class ApiService {
         };
       }
 
-      // Check if response is JSON
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        // If not JSON, read as text and return error
+      // Handle non-ok responses first
+      if (!response.ok) {
         try {
-          const text = await response.text();
-          console.error("Non-JSON response:", text);
-          return {
-            success: false,
-            message: "سرور پاسخ نامعتبر ارسال کرد",
-          };
+          // Try to get error details from JSON
+          const errorData = await response.json();
+          return errorData;
         } catch {
+          // If not JSON, return generic error
           return {
             success: false,
-            message: "خطا در خواندن پاسخ سرور",
+            message: `خطای سرور: ${response.status} - ${response.statusText}`,
           };
         }
       }
 
-      // If it's JSON, parse it
+      // For ok responses, try to parse as JSON
       try {
         const data: ApiResponse<T> = await response.json();
         return data;
@@ -79,7 +75,7 @@ class ApiService {
         console.error("JSON parse error:", jsonError);
         return {
           success: false,
-          message: "خطا در تجزیه پاسخ سرور",
+          message: "پاسخ سرور قابل تجزیه نیست",
         };
       }
     } catch (error) {
@@ -113,6 +109,7 @@ class ApiService {
     email: string;
     password: string;
     accountType?: "PERSONAL" | "BUSINESS";
+    inviteToken?: string;
   }): Promise<ApiResponse<{ user: any; token: string }>> {
     const response = await this.request<{ user: any; token: string }>(
       "/auth/register",
@@ -381,6 +378,58 @@ class ApiService {
   ): Promise<ApiResponse> {
     return this.request(`/config/test/${service}`, {
       method: "POST",
+    });
+  }
+
+  // Get invitation info by token
+  async getInvitationInfo(token: string): Promise<
+    ApiResponse<{
+      email: string;
+      teamName: string;
+      inviterName: string;
+      expiresAt: string;
+    }>
+  > {
+    return this.request<{
+      email: string;
+      teamName: string;
+      inviterName: string;
+      expiresAt: string;
+    }>(`/teams/invitation/${token}`);
+  }
+
+  // Team Methods
+  async createTeam(teamData: {
+    name: string;
+    description?: string;
+  }): Promise<ApiResponse<{ team: any }>> {
+    return this.request<{ team: any }>("/teams/create", {
+      method: "POST",
+      body: JSON.stringify(teamData),
+    });
+  }
+
+  async getTeamInfo(): Promise<ApiResponse<{ team: any }>> {
+    return this.request<{ team: any }>("/teams/info");
+  }
+
+  async inviteTeamMember(memberData: {
+    email: string;
+    role?: "ADMIN" | "MEMBER" | "VIEWER";
+  }): Promise<ApiResponse<{ membership: any }>> {
+    return this.request<{ membership: any }>("/teams/invite", {
+      method: "POST",
+      body: JSON.stringify(memberData),
+    });
+  }
+
+  async getTeamEvents(): Promise<ApiResponse<{ events: any[] }>> {
+    return this.request<{ events: any[] }>("/teams/events");
+  }
+
+  async removeTeamMember(memberId: string): Promise<ApiResponse> {
+    return this.request(`/teams/members/${memberId}`, {
+      method: "DELETE",
     });
   }
 

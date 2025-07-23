@@ -24,6 +24,9 @@ import ApiTest from "./pages/ApiTest";
 import Placeholder from "./pages/Placeholder";
 import SandboxPayment from "./pages/SandboxPayment";
 import TeamManagement from "./pages/TeamManagement";
+import TeamCalendar from "./pages/TeamCalendar";
+import TeamReports from "./pages/TeamReports";
+import CreateTeam from "./pages/CreateTeam";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
 
@@ -47,7 +50,7 @@ const App = () => (
                 <Placeholder
                   title="ثبت نام حساب کسب‌وکار"
                   description="حساب کسب‌وکار با قابلیت‌های پیشرفته مدیریت تیم"
-                  suggestion="برای دریافت اطلاعات بیشتر در مورد حساب کسب‌وکار و قیمت‌گذاری، با ما تماس بگیرید."
+                  suggestion="برای دریافت اطلاعات بیشتر در مورد حساب کسب‌وکار و قیمت‌گذا��ی، با ما تماس بگیرید."
                 />
               }
             />
@@ -149,6 +152,30 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <TeamManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/calendar"
+              element={
+                <ProtectedRoute>
+                  <TeamCalendar />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/reports"
+              element={
+                <ProtectedRoute>
+                  <TeamReports />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/create"
+              element={
+                <ProtectedRoute>
+                  <CreateTeam />
                 </ProtectedRoute>
               }
             />

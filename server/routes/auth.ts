@@ -15,7 +15,7 @@ router.post(
   validateRequest(registerSchema),
   async (req: Request, res: Response) => {
     try {
-      const { fullName, email, password, accountType } = req.body;
+      const { fullName, email, password, accountType, inviteToken } = req.body;
 
       // Check if user already exists
       const existingUser = await db.user.findUnique({
@@ -32,6 +32,40 @@ router.post(
       // Hash password
       const hashedPassword = await hashPassword(password);
 
+      // Check for team invitation (prioritize token-based lookup)
+      let teamInvitation = null;
+
+      if (inviteToken) {
+        // If invite token provided, look up by token
+        teamInvitation = await db.teamInvitation.findFirst({
+          where: {
+            inviteToken: inviteToken,
+            email: email,
+            isAccepted: false,
+            expiresAt: {
+              gt: new Date(),
+            },
+          },
+          include: {
+            team: true,
+          },
+        });
+      } else {
+        // Fallback to email-based lookup for backward compatibility
+        teamInvitation = await db.teamInvitation.findFirst({
+          where: {
+            email: email,
+            isAccepted: false,
+            expiresAt: {
+              gt: new Date(),
+            },
+          },
+          include: {
+            team: true,
+          },
+        });
+      }
+
       // Create user
       const user = await db.user.create({
         data: {
@@ -40,6 +74,7 @@ router.post(
           password: hashedPassword,
           accountType: accountType || "PERSONAL",
           subscriptionType: "FREE",
+          teamId: teamInvitation?.teamId || null, // Auto-join team if invited
         },
         select: {
           id: true,
@@ -50,6 +85,26 @@ router.post(
           createdAt: true,
         },
       });
+
+      // If user was invited to team, accept invitation and create membership
+      if (teamInvitation) {
+        await db.$transaction([
+          // Mark invitation as accepted
+          db.teamInvitation.update({
+            where: { id: teamInvitation.id },
+            data: { isAccepted: true },
+          }),
+          // Create team membership
+          db.teamMembership.create({
+            data: {
+              teamId: teamInvitation.teamId,
+              userId: user.id,
+              role: teamInvitation.role,
+              joinedAt: new Date(),
+            },
+          }),
+        ]);
+      }
 
       // Generate token
       const token = generateToken({
@@ -184,7 +239,24 @@ router.get("/me", async (req: Request, res: Response) => {
         subscriptionType: true,
         phone: true,
         isEmailVerified: true,
+        teamId: true,
         createdAt: true,
+        team: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            ownerId: true,
+          },
+        },
+        teamMemberships: {
+          where: { isActive: true },
+          select: {
+            role: true,
+            joinedAt: true,
+            teamId: true,
+          },
+        },
         _count: {
           select: {
             events: {
@@ -202,9 +274,48 @@ router.get("/me", async (req: Request, res: Response) => {
       });
     }
 
+    // Determine effective subscription type
+    let effectiveSubscriptionType = user.subscriptionType;
+
+    // If user is part of a team, they get team owner's subscription benefits
+    if (user.team && user.teamId) {
+      // Get team owner's subscription
+      const teamOwner = await db.user.findUnique({
+        where: { id: user.team.ownerId },
+        select: {
+          subscriptionType: true,
+          subscriptions: {
+            where: { isActive: true },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
+        },
+      });
+
+      if (teamOwner) {
+        effectiveSubscriptionType = teamOwner.subscriptionType;
+
+        // Check for active subscription
+        if (teamOwner.subscriptions.length > 0) {
+          const activeSubscription = teamOwner.subscriptions[0];
+          if (
+            activeSubscription.endDate &&
+            activeSubscription.endDate > new Date()
+          ) {
+            effectiveSubscriptionType = activeSubscription.type;
+          }
+        }
+      }
+    }
+
     res.json({
       success: true,
-      data: { user },
+      data: {
+        user: {
+          ...user,
+          subscriptionType: effectiveSubscriptionType,
+        },
+      },
     });
   } catch (error) {
     console.error("Get profile error:", error);
@@ -251,7 +362,7 @@ router.put("/profile", async (req: Request, res: Response) => {
       if (!phoneRegex.test(phone)) {
         return res.status(400).json({
           success: false,
-          message: "شماره تلفن باید با 09 شروع شده و ۱۱ رقم باشد",
+          message: "شماره تلفن باید با 09 ��روع شده و ۱۱ رقم باشد",
         });
       }
       updateData.phone = phone;

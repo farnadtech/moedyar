@@ -407,7 +407,7 @@ router.get(
               },
             },
             reminders: {
-              orderBy: { reminderDate: "asc" },
+              orderBy: { daysBefore: "asc" },
             },
           },
           orderBy: { eventDate: "asc" },
