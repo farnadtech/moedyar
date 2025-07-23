@@ -83,18 +83,11 @@ export function usePermissions() {
   };
 
   const canInviteMembers = (): boolean => {
-    // Debug logging
-    console.log("canInviteMembers debug:", {
-      hasTeamAccess: hasTeamAccess(),
-      isTeamOwner: isTeamOwner(),
-      isTeamAdmin: isTeamAdmin(),
-      currentRole: getCurrentTeamRole(),
-      userId: typedUser?.id,
-      teamOwnerId: typedUser?.team?.ownerId,
-      teamId: typedUser?.teamId,
-      teamMemberships: typedUser?.teamMemberships
-    });
-
+    // Team owner always can invite members
+    if (isTeamOwner()) {
+      return true;
+    }
+    // Admin role can also invite members
     return isTeamAdmin();
   };
 
