@@ -25,10 +25,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { apiService } from "@/lib/api";
 
 export default function Settings() {
-  const [user, setUser] = useState<any>(null);
   const [subscription, setSubscription] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  const { user, refreshUser } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
 
   const [profileData, setProfileData] = useState({
@@ -220,7 +221,7 @@ export default function Settings() {
 
   const handleDeleteAccount = () => {
     const confirmed = window.confirm(
-      "آیا واقعاً می‌خواهید حساب کاربری خود را برای همیشه حذف کنید؟ این عمل غیرقابل بازگشت است.",
+      "آیا واقعاً می‌خواهید حساب کاربری خود را برای همیشه حذف کنید؟ ��ین عمل غیرقابل بازگشت است.",
     );
 
     if (confirmed) {
@@ -415,7 +416,7 @@ export default function Settings() {
                           placeholder="09123456789"
                         />
                         <p className="text-sm text-gray-500 mt-1">
-                          برای دریافت پیامک و واتس‌اپ لازم است
+                          برای در��افت پیامک و واتس‌اپ لازم است
                         </p>
                       </div>
 
@@ -784,7 +785,7 @@ export default function Settings() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="w-5 h-5" />
-                      امنیت حساب
+                      ا��نیت حساب
                     </CardTitle>
                     <CardDescription>تنظیمات امنیتی و رمز عبور</CardDescription>
                   </CardHeader>
