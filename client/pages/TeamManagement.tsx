@@ -107,6 +107,7 @@ export default function TeamManagement() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, refreshUser } = useAuth();
 
   useEffect(() => {
     loadTeamInfo();
@@ -372,7 +373,7 @@ export default function TeamManagement() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="ADMIN">ادمین</SelectItem>
+                                <SelectItem value="ADMIN">ادمی��</SelectItem>
                                 <SelectItem value="MEMBER">عضو</SelectItem>
                                 <SelectItem value="VIEWER">
                                   مشاهده‌گر
