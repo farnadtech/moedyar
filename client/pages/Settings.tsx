@@ -21,6 +21,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiService } from "@/lib/api";
 
 export default function Settings() {
