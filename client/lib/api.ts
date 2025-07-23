@@ -228,8 +228,9 @@ class ApiService {
     } catch (error) {
       // Check if it's a network/fetch error (often caused by browser extensions)
       if (error instanceof TypeError && error.message.includes("fetch")) {
+        const hasExtensionInterference = this.detectBrowserExtensionInterference();
         console.warn(
-          "Network fetch error (possibly due to browser extensions):",
+          "Network fetch error (browser extension interference detected:", hasExtensionInterference + "):",
           error.message,
         );
         console.log("API Request Error:", error);
