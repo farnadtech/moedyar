@@ -136,9 +136,15 @@ export default function TeamManagement() {
       }
     } catch (error) {
       console.error("Error loading team info:", error);
+
+      // Check if this is a fetch error (likely browser extension interference)
+      const isFetchError = error instanceof TypeError && error.message.includes("fetch");
+
       toast({
         title: "خطا در بارگذاری اطلاعات",
-        description: "لطفاً صفحه را مجدداً بارگذاری کنید",
+        description: isFetchError
+          ? "ممکن است افزونه‌های مرورگر مانع دریافت اطلاعات شوند. لطفاً صفحه را مجدداً بارگذاری کنید یا افزونه‌ها را موقتاً غیرفعال کنید."
+          : "لطفاً صفحه را مجدداً بارگذاری کنید",
         variant: "destructive",
       });
     } finally {
