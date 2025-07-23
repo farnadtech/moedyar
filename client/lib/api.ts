@@ -29,11 +29,22 @@ class ApiService {
       }
 
       xhr.onload = () => {
-        const response = new Response(xhr.responseText, {
+        // Create a response-like object that includes the ok property
+        const responseHeaders = new Headers();
+        const response = {
+          ok: xhr.status >= 200 && xhr.status < 300,
           status: xhr.status,
           statusText: xhr.statusText,
-          headers: new Headers(),
-        });
+          headers: responseHeaders,
+          json: async () => {
+            try {
+              return JSON.parse(xhr.responseText);
+            } catch (e) {
+              throw new Error('Invalid JSON response');
+            }
+          },
+          text: async () => xhr.responseText
+        } as Response;
         resolve(response);
       };
 
