@@ -15,6 +15,20 @@ class ApiService {
     return localStorage.getItem("authToken");
   }
 
+  // Detect if browser extensions might be interfering
+  private detectBrowserExtensionInterference(): boolean {
+    try {
+      // Check for common extension modification patterns
+      const hasModifiedFetch = window.fetch.toString().includes('extension') ||
+                               window.fetch.toString().includes('chrome-extension');
+      const hasModifiedXHR = XMLHttpRequest.prototype.open.toString().includes('extension');
+
+      return hasModifiedFetch || hasModifiedXHR;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // Alternative fetch method that bypasses some browser extension blocking
   private async alternativeFetch(url: string, config: RequestInit): Promise<Response> {
     // Try using a different fetch approach first
