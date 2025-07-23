@@ -39,6 +39,127 @@ interface TeamEvent {
   }>;
 }
 
+// Calendar Grid Component
+function CalendarGrid({ events }: { events: TeamEvent[] }) {
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const today = new Date();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  // Get first day of month and number of days
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  const startingDayOfWeek = firstDay.getDay();
+
+  // Generate calendar days
+  const days = [];
+
+  // Add empty cells for days before month starts
+  for (let i = 0; i < startingDayOfWeek; i++) {
+    days.push(null);
+  }
+
+  // Add days of month
+  for (let day = 1; day <= daysInMonth; day++) {
+    days.push(day);
+  }
+
+  // Get events for a specific day
+  const getEventsForDay = (day: number) => {
+    const dayDate = new Date(year, month, day);
+    return events.filter(event => {
+      const eventDate = new Date(event.eventDate);
+      return eventDate.toDateString() === dayDate.toDateString();
+    });
+  };
+
+  const isToday = (day: number) => {
+    const dayDate = new Date(year, month, day);
+    return dayDate.toDateString() === today.toDateString();
+  };
+
+  const goToPreviousMonth = () => {
+    setCurrentDate(new Date(year, month - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    setCurrentDate(new Date(year, month + 1, 1));
+  };
+
+  const monthNames = [
+    "ژانویه", "فوریه", "مارس", "آوریل", "می", "ژوئن",
+    "ژوئیه", "آگوست", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
+  ];
+
+  const dayNames = ["ی", "د", "س", "چ", "پ", "ج", "ش"];
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <Button variant="outline" size="sm" onClick={goToPreviousMonth}>
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+          <CardTitle>
+            {monthNames[month]} {year}
+          </CardTitle>
+          <Button variant="outline" size="sm" onClick={goToNextMonth}>
+            <ArrowRight className="w-4 h-4 rotate-180" />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-7 gap-1 mb-4">
+          {dayNames.map(dayName => (
+            <div key={dayName} className="p-2 text-center font-medium text-gray-600 text-sm">
+              {dayName}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-1">
+          {days.map((day, index) => (
+            <div
+              key={index}
+              className={`min-h-[80px] p-1 border border-gray-200 ${
+                day ? 'bg-white' : 'bg-gray-50'
+              } ${day && isToday(day) ? 'bg-blue-50 border-blue-300' : ''}`}
+            >
+              {day && (
+                <>
+                  <div className={`text-sm font-medium mb-1 ${
+                    isToday(day) ? 'text-blue-600' : 'text-gray-900'
+                  }`}>
+                    {day}
+                  </div>
+                  <div className="space-y-1">
+                    {getEventsForDay(day).slice(0, 2).map(event => (
+                      <div
+                        key={event.id}
+                        className="text-xs p-1 bg-purple-100 text-purple-800 rounded truncate"
+                        title={`${event.title} - ${event.user.fullName}`}
+                      >
+                        {event.title}
+                      </div>
+                    ))}
+                    {getEventsForDay(day).length > 2 && (
+                      <div className="text-xs text-gray-500">
+                        +{getEventsForDay(day).length - 2} بیشتر
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function TeamCalendar() {
   const [events, setEvents] = useState<TeamEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +202,7 @@ export default function TeamCalendar() {
       } else {
         toast({
           title: "خطا در بارگذاری رویدادها",
-          description: response.message || "لطفاً دوباره تلاش کنید",
+          description: response.message || "��طفاً دوباره تلاش کنید",
           variant: "destructive",
         });
       }
@@ -188,7 +309,7 @@ export default function TeamCalendar() {
                   onChange={(e) => setFilterType(e.target.value)}
                   className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 >
-                  <option value="">همه انواع رویداد</option>
+                  <option value="">همه انواع روی��اد</option>
                   <option value="BIRTHDAY">تولد</option>
                   <option value="INSURANCE">بیمه</option>
                   <option value="CONTRACT">قرارداد</option>
