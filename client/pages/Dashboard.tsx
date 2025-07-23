@@ -58,7 +58,7 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -492,7 +492,7 @@ export default function Dashboard() {
             {/* Quick Stats */}
             <Card>
               <CardHeader>
-                <CardTitle>آمار سریع</CardTitle>
+                <CardTitle>��مار سریع</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
