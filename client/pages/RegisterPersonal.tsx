@@ -158,11 +158,30 @@ export default function RegisterPersonal() {
           </p>
         </div>
 
+        {/* Team invitation notice */}
+        {invitationInfo && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <Users className="w-5 h-5 text-blue-600" />
+              <h3 className="font-medium text-blue-900">دعوت به تیم</h3>
+            </div>
+            <p className="text-sm text-blue-700">
+              شما به تیم <strong>{invitationInfo.teamName}</strong> توسط <strong>{invitationInfo.inviterName}</strong> دعوت شده‌اید.
+              پس از ثبت نام، به صورت خودکار به تیم اضافه خواهید شد.
+            </p>
+          </div>
+        )}
+
         <Card className="border-2 border-brand-100">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-xl">ثبت نام رایگان</CardTitle>
+            <CardTitle className="text-xl">
+              {invitationInfo ? "ثبت نام و ��یوستن به تیم" : "ثبت نام رایگان"}
+            </CardTitle>
             <CardDescription>
-              فقط چند قدم تا مدیریت هوشمند رویدادهایتان
+              {invitationInfo
+                ? "برای پیوستن به تیم، حساب کاربری خود را ایجاد کنید"
+                : "فقط چند قدم تا مدیریت هوشمند رویدادهایتان"
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
