@@ -151,6 +151,11 @@ export default function Dashboard() {
   const getDaysUntil = (dateString: string) => {
     const eventDate = new Date(dateString);
     const today = new Date();
+
+    // Reset time to midnight for accurate day comparison
+    eventDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
     const diffTime = eventDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
@@ -617,7 +622,7 @@ export default function Dashboard() {
                     <li>• یادآوری پیامک</li>
                     <li>• یادآوری واتس‌اپ</li>
                     <li>• پشتیبانی اولویت‌دار</li>
-                    <li>• گزارش‌گیری پیشرفته</li>
+                    <li>• گزارش‌گی��ی پیشرفته</li>
                   </ul>
                   <Link to="/premium" className="block mt-4">
                     <Button className="w-full bg-brand-600 hover:bg-brand-700">
