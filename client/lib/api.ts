@@ -15,6 +15,36 @@ class ApiService {
     return localStorage.getItem("authToken");
   }
 
+  // Fallback fetch using XMLHttpRequest for when browser extensions block fetch
+  private async fallbackFetch(url: string, config: RequestInit): Promise<Response> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open(config.method || 'GET', url, true);
+
+      // Set headers
+      if (config.headers) {
+        Object.entries(config.headers).forEach(([key, value]) => {
+          xhr.setRequestHeader(key, value as string);
+        });
+      }
+
+      xhr.onload = () => {
+        const response = new Response(xhr.responseText, {
+          status: xhr.status,
+          statusText: xhr.statusText,
+          headers: new Headers(),
+        });
+        resolve(response);
+      };
+
+      xhr.onerror = () => reject(new Error('Network error'));
+      xhr.ontimeout = () => reject(new Error('Request timeout'));
+
+      xhr.timeout = 30000; // 30 second timeout
+      xhr.send(config.body as string);
+    });
+  }
+
   private setAuthToken(token: string): void {
     localStorage.setItem("authToken", token);
   }
