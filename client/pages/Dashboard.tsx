@@ -61,8 +61,10 @@ export default function Dashboard() {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    loadDashboardData();
-  }, []);
+    if (isAuthenticated) {
+      loadDashboardData();
+    }
+  }, [isAuthenticated]);
 
   const loadDashboardData = async () => {
     try {
@@ -339,7 +341,7 @@ export default function Dashboard() {
                       هنوز رویدادی ندارید
                     </h3>
                     <p className="text-gray-400">
-                      اولین رویدادتان را اضافه کنی��
+                      اولین رویدادتان را اض��فه کنی��
                     </p>
                   </CardContent>
                 </Card>
