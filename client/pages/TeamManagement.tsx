@@ -56,6 +56,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { usePermissions } from "@/hooks/usePermissions";
 import { apiService } from "@/lib/api";
 
 interface TeamMember {
@@ -155,7 +156,7 @@ export default function TeamManagement() {
   const handleInviteMember = async () => {
     if (!inviteEmail.trim()) {
       toast({
-        title: "خطا",
+        title: "��طا",
         description: "لطفاً ایمیل عضو جدید را وارد کنید",
         variant: "destructive",
       });
