@@ -19,7 +19,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
-import { formatPersianDate, formatPersianTime } from "@/lib/persian-date";
+import { formatPersianDate, formatPersianTime, gregorianToPersian } from "@/lib/persian-date";
+import jalaali from "jalaali-js";
 
 interface TeamEvent {
   id: string;
