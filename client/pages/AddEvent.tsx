@@ -79,7 +79,7 @@ export default function AddEvent() {
           {
             key: "insurance_type",
             label: "نوع بیمه",
-            placeholder: "��ثال: خودرو، درمان، آتش‌سوزی",
+            placeholder: "مثال: خودرو، درمان، آتش‌سوزی",
             required: false,
           },
           {
@@ -213,7 +213,7 @@ export default function AddEvent() {
     // Check if method is premium and user doesn't have premium
     if (!methodData?.free && user?.subscriptionType === "FREE") {
       toast({
-        title: "نیاز به حساب پرمیوم",
+        title: "نیاز به ح��اب پرمیوم",
         description: `برای استفاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
         variant: "destructive",
       });
@@ -379,7 +379,7 @@ export default function AddEvent() {
             className="inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
           >
             <ArrowRight className="w-4 h-4" />
-            بازگشت به ��اشبورد
+            بازگشت به داشبورد
           </Link>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
@@ -407,7 +407,7 @@ export default function AddEvent() {
                 {/* Event Title */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ��نوان رویداد *
+                    عنوان رویداد *
                   </label>
                   <input
                     type="text"
@@ -588,7 +588,7 @@ export default function AddEvent() {
                       );
                       const isPremiumOnly = !method.free;
                       const hasAccess =
-                        method.free || userSubscription?.currentType !== "FREE";
+                        method.free || user?.subscriptionType !== "FREE";
 
                       return (
                         <button
