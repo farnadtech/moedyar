@@ -50,7 +50,7 @@ const App = () => (
                 <Placeholder
                   title="ثبت نام حساب کسب‌وکار"
                   description="حساب کسب‌وکار با قابلیت‌های پیشرفته مدیریت تیم"
-                  suggestion="برای دریافت اطلاعات بیشتر در مورد حساب کسب‌وکار و قیمت‌گذاری، با ما تماس بگیرید."
+                  suggestion="برای دریافت اطلاعات بیشتر در مورد حساب کسب‌وکار و قیمت‌گذا��ی، با ما تماس بگیرید."
                 />
               }
             />
@@ -172,6 +172,14 @@ const App = () => (
               }
             />
             <Route
+              path="/team/create"
+              element={
+                <ProtectedRoute>
+                  <CreateTeam />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/demo"
               element={
                 <Placeholder
@@ -194,7 +202,7 @@ const App = () => (
               element={
                 <Placeholder
                   title="پشتیبانی"
-                  description="مرکز کمک و پاسخ به سوالات متدا��ل"
+                  description="مرکز کمک و پاسخ به سوالات متداول"
                 />
               }
             />
