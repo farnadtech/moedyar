@@ -393,19 +393,28 @@ export default function Dashboard() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Link to={`/edit-event/${event.id}`}>
-                              <Button variant="ghost" size="sm">
-                                <Edit className="w-4 h-4" />
+                            {canEditEvents() && (
+                              <Link to={`/edit-event/${event.id}`}>
+                                <Button variant="ghost" size="sm">
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                              </Link>
+                            )}
+                            {canDeleteEvents() && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteEvent(event.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                              >
+                                <Trash2 className="w-4 h-4" />
                               </Button>
-                            </Link>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteEvent(event.id)}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            )}
+                            {(!canEditEvents() || !canDeleteEvents()) && (
+                              <Button variant="ghost" size="sm" disabled>
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </CardHeader>
