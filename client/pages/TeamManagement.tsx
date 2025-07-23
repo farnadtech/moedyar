@@ -490,7 +490,7 @@ export default function TeamManagement() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {membership.role !== "OWNER" && (
+                        {membership.role !== "OWNER" && canRemoveMembers() && (
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button
