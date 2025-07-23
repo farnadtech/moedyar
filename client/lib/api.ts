@@ -48,19 +48,35 @@ class ApiService {
         window.location.href = "/login";
         return {
           success: false,
-          message: "نیاز به ��حراز هویت مجدد",
+          message: "نیاز به احراز هویت مجدد",
         };
       }
 
-      // Try to parse as JSON first
+      // Handle other HTTP errors
+      if (!response.ok) {
+        console.error(`HTTP Error ${response.status}: ${response.statusText}`);
+        return {
+          success: false,
+          message: `خطای سرور: ${response.status}`,
+        };
+      }
+
+      // Check if response has content
+      const contentLength = response.headers.get("content-length");
+      if (contentLength === "0") {
+        return {
+          success: true,
+          message: "عملیات با موفقیت انجام شد",
+        } as ApiResponse<T>;
+      }
+
+      // Try to parse as JSON
       try {
         const data: ApiResponse<T> = await response.json();
         return data;
       } catch (jsonError) {
         console.error("JSON parse error:", jsonError);
 
-        // If JSON parsing fails, try to get the response as text for debugging
-        // But we can't read the body again, so we'll return a generic error
         return {
           success: false,
           message: "خطا در تجزیه پاسخ سرور",
