@@ -52,35 +52,38 @@ class ApiService {
         };
       }
 
-      // Handle other HTTP errors
-      if (!response.ok) {
-        console.error(`HTTP Error ${response.status}: ${response.statusText}`);
-        return {
-          success: false,
-          message: `خطای سرور: ${response.status}`,
-        };
-      }
+      // Clone response for multiple reads if needed
+      const responseClone = response.clone();
 
-      // Check if response has content
-      const contentLength = response.headers.get("content-length");
-      if (contentLength === "0") {
-        return {
-          success: true,
-          message: "عملیات با موفقیت انجام شد",
-        } as ApiResponse<T>;
-      }
-
-      // Try to parse as JSON
+      // Try to parse as JSON first
       try {
         const data: ApiResponse<T> = await response.json();
         return data;
       } catch (jsonError) {
-        console.error("JSON parse error:", jsonError);
+        // If JSON parsing fails, try to read as text for better error info
+        try {
+          const text = await responseClone.text();
+          console.error("Non-JSON response received:", text);
 
-        return {
-          success: false,
-          message: "خطا در تجزیه پاسخ سرور",
-        };
+          // Handle common error cases
+          if (!response.ok) {
+            return {
+              success: false,
+              message: `خطای سرور: ${response.status} - ${response.statusText}`,
+            };
+          }
+
+          return {
+            success: false,
+            message: "پاسخ سرور قابل تجزیه نیست",
+          };
+        } catch (textError) {
+          console.error("Could not read response as text either:", textError);
+          return {
+            success: false,
+            message: "خطا در خواندن پاسخ سرور",
+          };
+        }
       }
     } catch (error) {
       // Check if it's a network/fetch error (often caused by browser extensions)
