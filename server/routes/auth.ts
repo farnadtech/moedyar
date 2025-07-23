@@ -169,8 +169,10 @@ router.post(
         });
       }
 
-      // Update subscription type based on active subscription
+      // Calculate effective subscription type (including team benefits)
       let currentSubscriptionType = user.subscriptionType;
+
+      // First check user's own subscriptions
       if (user.subscriptions.length > 0) {
         const activeSubscription = user.subscriptions[0];
         if (
@@ -178,6 +180,36 @@ router.post(
           activeSubscription.endDate > new Date()
         ) {
           currentSubscriptionType = activeSubscription.type;
+        }
+      }
+
+      // If user is part of a team, they get team owner's subscription benefits
+      if (user.teamId && user.team) {
+        const teamOwner = await db.user.findUnique({
+          where: { id: user.team.ownerId },
+          select: {
+            subscriptionType: true,
+            subscriptions: {
+              where: { isActive: true },
+              orderBy: { createdAt: "desc" },
+              take: 1,
+            },
+          },
+        });
+
+        if (teamOwner) {
+          currentSubscriptionType = teamOwner.subscriptionType;
+
+          // Check for active team owner subscription
+          if (teamOwner.subscriptions.length > 0) {
+            const activeSubscription = teamOwner.subscriptions[0];
+            if (
+              activeSubscription.endDate &&
+              activeSubscription.endDate > new Date()
+            ) {
+              currentSubscriptionType = activeSubscription.type;
+            }
+          }
         }
       }
 
