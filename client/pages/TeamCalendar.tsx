@@ -61,8 +61,9 @@ export default function TeamCalendar() {
       // First try to load team events, fallback to user events
       let response = await apiService.getTeamEvents();
 
-      if (!response.success || !response.data) {
-        // Fallback to user's own events if not part of a team
+      // If team events fail (user not in team, etc.), fallback to user events
+      if (!response.success) {
+        console.log("Team events failed, falling back to user events:", response.message);
         response = await apiService.getEvents();
       }
       
