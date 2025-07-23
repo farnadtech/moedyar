@@ -1,6 +1,7 @@
 import { Router, Response } from "express";
 import { db } from "../lib/db";
 import { authenticateToken, AuthRequest } from "../lib/auth";
+import { sendTeamInvitationEmail } from "../lib/notifications";
 import { z } from "zod";
 
 const router = Router();
