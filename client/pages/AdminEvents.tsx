@@ -302,7 +302,7 @@ export default function AdminEvents() {
                                 variant="outline"
                                 className="text-xs"
                               >
-                                {formatDate(reminder.reminderDate)} -{" "}
+                                {reminder.daysBefore} روز قبل -{" "}
                                 {reminder.method}
                               </Badge>
                             ),
