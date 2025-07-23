@@ -55,6 +55,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiService } from "@/lib/api";
 
 interface TeamMember {
@@ -164,7 +165,7 @@ export default function TeamManagement() {
 
       if (response.success) {
         toast({
-          title: "عضو اضافه شد",
+          title: "عض�� اضافه شد",
           description: `${inviteEmail} با موفقیت به تیم اضافه شد`,
         });
         setInviteEmail("");
@@ -202,7 +203,7 @@ export default function TeamManagement() {
       } else {
         toast({
           title: "خطا در حذف عضو",
-          description: response.message || "لطفاً دوباره تلاش کنید",
+          description: response.message || "لطفاً دوباره تلاش کن��د",
           variant: "destructive",
         });
       }
@@ -428,7 +429,7 @@ export default function TeamManagement() {
               <CardHeader>
                 <CardTitle>اعضای تیم</CardTitle>
                 <CardDescription>
-                  مدیریت اعضای تیم و نقش‌های آن‌ها
+                  مدیریت اعضای تیم و نقش‌های آن���ها
                 </CardDescription>
               </CardHeader>
               <CardContent>
