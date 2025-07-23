@@ -28,14 +28,42 @@ export default function RegisterPersonal() {
   // Check invitation info if token exists
   useEffect(() => {
     if (inviteToken) {
-      // In a real implementation, you might want to validate the token first
-      // For now, we'll show a generic invitation message
-      setInvitationInfo({
-        teamName: "تیم",
-        inviterName: "مدیر تیم"
-      });
+      const fetchInvitationInfo = async () => {
+        try {
+          const response = await apiService.getInvitationInfo(inviteToken);
+          if (response.success && response.data) {
+            setInvitationInfo({
+              teamName: response.data.teamName,
+              inviterName: response.data.inviterName
+            });
+            // Pre-fill and lock the email field
+            setFormData(prev => ({
+              ...prev,
+              email: response.data.email
+            }));
+          } else {
+            toast({
+              title: "خطا در دعوت‌نامه",
+              description: response.message || "دعوت‌نامه نامعتبر یا منقضی شده است",
+              variant: "destructive"
+            });
+            // Redirect to regular registration
+            navigate('/register/personal');
+          }
+        } catch (error) {
+          console.error('Error fetching invitation info:', error);
+          toast({
+            title: "خطا در دعوت‌نامه",
+            description: "خطا در دریافت اطلاعات دعوت‌نامه",
+            variant: "destructive"
+          });
+          navigate('/register/personal');
+        }
+      };
+
+      fetchInvitationInfo();
     }
-  }, [inviteToken]);
+  }, [inviteToken, navigate, toast]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -71,7 +99,7 @@ export default function RegisterPersonal() {
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "تکرار رمز عبور مطابقت ندارد";
+      newErrors.confirmPassword = "تکر��ر رمز عبور مطابقت ندارد";
     }
 
     setErrors(newErrors);
@@ -175,7 +203,7 @@ export default function RegisterPersonal() {
         <Card className="border-2 border-brand-100">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">
-              {invitationInfo ? "ثبت نام و ��یوستن به تیم" : "ثبت نام رایگان"}
+              {invitationInfo ? "ثبت نام و پیوستن به تیم" : "ثبت نام رایگان"}
             </CardTitle>
             <CardDescription>
               {invitationInfo
