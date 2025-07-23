@@ -129,7 +129,7 @@ export default function Dashboard() {
   };
 
   const handleLogout = () => {
-    apiService.logout();
+    logout();
   };
 
   const formatDate = (dateString: string) => {
@@ -492,7 +492,7 @@ export default function Dashboard() {
             {/* Quick Stats */}
             <Card>
               <CardHeader>
-                <CardTitle>��مار سریع</CardTitle>
+                <CardTitle>آمار سریع</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
