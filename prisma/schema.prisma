@@ -129,6 +129,7 @@ model Team {
   owner           User             @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   members         User[]           @relation("TeamMembers")
   memberships     TeamMembership[]
+  invitations     TeamInvitation[]
 
   @@map("teams")
 }
