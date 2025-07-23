@@ -19,9 +19,12 @@ class ApiService {
   private detectBrowserExtensionInterference(): boolean {
     try {
       // Check for common extension modification patterns
-      const hasModifiedFetch = window.fetch.toString().includes('extension') ||
-                               window.fetch.toString().includes('chrome-extension');
-      const hasModifiedXHR = XMLHttpRequest.prototype.open.toString().includes('extension');
+      const hasModifiedFetch =
+        window.fetch.toString().includes("extension") ||
+        window.fetch.toString().includes("chrome-extension");
+      const hasModifiedXHR = XMLHttpRequest.prototype.open
+        .toString()
+        .includes("extension");
 
       return hasModifiedFetch || hasModifiedXHR;
     } catch (e) {
@@ -30,7 +33,10 @@ class ApiService {
   }
 
   // Alternative fetch method that bypasses some browser extension blocking
-  private async alternativeFetch(url: string, config: RequestInit): Promise<Response> {
+  private async alternativeFetch(
+    url: string,
+    config: RequestInit,
+  ): Promise<Response> {
     // Try using a different fetch approach first
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -39,8 +45,8 @@ class ApiService {
       const response = await fetch(url, {
         ...config,
         signal: controller.signal,
-        cache: 'no-store',
-        credentials: 'same-origin'
+        cache: "no-store",
+        credentials: "same-origin",
       });
       clearTimeout(timeoutId);
       return response;
@@ -51,11 +57,14 @@ class ApiService {
   }
 
   // Fallback fetch using XMLHttpRequest for when browser extensions block fetch
-  private async fallbackFetch(url: string, config: RequestInit): Promise<Response> {
+  private async fallbackFetch(
+    url: string,
+    config: RequestInit,
+  ): Promise<Response> {
     return new Promise((resolve, reject) => {
       try {
         const xhr = new XMLHttpRequest();
-        xhr.open(config.method || 'GET', url, true);
+        xhr.open(config.method || "GET", url, true);
 
         // Set headers with error handling
         if (config.headers) {
@@ -81,30 +90,32 @@ class ApiService {
                 try {
                   return JSON.parse(xhr.responseText);
                 } catch (e) {
-                  throw new Error('Invalid JSON response');
+                  throw new Error("Invalid JSON response");
                 }
               },
-              text: async () => xhr.responseText
+              text: async () => xhr.responseText,
             } as Response;
             resolve(response);
           } catch (responseError) {
-            reject(new Error(`Response processing error: ${responseError.message}`));
+            reject(
+              new Error(`Response processing error: ${responseError.message}`),
+            );
           }
         };
 
         xhr.onerror = (event) => {
-          console.error('XMLHttpRequest error event:', event);
-          reject(new Error('XMLHttpRequest network error'));
+          console.error("XMLHttpRequest error event:", event);
+          reject(new Error("XMLHttpRequest network error"));
         };
 
         xhr.ontimeout = () => {
-          console.error('XMLHttpRequest timeout');
-          reject(new Error('XMLHttpRequest timeout'));
+          console.error("XMLHttpRequest timeout");
+          reject(new Error("XMLHttpRequest timeout"));
         };
 
         xhr.onabort = () => {
-          console.error('XMLHttpRequest aborted');
-          reject(new Error('XMLHttpRequest aborted'));
+          console.error("XMLHttpRequest aborted");
+          reject(new Error("XMLHttpRequest aborted"));
         };
 
         xhr.timeout = 15000; // 15 second timeout (reduced from 30)
@@ -148,24 +159,33 @@ class ApiService {
     let response: Response;
 
     // For critical endpoints, try XMLHttpRequest first as it's less likely to be blocked
-    const isCriticalEndpoint = endpoint.includes("/auth/") || endpoint.includes("/teams/");
+    const isCriticalEndpoint =
+      endpoint.includes("/auth/") || endpoint.includes("/teams/");
 
     if (isCriticalEndpoint) {
       try {
         console.log("Using XMLHttpRequest for critical endpoint:", endpoint);
-        response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
+        response = await this.fallbackFetch(
+          `${API_BASE_URL}${endpoint}`,
+          config,
+        );
         console.log("XMLHttpRequest succeeded for critical endpoint");
       } catch (xhrError) {
-        console.log("XMLHttpRequest failed for critical endpoint, trying standard fetch...", xhrError);
+        console.log(
+          "XMLHttpRequest failed for critical endpoint, trying standard fetch...",
+          xhrError,
+        );
         try {
           response = await fetch(`${API_BASE_URL}${endpoint}`, config);
           console.log("Standard fetch succeeded as fallback");
         } catch (fetchError) {
           console.error("Both XMLHttpRequest and fetch failed:", {
             xhrError,
-            fetchError
+            fetchError,
           });
-          throw new Error("Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.");
+          throw new Error(
+            "Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.",
+          );
         }
       }
     } else {
@@ -173,22 +193,29 @@ class ApiService {
       try {
         response = await fetch(`${API_BASE_URL}${endpoint}`, config);
       } catch (fetchError) {
-        console.log("Standard fetch failed, trying XMLHttpRequest fallback...", fetchError);
+        console.log(
+          "Standard fetch failed, trying XMLHttpRequest fallback...",
+          fetchError,
+        );
         try {
-          response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
+          response = await this.fallbackFetch(
+            `${API_BASE_URL}${endpoint}`,
+            config,
+          );
           console.log("XMLHttpRequest fallback succeeded");
         } catch (fallbackError) {
           console.error("Both fetch and XMLHttpRequest failed:", {
             fetchError,
-            fallbackError
+            fallbackError,
           });
-          throw new Error("Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.");
+          throw new Error(
+            "Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.",
+          );
         }
       }
     }
 
     try {
-
       // Handle authentication errors first
       if (response.status === 401 || response.status === 403) {
         this.removeAuthToken();
@@ -228,9 +255,11 @@ class ApiService {
     } catch (error) {
       // Check if it's a network/fetch error (often caused by browser extensions)
       if (error instanceof TypeError && error.message.includes("fetch")) {
-        const hasExtensionInterference = this.detectBrowserExtensionInterference();
+        const hasExtensionInterference =
+          this.detectBrowserExtensionInterference();
         console.warn(
-          "Network fetch error (browser extension interference detected:", hasExtensionInterference + "):",
+          "Network fetch error (browser extension interference detected:",
+          hasExtensionInterference + "):",
           error.message,
         );
         console.log("API Request Error:", error);
@@ -238,18 +267,24 @@ class ApiService {
         // For critical auth endpoints, offer emergency options
         if (endpoint.includes("/auth/me")) {
           // Store failure count in sessionStorage
-          const failureKey = 'auth_failures';
-          const currentFailures = parseInt(sessionStorage.getItem(failureKey) || '0');
+          const failureKey = "auth_failures";
+          const currentFailures = parseInt(
+            sessionStorage.getItem(failureKey) || "0",
+          );
           sessionStorage.setItem(failureKey, (currentFailures + 1).toString());
 
           // If we've failed multiple times, offer to clear everything and start fresh
           if (currentFailures >= 2) {
             setTimeout(() => {
-              if (confirm("مشکل در ارتباط با سرور تداوم دارد. آیا می‌خواهید تمام اطلاعات محلی را پاک کرده و مجدداً تلاش کنید؟")) {
+              if (
+                confirm(
+                  "مشکل در ارتباط با سرور تداوم دارد. آیا می‌خواهید تمام اطلاعات محلی را پاک کرده و مجدداً تلاش کنید؟",
+                )
+              ) {
                 // Clear all local storage and reload
                 localStorage.clear();
                 sessionStorage.clear();
-                window.location.href = '/login';
+                window.location.href = "/login";
               }
             }, 1500);
 
@@ -260,14 +295,19 @@ class ApiService {
           } else {
             // First failure, just suggest reload
             setTimeout(() => {
-              if (confirm("خطا در ارتباط با سرور. آیا می‌خواهید صفحه را مجدداً بارگذاری کنید؟")) {
+              if (
+                confirm(
+                  "خطا در ارتباط با سرور. آیا می‌خواهید صفحه را مجدداً بارگذاری کنید؟",
+                )
+              ) {
                 window.location.reload();
               }
             }, 2000);
 
             return {
               success: false,
-              message: "خطا در ارتباط با سرور - احتمالاً به دلیل افزونه‌های مرورگر.",
+              message:
+                "خطا در ارتباط با سرور - احتمالاً به دلیل افزونه‌های مرورگر.",
             };
           }
         }
@@ -283,10 +323,18 @@ class ApiService {
       }
 
       // Retry mechanism for any network errors (browser extension interference)
-      if ((error instanceof TypeError || error.message.includes("Network request failed")) && retryCount < 2) {
-        console.log(`Retrying API request (attempt ${retryCount + 1}): ${endpoint}`);
+      if (
+        (error instanceof TypeError ||
+          error.message.includes("Network request failed")) &&
+        retryCount < 2
+      ) {
+        console.log(
+          `Retrying API request (attempt ${retryCount + 1}): ${endpoint}`,
+        );
         // Wait a short time before retrying
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 * (retryCount + 1)),
+        ); // Exponential backoff
         return this.request<T>(endpoint, options, retryCount + 1);
       }
 

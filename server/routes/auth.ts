@@ -329,7 +329,7 @@ router.get("/me", async (req: Request, res: Response) => {
       teamId: user.teamId,
       subscriptionType: user.subscriptionType,
       teamMemberships: user.teamMemberships,
-      team: user.team
+      team: user.team,
     });
 
     // Determine effective subscription type
@@ -357,7 +357,7 @@ router.get("/me", async (req: Request, res: Response) => {
           ownerId: user.team.ownerId,
           ownerSubscriptionType: teamOwner.subscriptionType,
           activeSubscriptions: teamOwner.subscriptions,
-          currentEffective: effectiveSubscriptionType
+          currentEffective: effectiveSubscriptionType,
         });
 
         // Check for active subscription
@@ -368,7 +368,10 @@ router.get("/me", async (req: Request, res: Response) => {
             activeSubscription.endDate > new Date()
           ) {
             effectiveSubscriptionType = activeSubscription.type;
-            console.log("Found active subscription, updating to:", effectiveSubscriptionType);
+            console.log(
+              "Found active subscription, updating to:",
+              effectiveSubscriptionType,
+            );
           }
         }
       }
@@ -379,7 +382,7 @@ router.get("/me", async (req: Request, res: Response) => {
       originalSubscriptionType: user.subscriptionType,
       effectiveSubscriptionType: effectiveSubscriptionType,
       hasTeam: !!user.team,
-      teamId: user.teamId
+      teamId: user.teamId,
     });
 
     res.json({

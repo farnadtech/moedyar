@@ -404,7 +404,10 @@ export default function EditEvent() {
   // Check if user has permission to edit events
   if (!canEditEvents()) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+      <div
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+        dir="rtl"
+      >
         <div className="text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <X className="w-8 h-8 text-red-600" />
@@ -416,9 +419,7 @@ export default function EditEvent() {
             شما به عنوان مشاهده‌گر تیم، مجاز به ویرایش رویداد نیستید.
           </p>
           <Link to="/dashboard">
-            <Button variant="outline">
-              بازگشت به داشبورد
-            </Button>
+            <Button variant="outline">بازگشت به داشبورد</Button>
           </Link>
         </div>
       </div>

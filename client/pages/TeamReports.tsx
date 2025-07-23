@@ -67,7 +67,10 @@ export default function TeamReports() {
 
       // If team events fail, fallback to user events
       if (!response.success) {
-        console.log("Team events failed, falling back to user events:", response.message);
+        console.log(
+          "Team events failed, falling back to user events:",
+          response.message,
+        );
         response = await apiService.getEvents();
       }
 

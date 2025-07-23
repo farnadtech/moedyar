@@ -594,6 +594,4 @@ router.get("/invitation/:token", async (req: Request, res: Response) => {
   }
 });
 
-
-
 export default router;

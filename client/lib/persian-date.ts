@@ -35,7 +35,11 @@ export function gregorianToPersian(date: Date | string): {
   const d = typeof date === "string" ? new Date(date) : date;
 
   try {
-    const persianDate = jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate());
+    const persianDate = jalaali.toJalaali(
+      d.getFullYear(),
+      d.getMonth() + 1,
+      d.getDate(),
+    );
     return {
       year: persianDate.jy,
       month: persianDate.jm,

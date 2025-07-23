@@ -19,7 +19,11 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiService } from "@/lib/api";
-import { formatPersianDate, formatPersianTime, gregorianToPersian } from "@/lib/persian-date";
+import {
+  formatPersianDate,
+  formatPersianTime,
+  gregorianToPersian,
+} from "@/lib/persian-date";
 import jalaali from "jalaali-js";
 
 interface TeamEvent {
@@ -47,15 +51,26 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
   const todayPersian = gregorianToPersian(todayGregorian);
   const [currentPersianDate, setCurrentPersianDate] = useState({
     year: todayPersian.year,
-    month: todayPersian.month
+    month: todayPersian.month,
   });
 
   // Get Persian month info
-  const daysInPersianMonth = jalaali.jalaaliMonthLength(currentPersianDate.year, currentPersianDate.month);
+  const daysInPersianMonth = jalaali.jalaaliMonthLength(
+    currentPersianDate.year,
+    currentPersianDate.month,
+  );
 
   // Get first day of Persian month in Gregorian
-  const firstDayGregorian = jalaali.toGregorian(currentPersianDate.year, currentPersianDate.month, 1);
-  const firstDayDate = new Date(firstDayGregorian.gy, firstDayGregorian.gm - 1, firstDayGregorian.gd);
+  const firstDayGregorian = jalaali.toGregorian(
+    currentPersianDate.year,
+    currentPersianDate.month,
+    1,
+  );
+  const firstDayDate = new Date(
+    firstDayGregorian.gy,
+    firstDayGregorian.gm - 1,
+    firstDayGregorian.gd,
+  );
   const startingDayOfWeek = (firstDayDate.getDay() + 1) % 7; // Adjust for Persian week (Saturday = 0)
 
   // Generate calendar days
@@ -73,18 +88,34 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
 
   // Get events for a specific Persian day
   const getEventsForDay = (persianDay: number) => {
-    const gregorianDay = jalaali.toGregorian(currentPersianDate.year, currentPersianDate.month, persianDay);
-    const dayDate = new Date(gregorianDay.gy, gregorianDay.gm - 1, gregorianDay.gd);
+    const gregorianDay = jalaali.toGregorian(
+      currentPersianDate.year,
+      currentPersianDate.month,
+      persianDay,
+    );
+    const dayDate = new Date(
+      gregorianDay.gy,
+      gregorianDay.gm - 1,
+      gregorianDay.gd,
+    );
 
-    return events.filter(event => {
+    return events.filter((event) => {
       const eventDate = new Date(event.eventDate);
       return eventDate.toDateString() === dayDate.toDateString();
     });
   };
 
   const isToday = (persianDay: number) => {
-    const gregorianDay = jalaali.toGregorian(currentPersianDate.year, currentPersianDate.month, persianDay);
-    const dayDate = new Date(gregorianDay.gy, gregorianDay.gm - 1, gregorianDay.gd);
+    const gregorianDay = jalaali.toGregorian(
+      currentPersianDate.year,
+      currentPersianDate.month,
+      persianDay,
+    );
+    const dayDate = new Date(
+      gregorianDay.gy,
+      gregorianDay.gm - 1,
+      gregorianDay.gd,
+    );
     return dayDate.toDateString() === todayGregorian.toDateString();
   };
 
@@ -92,12 +123,12 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
     if (currentPersianDate.month === 1) {
       setCurrentPersianDate({
         year: currentPersianDate.year - 1,
-        month: 12
+        month: 12,
       });
     } else {
       setCurrentPersianDate({
         year: currentPersianDate.year,
-        month: currentPersianDate.month - 1
+        month: currentPersianDate.month - 1,
       });
     }
   };
@@ -106,19 +137,29 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
     if (currentPersianDate.month === 12) {
       setCurrentPersianDate({
         year: currentPersianDate.year + 1,
-        month: 1
+        month: 1,
       });
     } else {
       setCurrentPersianDate({
         year: currentPersianDate.year,
-        month: currentPersianDate.month + 1
+        month: currentPersianDate.month + 1,
       });
     }
   };
 
   const persianMonthNames = [
-    "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
-    "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+    "فروردین",
+    "اردیبهشت",
+    "خرداد",
+    "تیر",
+    "مرداد",
+    "شهریور",
+    "مهر",
+    "آبان",
+    "آذر",
+    "دی",
+    "بهمن",
+    "اسفند",
   ];
 
   const persianDayNames = ["ش", "ی", "د", "س", "چ", "پ", "ج"];
@@ -131,7 +172,8 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
             <ArrowRight className="w-4 h-4" />
           </Button>
           <CardTitle>
-            {persianMonthNames[currentPersianDate.month - 1]} {currentPersianDate.year}
+            {persianMonthNames[currentPersianDate.month - 1]}{" "}
+            {currentPersianDate.year}
           </CardTitle>
           <Button variant="outline" size="sm" onClick={goToNextMonth}>
             <ArrowRight className="w-4 h-4 rotate-180" />
@@ -140,8 +182,11 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-7 gap-1 mb-4">
-          {persianDayNames.map(dayName => (
-            <div key={dayName} className="p-2 text-center font-medium text-gray-600 text-sm">
+          {persianDayNames.map((dayName) => (
+            <div
+              key={dayName}
+              className="p-2 text-center font-medium text-gray-600 text-sm"
+            >
               {dayName}
             </div>
           ))}
@@ -152,26 +197,30 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
             <div
               key={index}
               className={`min-h-[80px] p-1 border border-gray-200 ${
-                day ? 'bg-white' : 'bg-gray-50'
-              } ${day && isToday(day) ? 'bg-blue-50 border-blue-300' : ''}`}
+                day ? "bg-white" : "bg-gray-50"
+              } ${day && isToday(day) ? "bg-blue-50 border-blue-300" : ""}`}
             >
               {day && (
                 <>
-                  <div className={`text-sm font-medium mb-1 ${
-                    isToday(day) ? 'text-blue-600' : 'text-gray-900'
-                  }`}>
+                  <div
+                    className={`text-sm font-medium mb-1 ${
+                      isToday(day) ? "text-blue-600" : "text-gray-900"
+                    }`}
+                  >
                     {day}
                   </div>
                   <div className="space-y-1">
-                    {getEventsForDay(day).slice(0, 2).map(event => (
-                      <div
-                        key={event.id}
-                        className="text-xs p-1 bg-purple-100 text-purple-800 rounded truncate"
-                        title={`${event.title} - ${event.user.fullName}`}
-                      >
-                        {event.title}
-                      </div>
-                    ))}
+                    {getEventsForDay(day)
+                      .slice(0, 2)
+                      .map((event) => (
+                        <div
+                          key={event.id}
+                          className="text-xs p-1 bg-purple-100 text-purple-800 rounded truncate"
+                          title={`${event.title} - ${event.user.fullName}`}
+                        >
+                          {event.title}
+                        </div>
+                      ))}
                     {getEventsForDay(day).length > 2 && (
                       <div className="text-xs text-gray-500">
                         +{getEventsForDay(day).length - 2} بیشتر

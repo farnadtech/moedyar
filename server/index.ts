@@ -19,13 +19,13 @@ export function createServer() {
 
   // Middleware
   app.use(cors());
-  app.use(express.json({ charset: 'utf-8' }));
-  app.use(express.urlencoded({ extended: true, charset: 'utf-8' }));
+  app.use(express.json({ charset: "utf-8" }));
+  app.use(express.urlencoded({ extended: true, charset: "utf-8" }));
 
   // Set UTF-8 charset for all responses
   app.use((req, res, next) => {
-    res.charset = 'utf-8';
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.charset = "utf-8";
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
     next();
   });
 

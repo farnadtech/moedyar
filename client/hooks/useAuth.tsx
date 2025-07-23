@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             id: response.data.user.id,
             email: response.data.user.email,
             subscriptionType: response.data.user.subscriptionType,
-            teamId: response.data.user.teamId
+            teamId: response.data.user.teamId,
           });
           setUser(response.data.user);
         } else {
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           id: response.data.user.id,
           email: response.data.user.email,
           subscriptionType: response.data.user.subscriptionType,
-          teamId: response.data.user.teamId
+          teamId: response.data.user.teamId,
         });
         setUser(response.data.user);
         return true;
@@ -101,13 +101,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           id: response.data.user.id,
           email: response.data.user.email,
           subscriptionType: response.data.user.subscriptionType,
-          teamId: response.data.user.teamId
+          teamId: response.data.user.teamId,
         });
         setUser(response.data.user);
       } else {
         // If refresh fails and it's not a network error, logout
-        if (!response.message?.includes("خطا در ارتباط") &&
-            !response.message?.includes("سرور")) {
+        if (
+          !response.message?.includes("خطا در ارتباط") &&
+          !response.message?.includes("سرور")
+        ) {
           console.log("User refresh failed, logging out:", response.message);
           logout();
         }

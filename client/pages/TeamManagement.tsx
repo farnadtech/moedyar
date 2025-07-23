@@ -140,7 +140,8 @@ export default function TeamManagement() {
       console.error("Error loading team info:", error);
 
       // Check if this is a fetch error (likely browser extension interference)
-      const isFetchError = error instanceof TypeError && error.message.includes("fetch");
+      const isFetchError =
+        error instanceof TypeError && error.message.includes("fetch");
 
       toast({
         title: "خطا در بارگذاری اطلاعات",
@@ -354,64 +355,64 @@ export default function TeamManagement() {
                     </Button>
                     {canInviteMembers() && (
                       <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-                      <DialogTrigger asChild>
-                        <Button className="bg-purple-600 hover:bg-purple-700">
-                          <Plus className="w-4 h-4 ml-1" />
-                          دعوت عضو
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent dir="rtl">
-                        <DialogHeader>
-                          <DialogTitle>دعوت عضو جدید</DialogTitle>
-                          <DialogDescription>
-                            ایمیل شخص مورد نظر و نقش او را در تیم انتخاب کنید
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="invite-email">ایمیل</Label>
-                            <Input
-                              id="invite-email"
-                              type="email"
-                              placeholder="email@example.com"
-                              value={inviteEmail}
-                              onChange={(e) => setInviteEmail(e.target.value)}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="invite-role">نقش</Label>
-                            <Select
-                              value={inviteRole}
-                              onValueChange={setInviteRole}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="ADMIN">ادمین</SelectItem>
-                                <SelectItem value="MEMBER">عضو</SelectItem>
-                                <SelectItem value="VIEWER">
-                                  مشاهده‌گر
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                        <DialogFooter>
-                          <Button
-                            onClick={handleInviteMember}
-                            disabled={inviteLoading}
-                            className="bg-purple-600 hover:bg-purple-700"
-                          >
-                            {inviteLoading ? (
-                              <RefreshCw className="w-4 h-4 ml-1 animate-spin" />
-                            ) : (
-                              <Mail className="w-4 h-4 ml-1" />
-                            )}
-                            ارسال دعوت‌نامه
+                        <DialogTrigger asChild>
+                          <Button className="bg-purple-600 hover:bg-purple-700">
+                            <Plus className="w-4 h-4 ml-1" />
+                            دعوت عضو
                           </Button>
-                        </DialogFooter>
-                      </DialogContent>
+                        </DialogTrigger>
+                        <DialogContent dir="rtl">
+                          <DialogHeader>
+                            <DialogTitle>دعوت عضو جدید</DialogTitle>
+                            <DialogDescription>
+                              ایمیل شخص مورد نظر و نقش او را در تیم انتخاب کنید
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <Label htmlFor="invite-email">ایمیل</Label>
+                              <Input
+                                id="invite-email"
+                                type="email"
+                                placeholder="email@example.com"
+                                value={inviteEmail}
+                                onChange={(e) => setInviteEmail(e.target.value)}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="invite-role">نقش</Label>
+                              <Select
+                                value={inviteRole}
+                                onValueChange={setInviteRole}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="ADMIN">ادمین</SelectItem>
+                                  <SelectItem value="MEMBER">عضو</SelectItem>
+                                  <SelectItem value="VIEWER">
+                                    مشاهده‌گر
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <Button
+                              onClick={handleInviteMember}
+                              disabled={inviteLoading}
+                              className="bg-purple-600 hover:bg-purple-700"
+                            >
+                              {inviteLoading ? (
+                                <RefreshCw className="w-4 h-4 ml-1 animate-spin" />
+                              ) : (
+                                <Mail className="w-4 h-4 ml-1" />
+                              )}
+                              ارسال دعوت‌نامه
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
                       </Dialog>
                     )}
                   </div>
