@@ -15,9 +15,27 @@ export default function RegisterPersonal() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [invitationInfo, setInvitationInfo] = useState<{
+    teamName: string;
+    inviterName: string;
+  } | null>(null);
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const inviteToken = searchParams.get('token');
+
+  // Check invitation info if token exists
+  useEffect(() => {
+    if (inviteToken) {
+      // In a real implementation, you might want to validate the token first
+      // For now, we'll show a generic invitation message
+      setInvitationInfo({
+        teamName: "تیم",
+        inviterName: "مدیر تیم"
+      });
+    }
+  }, [inviteToken]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -139,7 +157,7 @@ export default function RegisterPersonal() {
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">ثبت نام رایگان</CardTitle>
             <CardDescription>
-              فقط چند قدم تا مدیریت هوشمند رویدادهایتان
+              فقط چند قدم تا مدیریت هو��مند رویدادهایتان
             </CardDescription>
           </CardHeader>
           <CardContent>
