@@ -413,6 +413,10 @@ class ApiService {
     return this.request<{ team: any }>("/teams/info");
   }
 
+  async getTeamEvents(): Promise<ApiResponse<{ events: any[] }>> {
+    return this.request<{ events: any[] }>("/teams/events");
+  }
+
   async inviteTeamMember(memberData: {
     email: string;
     role?: "ADMIN" | "MEMBER" | "VIEWER";
