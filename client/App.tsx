@@ -26,6 +26,7 @@ import SandboxPayment from "./pages/SandboxPayment";
 import TeamManagement from "./pages/TeamManagement";
 import TeamCalendar from "./pages/TeamCalendar";
 import TeamReports from "./pages/TeamReports";
+import CreateTeam from "./pages/CreateTeam";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
 
@@ -193,7 +194,7 @@ const App = () => (
               element={
                 <Placeholder
                   title="پشتیبانی"
-                  description="مرکز کمک و پاسخ به سوالات متداول"
+                  description="مرکز کمک و پاسخ به سوالات متدا��ل"
                 />
               }
             />
