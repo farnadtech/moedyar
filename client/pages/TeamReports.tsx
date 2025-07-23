@@ -63,7 +63,13 @@ export default function TeamReports() {
       setLoading(true);
 
       // Load team events and calculate stats
-      const response = await apiService.getTeamEvents();
+      let response = await apiService.getTeamEvents();
+
+      // If team events fail, fallback to user events
+      if (!response.success) {
+        console.log("Team events failed, falling back to user events:", response.message);
+        response = await apiService.getEvents();
+      }
 
       if (response.success && response.data) {
         const events = response.data.events;
