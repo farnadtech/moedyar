@@ -107,18 +107,24 @@ class ApiService {
     try {
       response = await fetch(`${API_BASE_URL}${endpoint}`, config);
     } catch (fetchError) {
-      // If fetch fails (likely due to browser extensions), try XMLHttpRequest fallback
-      console.log("Fetch failed, trying XMLHttpRequest fallback...", fetchError);
+      console.log("Standard fetch failed, trying alternative fetch...", fetchError);
       try {
-        response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
-        console.log("XMLHttpRequest fallback succeeded");
-      } catch (fallbackError) {
-        console.error("Both fetch and XMLHttpRequest fallback failed:", {
-          fetchError,
-          fallbackError
-        });
-        // Create a custom error that explains the situation
-        throw new Error("Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.");
+        response = await this.alternativeFetch(`${API_BASE_URL}${endpoint}`, config);
+        console.log("Alternative fetch succeeded");
+      } catch (altFetchError) {
+        console.log("Alternative fetch failed, trying XMLHttpRequest fallback...", altFetchError);
+        try {
+          response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
+          console.log("XMLHttpRequest fallback succeeded");
+        } catch (fallbackError) {
+          console.error("All fetch methods failed:", {
+            fetchError,
+            altFetchError,
+            fallbackError
+          });
+          // Create a custom error that explains the situation
+          throw new Error("Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.");
+        }
       }
     }
 
