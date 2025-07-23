@@ -381,6 +381,21 @@ class ApiService {
     });
   }
 
+  // Get invitation info by token
+  async getInvitationInfo(token: string): Promise<ApiResponse<{
+    email: string;
+    teamName: string;
+    inviterName: string;
+    expiresAt: string;
+  }>> {
+    return this.request<{
+      email: string;
+      teamName: string;
+      inviterName: string;
+      expiresAt: string;
+    }>(`/teams/invitation/${token}`);
+  }
+
   // Team Methods
   async createTeam(teamData: {
     name: string;
