@@ -67,7 +67,7 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
   }
 
   // Add days of month
-  for (let day = 1; day <= daysInMonth; day++) {
+  for (let day = 1; day <= daysInPersianMonth; day++) {
     days.push(day);
   }
 
