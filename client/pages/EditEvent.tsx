@@ -79,7 +79,7 @@ export default function EditEvent() {
         return [
           {
             key: "insurance_type",
-            label: "نو�� بیمه",
+            label: "نوع بیمه",
             placeholder: "مثال: خودرو، درمان، آتش‌سوزی",
             required: false,
           },
@@ -285,7 +285,7 @@ export default function EditEvent() {
     const methodData = reminderMethods.find((m) => m.value === method);
 
     // Check if method is premium and user doesn't have premium
-    if (!methodData?.free && userSubscription?.currentType === "FREE") {
+    if (!methodData?.free && user?.subscriptionType === "FREE") {
       toast({
         title: "نیاز به حساب پرمیوم",
         description: `برای اس��فاده از ${methodData?.label} نیاز به ارتقا به حساب پرمیوم دارید`,
@@ -454,7 +454,7 @@ export default function EditEvent() {
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="مثال: تمدید بی��ه خودرو"
+                    placeholder="مثال: تمدید بیمه خودرو"
                     required
                   />
                   {errors.title && (
@@ -511,7 +511,7 @@ export default function EditEvent() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      در صورت عدم انت��اب، ساعت فعلی حفظ می‌شود
+                      در صورت عدم انتخاب، ساعت فعلی حفظ می‌شود
                     </p>
                   </div>
                 </div>
