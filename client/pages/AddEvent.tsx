@@ -11,6 +11,7 @@ import { Calendar, ArrowRight, Plus, Bell, Check, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiService } from "@/lib/api";
 
 const eventTypes = [
