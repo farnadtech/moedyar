@@ -86,9 +86,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await apiService.getCurrentUser();
       if (response.success && response.data) {
         setUser(response.data.user);
+      } else {
+        // If refresh fails and it's not a network error, logout
+        if (!response.message?.includes("خطا در ارتباط") &&
+            !response.message?.includes("سرور")) {
+          console.log("User refresh failed, logging out:", response.message);
+          logout();
+        }
       }
     } catch (error) {
       console.error("Failed to refresh user:", error);
+      // Don't logout on network errors
+      if (!(error instanceof TypeError && error.message.includes("fetch"))) {
+        logout();
+      }
     }
   };
 
