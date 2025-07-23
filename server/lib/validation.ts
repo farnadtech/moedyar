@@ -6,6 +6,7 @@ export const registerSchema = z.object({
   email: z.string().email('فرمت ایمیل صحیح نیست'),
   password: z.string().min(8, 'رمز عبور باید حداقل ۸ کاراکتر باشد'),
   accountType: z.enum(['PERSONAL', 'BUSINESS']).optional().default('PERSONAL'),
+  inviteToken: z.string().optional(),
 });
 
 // User Login Schema
