@@ -71,9 +71,11 @@ function CalendarGrid({ events }: { events: TeamEvent[] }) {
     days.push(day);
   }
 
-  // Get events for a specific day
-  const getEventsForDay = (day: number) => {
-    const dayDate = new Date(year, month, day);
+  // Get events for a specific Persian day
+  const getEventsForDay = (persianDay: number) => {
+    const gregorianDay = jalaali.toGregorian(currentPersianDate.year, currentPersianDate.month, persianDay);
+    const dayDate = new Date(gregorianDay.gy, gregorianDay.gm - 1, gregorianDay.gd);
+
     return events.filter(event => {
       const eventDate = new Date(event.eventDate);
       return eventDate.toDateString() === dayDate.toDateString();
