@@ -352,7 +352,8 @@ export default function TeamManagement() {
                       <RefreshCw className="w-4 h-4 ml-1" />
                       بروزرسانی
                     </Button>
-                    <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+                    {canInviteMembers() && (
+                      <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
                       <DialogTrigger asChild>
                         <Button className="bg-purple-600 hover:bg-purple-700">
                           <Plus className="w-4 h-4 ml-1" />
@@ -411,7 +412,8 @@ export default function TeamManagement() {
                           </Button>
                         </DialogFooter>
                       </DialogContent>
-                    </Dialog>
+                      </Dialog>
+                    )}
                   </div>
                 </div>
               </CardHeader>
