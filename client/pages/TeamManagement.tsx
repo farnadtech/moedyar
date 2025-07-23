@@ -109,6 +109,7 @@ export default function TeamManagement() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, refreshUser } = useAuth();
+  const { canInviteMembers, canRemoveMembers } = usePermissions();
 
   useEffect(() => {
     loadTeamInfo();
@@ -569,7 +570,7 @@ export default function TeamManagement() {
                     }}
                   >
                     <Edit className="w-6 h-6" />
-                    تنظیمات تیم
+                    تنظیمات تی��
                   </Button>
                 </div>
               </CardContent>
