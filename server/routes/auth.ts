@@ -305,6 +305,13 @@ router.get("/me", async (req: Request, res: Response) => {
       if (teamOwner) {
         effectiveSubscriptionType = teamOwner.subscriptionType;
 
+        console.log("Team owner subscription data:", {
+          ownerId: user.team.ownerId,
+          ownerSubscriptionType: teamOwner.subscriptionType,
+          activeSubscriptions: teamOwner.subscriptions,
+          currentEffective: effectiveSubscriptionType
+        });
+
         // Check for active subscription
         if (teamOwner.subscriptions.length > 0) {
           const activeSubscription = teamOwner.subscriptions[0];
@@ -313,6 +320,7 @@ router.get("/me", async (req: Request, res: Response) => {
             activeSubscription.endDate > new Date()
           ) {
             effectiveSubscriptionType = activeSubscription.type;
+            console.log("Found active subscription, updating to:", effectiveSubscriptionType);
           }
         }
       }
