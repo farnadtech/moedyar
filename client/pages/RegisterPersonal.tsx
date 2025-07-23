@@ -4,6 +4,7 @@ import { Calendar, ArrowRight, Mail, Lock, User, CheckCircle, Users } from "luci
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiService } from "@/lib/api";
 
 export default function RegisterPersonal() {
@@ -203,7 +204,7 @@ export default function RegisterPersonal() {
         <Card className="border-2 border-brand-100">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl">
-              {invitationInfo ? "ثبت نام و پیوستن به تیم" : "ثبت نام رایگان"}
+              {invitationInfo ? "ثبت نام و پیوستن به تیم" : "ثب�� نام رایگان"}
             </CardTitle>
             <CardDescription>
               {invitationInfo
@@ -228,7 +229,7 @@ export default function RegisterPersonal() {
                     className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent ${
                       errors.fullName ? 'border-red-500 bg-red-50' : 'border-gray-300'
                     }`}
-                    placeholder="نام کامل خود را وارد کنید"
+                    placeholder="نام کامل خود را و��رد کنید"
                     required
                   />
                 </div>
