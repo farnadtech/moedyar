@@ -239,7 +239,24 @@ router.get("/me", async (req: Request, res: Response) => {
         subscriptionType: true,
         phone: true,
         isEmailVerified: true,
+        teamId: true,
         createdAt: true,
+        team: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            ownerId: true,
+          }
+        },
+        teamMemberships: {
+          where: { isActive: true },
+          select: {
+            role: true,
+            joinedAt: true,
+            teamId: true,
+          }
+        },
         _count: {
           select: {
             events: {
