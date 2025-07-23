@@ -63,7 +63,16 @@ export default function TeamCalendar() {
       const response = await apiService.getEvents();
       
       if (response.success && response.data) {
-        setEvents(response.data.events);
+        // Add mock user data for events that don't have it
+        const eventsWithUser = response.data.events.map((event: any) => ({
+          ...event,
+          user: event.user || {
+            id: 'current-user',
+            fullName: 'کاربر فعلی',
+            email: 'current@user.com'
+          }
+        }));
+        setEvents(eventsWithUser);
       } else {
         toast({
           title: "خطا در بارگذاری رویدادها",
