@@ -1,0 +1,395 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Calendar,
+  ArrowRight,
+  Users,
+  Eye,
+  Filter,
+  Plus,
+  RefreshCw,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiService } from "@/lib/api";
+import {
+  formatPersianDate,
+  formatPersianTime,
+} from "@/lib/persian-date";
+
+interface TeamEvent {
+  id: string;
+  title: string;
+  eventDate: string;
+  eventType: string;
+  description?: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+  reminders: Array<{
+    id: string;
+    daysBefore: number;
+    method: string;
+  }>;
+}
+
+export default function TeamCalendar() {
+  const [events, setEvents] = useState<TeamEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filterType, setFilterType] = useState("");
+  const [viewMode, setViewMode] = useState<"calendar" | "list">("list");
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadTeamEvents();
+  }, [filterType]);
+
+  const loadTeamEvents = async () => {
+    try {
+      setLoading(true);
+      
+      // For now, we'll load all events - in a real implementation,
+      // this would be filtered to team members only
+      const response = await apiService.getEvents();
+      
+      if (response.success && response.data) {
+        setEvents(response.data.events);
+      } else {
+        toast({
+          title: "خطا در بارگذاری رویدادها",
+          description: response.message || "لطفاً دوباره تلاش کنید",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error loading team events:", error);
+      toast({
+        title: "خطا در بارگذاری اطلاعات",
+        description: "لطفاً صفحه را مجدداً بارگذا��ی کنید",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getEventTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      BIRTHDAY: "تولد",
+      INSURANCE: "بیمه",
+      CONTRACT: "قرارداد",
+      CHECK: "چک",
+      CUSTOM: "سایر",
+    };
+    return labels[type] || type;
+  };
+
+  const getEventTypeColor = (type: string) => {
+    const colors: Record<string, string> = {
+      BIRTHDAY: "bg-pink-100 text-pink-800 border-pink-200",
+      INSURANCE: "bg-blue-100 text-blue-800 border-blue-200",
+      CONTRACT: "bg-green-100 text-green-800 border-green-200",
+      CHECK: "bg-orange-100 text-orange-800 border-orange-200",
+      CUSTOM: "bg-purple-100 text-purple-800 border-purple-200",
+    };
+    return colors[type] || "bg-gray-100 text-gray-800 border-gray-200";
+  };
+
+  const getDaysUntil = (dateString: string) => {
+    const eventDate = new Date(dateString);
+    const today = new Date();
+    const diffTime = eventDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const filteredEvents = events.filter(event => {
+    if (!filterType) return true;
+    return event.eventType === filterType;
+  });
+
+  const upcomingEvents = filteredEvents
+    .filter(event => getDaysUntil(event.eventDate) >= 0)
+    .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">در حال بارگذاری تقویم تیم...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50" dir="rtl">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700"
+            >
+              <ArrowRight className="w-4 h-4" />
+              بازگشت به داشبورد
+            </Link>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">
+                تقویم تیم
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Controls */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-gray-500" />
+                <select
+                  value={filterType}
+                  onChange={(e) => setFilterType(e.target.value)}
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                >
+                  <option value="">همه انواع رویداد</option>
+                  <option value="BIRTHDAY">تولد</option>
+                  <option value="INSURANCE">بیمه</option>
+                  <option value="CONTRACT">قرارداد</option>
+                  <option value="CHECK">چک</option>
+                  <option value="CUSTOM">سایر</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2 border border-gray-300 rounded-lg p-1">
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className={viewMode === "list" ? "bg-purple-600" : ""}
+                >
+                  فهرست
+                </Button>
+                <Button
+                  variant={viewMode === "calendar" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("calendar")}
+                  className={viewMode === "calendar" ? "bg-purple-600" : ""}
+                >
+                  تقویم
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={loadTeamEvents}
+                disabled={loading}
+              >
+                <RefreshCw className={`w-4 h-4 ml-1 ${loading ? "animate-spin" : ""}`} />
+                بروزرسانی
+              </Button>
+              <Link to="/add-event">
+                <Button className="bg-purple-600 hover:bg-purple-700">
+                  <Plus className="w-4 h-4 ml-1" />
+                  رویداد جدید
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">کل رویدادها</p>
+                  <p className="text-2xl font-bold text-purple-600">{filteredEvents.length}</p>
+                </div>
+                <Calendar className="w-8 h-8 text-purple-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">رویدادهای آینده</p>
+                  <p className="text-2xl font-bold text-green-600">{upcomingEvents.length}</p>
+                </div>
+                <Eye className="w-8 h-8 text-green-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">این هفته</p>
+                  <p className="text-2xl font-bold text-yellow-600">
+                    {upcomingEvents.filter(e => getDaysUntil(e.eventDate) <= 7).length}
+                  </p>
+                </div>
+                <Calendar className="w-8 h-8 text-yellow-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">امروز</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {upcomingEvents.filter(e => getDaysUntil(e.eventDate) === 0).length}
+                  </p>
+                </div>
+                <Calendar className="w-8 h-8 text-red-400" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Events Display */}
+        {viewMode === "list" ? (
+          /* List View */
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              رویدادهای آینده تیم
+            </h2>
+
+            {upcomingEvents.length === 0 ? (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-500 mb-2">
+                    رویدادی یافت نشد
+                  </h3>
+                  <p className="text-gray-400">
+                    {filterType ? "فیلتر مورد نظر را تغییر دهید" : "هنوز رویدادی در تیم وجود ندارد"}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              upcomingEvents.map((event) => {
+                const daysUntil = getDaysUntil(event.eventDate);
+                const isToday = daysUntil === 0;
+                const isThisWeek = daysUntil <= 7;
+
+                return (
+                  <Card
+                    key={event.id}
+                    className={`${
+                      isToday
+                        ? "border-red-200 bg-red-50"
+                        : isThisWeek
+                        ? "border-yellow-200 bg-yellow-50"
+                        : ""
+                    }`}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-3 h-3 rounded-full ${
+                              isToday
+                                ? "bg-red-500"
+                                : isThisWeek
+                                ? "bg-yellow-500"
+                                : "bg-green-500"
+                            }`}
+                          />
+                          <div>
+                            <CardTitle className="text-lg">{event.title}</CardTitle>
+                            <CardDescription className="flex flex-col gap-1">
+                              <span>
+                                {formatPersianDate(event.eventDate, { format: "long", includeTime: true })} •{" "}
+                                {getEventTypeLabel(event.eventType)}
+                              </span>
+                              <span className="text-xs flex items-center gap-1">
+                                <Users className="w-3 h-3" />
+                                {event.user.fullName}
+                              </span>
+                            </CardDescription>
+                          </div>
+                        </div>
+                        <div className={`px-3 py-1 rounded-full text-xs font-medium border ${getEventTypeColor(event.eventType)}`}>
+                          {getEventTypeLabel(event.eventType)}
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm">
+                          {isToday ? (
+                            <span className="text-red-600 font-medium">امروز!</span>
+                          ) : (
+                            <span className="text-gray-600">{daysUntil} روز مانده</span>
+                          )}
+                        </div>
+                        {event.reminders.length > 0 && (
+                          <div className="text-xs text-gray-500">
+                            یادآوری: {[...new Set(event.reminders.map(r => r.daysBefore))].sort((a, b) => a - b).join(", ")} روز قبل
+                          </div>
+                        )}
+                      </div>
+                      {event.description && (
+                        <p className="text-sm text-gray-600 mt-2">{event.description}</p>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })
+            )}
+          </div>
+        ) : (
+          /* Calendar View - Placeholder */
+          <Card>
+            <CardHeader>
+              <CardTitle>نمای تقویمی</CardTitle>
+              <CardDescription>
+                نمای تقویمی در نسخه‌های آینده اضافه خواهد شد
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-center py-12">
+              <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 mb-4">
+                نمای تقویمی پیشرفته در حال توسعه است
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => setViewMode("list")}
+              >
+                بازگشت به نمای فهرست
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}
