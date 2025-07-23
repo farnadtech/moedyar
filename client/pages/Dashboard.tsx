@@ -22,6 +22,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { apiService } from "@/lib/api";
 import {
   formatPersianDate,
@@ -455,7 +456,7 @@ export default function Dashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">نوع حساب:</span>
                     <span className="font-medium">
-                      {isPremium ? "پرمیوم" : "رایگان"}
+                      {isPremium ? "پرمیوم" : "رایگ��ن"}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -515,7 +516,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">رویدادهای گذشته:</span>
+                    <span className="text-gray-600">روی��ادهای گذشته:</span>
                     <span className="font-medium text-red-600">
                       {
                         events.filter((e) => getDaysUntil(e.eventDate) < 0)
