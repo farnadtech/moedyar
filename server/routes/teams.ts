@@ -173,7 +173,7 @@ router.get("/info", authenticateToken, async (req: AuthRequest, res: Response) =
   }
 });
 
-// Invite member to team
+// Invite member to team - FIXED VERSION
 router.post("/invite", authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.userId;
@@ -218,74 +218,123 @@ router.post("/invite", authenticateToken, async (req: AuthRequest, res: Response
 
     const { email, role } = validation.data;
 
-    // Check if user exists
-    let targetUser = await db.user.findUnique({
+    // Check if user already exists
+    const existingUser = await db.user.findUnique({
       where: { email }
     });
 
-    // If user doesn't exist, create a placeholder
-    if (!targetUser) {
-      // For now, we'll create the user with a temporary password
-      // In real implementation, this would send an invitation email
-      const tempPassword = Math.random().toString(36).substring(2, 15);
+    if (existingUser) {
+      // User exists - add them directly to team
       
-      targetUser = await db.user.create({
-        data: {
-          email,
-          fullName: `کاربر دعوت شده (${email})`,
-          password: tempPassword, // This would be hashed in real implementation
-          teamId: user.team.id
-        }
-      });
-    } else {
-      // Update existing user's team
-      await db.user.update({
-        where: { id: targetUser.id },
-        data: { teamId: user.team.id }
-      });
-    }
-
-    // Check if already a member
-    const existingMembership = await db.teamMembership.findUnique({
-      where: {
-        teamId_userId: {
-          teamId: user.team.id,
-          userId: targetUser.id
-        }
-      }
-    });
-
-    if (existingMembership) {
-      return res.status(400).json({
-        success: false,
-        message: "این کاربر قبلاً عضو تیم است"
-      });
-    }
-
-    // Create membership
-    const membership_new = await db.teamMembership.create({
-      data: {
-        teamId: user.team.id,
-        userId: targetUser.id,
-        role: role as any,
-        joinedAt: targetUser.password ? new Date() : null // If user existed, they're already joined
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            fullName: true,
-            email: true
+      // Check if already a member
+      const existingMembership = await db.teamMembership.findUnique({
+        where: {
+          teamId_userId: {
+            teamId: user.team.id,
+            userId: existingUser.id
           }
         }
-      }
-    });
+      });
 
-    res.json({
-      success: true,
-      message: "ع��و با موفقیت به تیم اضافه شد",
-      data: { membership: membership_new }
-    });
+      if (existingMembership) {
+        return res.status(400).json({
+          success: false,
+          message: "این کاربر قبلاً عضو تیم است"
+        });
+      }
+
+      // Update user's teamId and create membership
+      await db.$transaction([
+        db.user.update({
+          where: { id: existingUser.id },
+          data: { teamId: user.team.id }
+        }),
+        db.teamMembership.create({
+          data: {
+            teamId: user.team.id,
+            userId: existingUser.id,
+            role: role as any,
+            joinedAt: new Date() // Existing user joins immediately
+          }
+        })
+      ]);
+
+      res.json({
+        success: true,
+        message: "کاربر با موفقیت به تیم اضافه شد",
+        data: { 
+          type: "direct_add",
+          user: {
+            id: existingUser.id,
+            fullName: existingUser.fullName,
+            email: existingUser.email
+          }
+        }
+      });
+
+    } else {
+      // User doesn't exist - create invitation instead of placeholder user
+      
+      // Check if invitation already exists
+      const existingInvitation = await db.teamInvitation.findUnique({
+        where: {
+          teamId_email: {
+            teamId: user.team.id,
+            email: email
+          }
+        }
+      });
+
+      if (existingInvitation) {
+        return res.status(400).json({
+          success: false,
+          message: "این ایمیل قبلاً دعوت شده است"
+        });
+      }
+
+      // Create invitation
+      const inviteToken = Math.random().toString(36).substring(2, 15) + 
+                         Math.random().toString(36).substring(2, 15);
+      
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7); // Expires in 7 days
+
+      const invitation = await db.teamInvitation.create({
+        data: {
+          teamId: user.team.id,
+          email: email,
+          role: role as any,
+          inviteToken,
+          expiresAt
+        },
+        include: {
+          team: {
+            select: {
+              name: true,
+              owner: {
+                select: {
+                  fullName: true
+                }
+              }
+            }
+          }
+        }
+      });
+
+      res.json({
+        success: true,
+        message: "دعوت‌نامه ایجاد شد. کاربر می‌تواند با این ایمیل ثبت نام کند",
+        data: { 
+          type: "invitation",
+          invitation: {
+            email: invitation.email,
+            teamName: invitation.team.name,
+            inviterName: invitation.team.owner.fullName,
+            expiresAt: invitation.expiresAt
+          }
+        }
+      });
+    }
 
   } catch (error) {
     console.error("Invite member error:", error);
