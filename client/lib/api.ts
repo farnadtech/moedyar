@@ -109,6 +109,7 @@ class ApiService {
     email: string;
     password: string;
     accountType?: "PERSONAL" | "BUSINESS";
+    inviteToken?: string;
   }): Promise<ApiResponse<{ user: any; token: string }>> {
     const response = await this.request<{ user: any; token: string }>(
       "/auth/register",
