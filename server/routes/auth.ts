@@ -149,6 +149,22 @@ router.post(
             orderBy: { createdAt: "desc" },
             take: 1,
           },
+          team: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              ownerId: true,
+            },
+          },
+          teamMemberships: {
+            where: { isActive: true },
+            select: {
+              role: true,
+              joinedAt: true,
+              teamId: true,
+            },
+          },
         },
       });
 
@@ -450,7 +466,7 @@ router.put("/profile", async (req: Request, res: Response) => {
     console.error("Update profile error:", error);
     res.status(500).json({
       success: false,
-      message: "خطا در به‌روزرسانی پروفایل",
+      message: "خطا در به‌روزرسانی پ��وفایل",
     });
   }
 });
