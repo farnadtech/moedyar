@@ -175,8 +175,24 @@ class ApiService {
         );
         console.log("API Request Error:", error);
 
-        // For auth or team endpoints, provide a more helpful error message
-        if (endpoint.includes("/auth/me") || endpoint.includes("/teams/")) {
+        // For critical auth endpoints, offer to auto-reload the page
+        if (endpoint.includes("/auth/me")) {
+          // For auth endpoints, offer auto-reload after a delay
+          setTimeout(() => {
+            if (confirm("خطا در ارتباط با سرور. آیا می‌خواهید صفحه را مجدداً بارگذاری کنید؟")) {
+              window.location.reload();
+            }
+          }, 2000);
+
+          return {
+            success: false,
+            message:
+              "خطا در ارتباط با سرور - احتمالاً به دلیل افزونه‌های مرورگر. صفحه به زودی مجدداً بارگذاری خواهد شد.",
+          };
+        }
+
+        // For other endpoints, provide helpful error message
+        if (endpoint.includes("/teams/")) {
           return {
             success: false,
             message:
