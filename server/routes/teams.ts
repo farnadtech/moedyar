@@ -594,4 +594,63 @@ router.get("/invitation/:token", async (req: Request, res: Response) => {
   }
 });
 
+// Get team events
+router.get(
+  "/events",
+  authenticateToken,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = req.user!.userId;
+
+      // Get user's team
+      const user = await db.user.findUnique({
+        where: { id: userId },
+        include: { team: true },
+      });
+
+      if (!user || !user.team) {
+        return res.status(404).json({
+          success: false,
+          message: "شما عضو هیچ تیمی نیستید",
+        });
+      }
+
+      // Get all events from team members
+      const teamEvents = await db.event.findMany({
+        where: {
+          user: {
+            teamId: user.team.id,
+          },
+          isActive: true,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              fullName: true,
+              email: true,
+            },
+          },
+          reminders: {
+            where: { isActive: true },
+            orderBy: { daysBefore: "asc" },
+          },
+        },
+        orderBy: { eventDate: "asc" },
+      });
+
+      res.json({
+        success: true,
+        data: { events: teamEvents },
+      });
+    } catch (error) {
+      console.error("Get team events error:", error);
+      res.status(500).json({
+        success: false,
+        message: "خطا در دریا��ت رویدادهای تیم",
+      });
+    }
+  },
+);
+
 export default router;
