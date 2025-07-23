@@ -35,6 +35,13 @@ enum ReminderMethod {
   WHATSAPP
 }
 
+enum TeamRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
 model User {
   id              String           @id @default(uuid())
   fullName        String
