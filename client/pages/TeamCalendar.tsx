@@ -42,11 +42,13 @@ interface TeamEvent {
 
 // Calendar Grid Component
 function CalendarGrid({ events }: { events: TeamEvent[] }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
-
-  const today = new Date();
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
+  // Initialize with current Persian date
+  const todayGregorian = new Date();
+  const todayPersian = gregorianToPersian(todayGregorian);
+  const [currentPersianDate, setCurrentPersianDate] = useState({
+    year: todayPersian.year,
+    month: todayPersian.month
+  });
 
   // Get first day of month and number of days
   const firstDay = new Date(year, month, 1);
