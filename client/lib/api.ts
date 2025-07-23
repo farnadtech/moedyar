@@ -26,6 +26,7 @@ class ApiService {
   private async request<T>(
     endpoint: string,
     options: RequestInit = {},
+    retryCount: number = 0,
   ): Promise<ApiResponse<T>> {
     const token = this.getAuthToken();
 
@@ -48,7 +49,7 @@ class ApiService {
         window.location.href = "/login";
         return {
           success: false,
-          message: "نیاز به احراز هویت مجدد",
+          message: "��یاز به احراز هویت مجدد",
         };
       }
 
