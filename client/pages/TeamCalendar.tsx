@@ -422,24 +422,8 @@ export default function TeamCalendar() {
             )}
           </div>
         ) : (
-          /* Calendar View - Placeholder */
-          <Card>
-            <CardHeader>
-              <CardTitle>نمای تقویمی</CardTitle>
-              <CardDescription>
-                نمای تقویمی در نسخه‌های آینده اضافه خواهد شد
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center py-12">
-              <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 mb-4">
-                نمای تقویمی پیشرفته در حال توسعه است
-              </p>
-              <Button variant="outline" onClick={() => setViewMode("list")}>
-                بازگشت به نمای فهرست
-              </Button>
-            </CardContent>
-          </Card>
+          /* Calendar View */
+          <CalendarGrid events={filteredEvents} />
         )}
       </div>
     </div>
