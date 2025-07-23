@@ -62,8 +62,8 @@ export default function TeamReports() {
     try {
       setLoading(true);
 
-      // Load events and calculate stats
-      const response = await apiService.getEvents();
+      // Load team events and calculate stats
+      const response = await apiService.getTeamEvents();
 
       if (response.success && response.data) {
         const events = response.data.events;
@@ -374,7 +374,7 @@ export default function TeamReports() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <PieChart className="w-5 h-5" />
-                    توزیع انواع رویداد
+                    توزیع انو��ع رویداد
                   </CardTitle>
                   <CardDescription>تحلیل رویدادها بر اساس نوع</CardDescription>
                 </CardHeader>
