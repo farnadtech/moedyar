@@ -187,8 +187,9 @@ export default function TeamReports() {
       ),
     ].join("\n");
 
-    // Download CSV
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    // Download CSV with proper UTF-8 BOM for Excel compatibility
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `team-report-${new Date().toISOString().split('T')[0]}.csv`;
@@ -196,7 +197,7 @@ export default function TeamReports() {
 
     toast({
       title: "گزارش دانلود شد",
-      description: "فایل گزارش به صورت CSV دانلود شد",
+      description: "فایل گزارش به صورت CSV ��انلود شد",
     });
   };
 
