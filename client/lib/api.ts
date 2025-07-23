@@ -104,25 +104,41 @@ class ApiService {
 
     let response: Response;
 
-    try {
-      response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    } catch (fetchError) {
-      console.log("Standard fetch failed, trying alternative fetch...", fetchError);
+    // For critical endpoints, try XMLHttpRequest first as it's less likely to be blocked
+    const isCriticalEndpoint = endpoint.includes("/auth/") || endpoint.includes("/teams/");
+
+    if (isCriticalEndpoint) {
       try {
-        response = await this.alternativeFetch(`${API_BASE_URL}${endpoint}`, config);
-        console.log("Alternative fetch succeeded");
-      } catch (altFetchError) {
-        console.log("Alternative fetch failed, trying XMLHttpRequest fallback...", altFetchError);
+        console.log("Using XMLHttpRequest for critical endpoint:", endpoint);
+        response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
+        console.log("XMLHttpRequest succeeded for critical endpoint");
+      } catch (xhrError) {
+        console.log("XMLHttpRequest failed for critical endpoint, trying standard fetch...", xhrError);
+        try {
+          response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+          console.log("Standard fetch succeeded as fallback");
+        } catch (fetchError) {
+          console.error("Both XMLHttpRequest and fetch failed:", {
+            xhrError,
+            fetchError
+          });
+          throw new Error("Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.");
+        }
+      }
+    } else {
+      // For non-critical endpoints, use standard fetch first
+      try {
+        response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+      } catch (fetchError) {
+        console.log("Standard fetch failed, trying XMLHttpRequest fallback...", fetchError);
         try {
           response = await this.fallbackFetch(`${API_BASE_URL}${endpoint}`, config);
           console.log("XMLHttpRequest fallback succeeded");
         } catch (fallbackError) {
-          console.error("All fetch methods failed:", {
+          console.error("Both fetch and XMLHttpRequest failed:", {
             fetchError,
-            altFetchError,
             fallbackError
           });
-          // Create a custom error that explains the situation
           throw new Error("Network request failed: Browser extensions may be blocking API calls. Please disable ad blockers or privacy extensions and try again.");
         }
       }
