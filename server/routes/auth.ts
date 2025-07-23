@@ -274,9 +274,48 @@ router.get("/me", async (req: Request, res: Response) => {
       });
     }
 
+    // Determine effective subscription type
+    let effectiveSubscriptionType = user.subscriptionType;
+
+    // If user is part of a team, they get team owner's subscription benefits
+    if (user.team && user.teamId) {
+      // Get team owner's subscription
+      const teamOwner = await db.user.findUnique({
+        where: { id: user.team.ownerId },
+        select: {
+          subscriptionType: true,
+          subscriptions: {
+            where: { isActive: true },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          }
+        }
+      });
+
+      if (teamOwner) {
+        effectiveSubscriptionType = teamOwner.subscriptionType;
+
+        // Check for active subscription
+        if (teamOwner.subscriptions.length > 0) {
+          const activeSubscription = teamOwner.subscriptions[0];
+          if (
+            activeSubscription.endDate &&
+            activeSubscription.endDate > new Date()
+          ) {
+            effectiveSubscriptionType = activeSubscription.type;
+          }
+        }
+      }
+    }
+
     res.json({
       success: true,
-      data: { user },
+      data: {
+        user: {
+          ...user,
+          subscriptionType: effectiveSubscriptionType
+        }
+      },
     });
   } catch (error) {
     console.error("Get profile error:", error);
