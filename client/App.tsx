@@ -1,0 +1,241 @@
+import "./global.css";
+
+import { Toaster } from "@/components/ui/toaster";
+import { createRoot } from "react-dom/client";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import RegisterPersonal from "./pages/RegisterPersonal";
+import Dashboard from "./pages/Dashboard";
+import AddEvent from "./pages/AddEvent";
+import EditEvent from "./pages/EditEvent";
+import Settings from "./pages/Settings";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminEvents from "./pages/AdminEvents";
+import AdminTransactions from "./pages/AdminTransactions";
+import AdminSettings from "./pages/AdminSettings";
+import AdminSetup from "./pages/AdminSetup";
+import ApiTest from "./pages/ApiTest";
+import Premium from "./pages/Premium";
+import SandboxPayment from "./pages/SandboxPayment";
+import TeamManagement from "./pages/TeamManagement";
+import TeamCalendar from "./pages/TeamCalendar";
+import TeamReports from "./pages/TeamReports";
+import CreateTeam from "./pages/CreateTeam";
+import Placeholder from "./pages/Placeholder";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./hooks/useAuth";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/register" element={<RegisterPersonal />} />
+            <Route path="/register/personal" element={<RegisterPersonal />} />
+            <Route
+              path="/register/business"
+              element={
+                <Placeholder
+                  title="ثبت نام حساب کسب‌وکار"
+                  description="حساب کسب‌وکار با قابلیت‌های پیشرفته مدیریت تیم"
+                  suggestion="برای دریافت اطلاعات بیشتر در مورد حساب کسب‌وکار و قیمت‌گذاری، با ما تماس بگیرید."
+                />
+              }
+            />
+
+            {/* Protected Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-event"
+              element={
+                <ProtectedRoute>
+                  <AddEvent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-event/:id"
+              element={
+                <ProtectedRoute>
+                  <EditEvent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/events"
+              element={
+                <ProtectedRoute>
+                  <AdminEvents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/transactions"
+              element={
+                <ProtectedRoute>
+                  <AdminTransactions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <ProtectedRoute>
+                  <AdminSettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/setup"
+              element={
+                <ProtectedRoute>
+                  <AdminSetup />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/api-test"
+              element={
+                <ProtectedRoute>
+                  <ApiTest />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="/premium" element={<Premium />} />
+            <Route path="/sandbox-payment" element={<SandboxPayment />} />
+            <Route
+              path="/team"
+              element={
+                <ProtectedRoute>
+                  <TeamManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/calendar"
+              element={
+                <ProtectedRoute>
+                  <TeamCalendar />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/reports"
+              element={
+                <ProtectedRoute>
+                  <TeamReports />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team/create"
+              element={
+                <ProtectedRoute>
+                  <CreateTeam />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/demo"
+              element={
+                <Placeholder
+                  title="نمایش دمو"
+                  description="مشاهده ویدیوی آموزشی و تست سیستم"
+                />
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <Placeholder
+                  title="تماس با ما"
+                  description="راه‌های ارتباط و دریافت پشتیبانی"
+                />
+              }
+            />
+            <Route
+              path="/support"
+              element={
+                <Placeholder
+                  title="پشتیبانی"
+                  description="مرکز کمک و پاسخ به سوالات متداول"
+                />
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <Placeholder
+                  title="شرایط استفاده"
+                  description="قوانین و مقررات استفاده از ��رویس"
+                />
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <Placeholder
+                  title="حریم خصوصی"
+                  description="نحوه جمع‌آوری و استفاده از اطلاعات کاربران"
+                />
+              }
+            />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+createRoot(document.getElementById("root")!).render(<App />);
