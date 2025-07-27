@@ -406,14 +406,7 @@ export default function RegisterPersonal() {
               </p>
             </div>
 
-            <div className="mt-6 text-center">
-              <Link
-                to="/register/business"
-                className="text-sm text-gray-500 hover:text-gray-700"
-              >
-                نیاز به حساب کسب‌وکار دارید؟
-              </Link>
-            </div>
+
           </CardContent>
         </Card>
 

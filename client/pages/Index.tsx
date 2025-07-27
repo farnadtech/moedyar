@@ -97,12 +97,6 @@ export default function Index() {
                 شروع رایگان - حساب شخصی
               </Button>
             </Link>
-            <Link to="/register/business">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                <Building className="ml-2 h-5 w-5" />
-                حساب کسب‌وکار
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
@@ -249,35 +243,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Business Preview */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl p-8 md:p-12 text-white text-center">
-          <h2 className="text-3xl font-bold mb-4">حساب کسب‌وکار</h2>
-          <p className="text-xl mb-6 opacity-90">
-            راه‌حل تخصصی برای شرکت‌ها و سازمان‌ها با قابلیت‌های پیشرفته مدیریت
-            تیم
-          </p>
-          <div className="flex items-center justify-center gap-8 mb-6">
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              <span>مدیریت تیم</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              <span>تقویم مشترک</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Bell className="w-5 h-5" />
-              <span>گزارش‌گیری</span>
-            </div>
-          </div>
-          <Link to="/register/business">
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
-              اطلاعات بیشتر و قیمت‌گذاری
-            </Button>
-          </Link>
-        </div>
-      </section>
+
 
       {/* Contact/Demo */}
       <section className="container mx-auto px-4 py-16 bg-gray-50">

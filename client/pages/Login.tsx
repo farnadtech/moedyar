@@ -233,11 +233,6 @@ export default function Login() {
                   حساب شخصی
                 </Button>
               </Link>
-              <Link to="/register/business">
-                <Button variant="outline" size="sm">
-                  حساب کسب‌وکار
-                </Button>
-              </Link>
             </div>
           </CardContent>
         </Card>
