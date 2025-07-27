@@ -1,43 +1,22 @@
-# مؤدیار (Moedyar)
+# رویداد یار (Moedyar)
 
-سیستم مدیریت رویدادها و تیم‌ها با قابلیت‌های پیشرفته
+سیستم مدیریت رویدادها و یادآوری‌ها با پشتیبانی از تقویم شمسی
 
 ## ویژگی‌ها
 
-- 🔐 سیستم احراز هویت کامل
-- 📅 مدیریت رویدادها و تقویم
-- 👥 مدیریت تیم‌ها و دعوت اعضا
-- 💳 سیستم اشتراک و پرداخت
-- 🔔 سیستم اطلاع‌رسانی
-- 📊 گزارش‌گیری و آمار
-- 🎨 رابط کاربری مدرن و ریسپانسیو
-
-## تکنولوژی‌های استفاده شده
-
-### Frontend
-- React 18
-- TypeScript
-- Tailwind CSS
-- Vite
-- React Router
-- Lucide React Icons
-
-### Backend
-- Node.js
-- Express.js
-- TypeScript
-- Prisma ORM
-- SQLite Database
-- JWT Authentication
-- bcrypt
-
-### پرداخت
-- ZarinPal Gateway
+- ✅ مدیریت رویدادها با تقویم شمسی
+- ✅ سیستم یادآوری هوشمند
+- ✅ احراز هویت کامل
+- ✅ پنل مدیریت
+- ✅ رابط کاربری مدرن و ریسپانسیو
+- ✅ پشتیبانی از تیم‌ها
+- ✅ گزارش‌گیری پیشرفته
 
 ## نصب و راه‌اندازی
 
 ### پیش‌نیازها
-- Node.js (نسخه 18 یا بالاتر)
+
+- Node.js 18+
 - npm یا yarn
 
 ### مراحل نصب
@@ -54,81 +33,92 @@ npm install
 ```
 
 3. تنظیم متغیرهای محیطی:
-فایل `.env` را ایجاد کرده و متغیرهای زیر را تنظیم کنید:
-```env
-JWT_SECRET=your-jwt-secret
-ZARINPAL_MERCHANT_ID=your-zarinpal-merchant-id
-DATABASE_URL="file:./dev.db"
+```bash
+cp .env.example .env
 ```
+سپس فایل `.env` را ویرایش کنید.
 
 4. راه‌اندازی دیتابیس:
 ```bash
-npx prisma migrate dev
 npx prisma generate
+npx prisma db push
 ```
 
-5. ایجاد کاربر ادمین:
-```bash
-npm run create-admin
-```
-
-6. اجرای پروژه:
+5. اجرای پروژه:
 ```bash
 npm run dev
 ```
 
-پروژه در آدرس `http://localhost:5173` در دسترس خواهد بود.
+## Deploy روی Netlify
+
+### روش اول: از طریق GitHub (توصیه شده)
+
+1. پروژه را روی GitHub push کنید
+2. به [Netlify](https://netlify.com) بروید و وارد شوید
+3. "New site from Git" را انتخاب کنید
+4. مخزن GitHub خود را انتخاب کنید
+5. تنظیمات build:
+   - Build command: `npm run build:client`
+   - Publish directory: `dist/spa`
+   - Functions directory: `netlify/functions`
+
+### روش دوم: از طریق Netlify CLI
+
+```bash
+# نصب Netlify CLI
+npm install -g netlify-cli
+
+# ورود به Netlify
+netlify login
+
+# Deploy پروژه
+netlify deploy --prod
+```
+
+### تنظیم متغیرهای محیطی در Netlify
+
+1. در پنل Netlify به Site settings > Environment variables بروید
+2. متغیرهای زیر را اضافه کنید:
+   - `DATABASE_URL`: آدرس دیتابیس (برای production از PostgreSQL استفاده کنید)
+   - `JWT_SECRET`: کلید مخفی JWT
+   - `EMAIL_USER`: ایمیل برای ارسال نوتیفیکیشن
+   - `EMAIL_PASS`: رمز عبور ایمیل
+   - `APP_URL`: آدرس سایت شما
+   - سایر متغیرهای موجود در `.env.example`
 
 ## ساختار پروژه
 
 ```
-├── client/          # Frontend React App
-│   ├── components/  # کامپوننت‌های قابل استفاده مجدد
-│   ├── lib/         # کتابخانه‌ها و utilities
-│   └── pages/       # صفحات اپلیکیشن
-├── server/          # Backend Express Server
-│   ├── lib/         # کتابخانه‌ها و utilities
-│   ├── routes/      # API routes
-│   └── scripts/     # اسکریپت‌های کمکی
-├── shared/          # کدهای مشترک
-├── prisma/          # Schema و migrations دیتابیس
-└── public/          # فایل‌های استاتیک
+├── client/          # فرانت‌اند React
+├── server/          # بک‌اند Express
+├── prisma/          # اسکیما دیتابیس
+├── netlify/         # تنظیمات Netlify
+└── shared/          # کدهای مشترک
 ```
 
-## API Documentation
+## تکنولوژی‌های استفاده شده
 
-### Authentication
-- `POST /api/auth/register` - ثبت‌نام کاربر جدید
-- `POST /api/auth/login` - ورود کاربر
-- `POST /api/auth/logout` - خروج کاربر
+- **Frontend**: React, TypeScript, Tailwind CSS, Vite
+- **Backend**: Node.js, Express, TypeScript
+- **Database**: SQLite (development), PostgreSQL (production)
+- **ORM**: Prisma
+- **Authentication**: JWT
+- **Deployment**: Netlify
 
-### Events
-- `GET /api/events` - دریافت لیست رویدادها
-- `POST /api/events` - ایجاد رویداد جدید
-- `PUT /api/events/:id` - ویرایش رویداد
-- `DELETE /api/events/:id` - حذف رویداد
+## مشارکت
 
-### Teams
-- `GET /api/teams` - دریافت لیست تیم‌ها
-- `POST /api/teams` - ایجاد تیم جدید
-- `POST /api/teams/:id/invite` - دعوت عضو به تیم
+برای مشارکت در پروژه:
 
-### Subscriptions
-- `POST /api/subscriptions/purchase` - خرید اشتراک
-- `POST /api/subscriptions/cancel` - لغو اشتراک
-
-## مشارکت در پروژه
-
-1. Fork کردن پروژه
-2. ایجاد branch جدید (`git checkout -b feature/amazing-feature`)
-3. Commit کردن تغییرات (`git commit -m 'Add some amazing feature'`)
-4. Push کردن به branch (`git push origin feature/amazing-feature`)
-5. ایجاد Pull Request
+1. Fork کنید
+2. برنچ جدید بسازید (`git checkout -b feature/amazing-feature`)
+3. تغییرات را commit کنید (`git commit -m 'Add amazing feature'`)
+4. Push کنید (`git push origin feature/amazing-feature`)
+5. Pull Request ایجاد کنید
 
 ## لایسنس
 
 این پروژه تحت لایسنس MIT منتشر شده است.
 
-## تماس
+## پشتیبانی
 
-برای سوالات و پیشنهادات می‌توانید با ما تماس بگیرید.
+برای گزارش باگ یا درخواست ویژگی جدید، لطفاً از بخش Issues استفاده کنید.
