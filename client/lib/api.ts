@@ -670,10 +670,6 @@ class ApiService {
     });
   }
 
-  async getTeamEvents(): Promise<ApiResponse<{ events: any[] }>> {
-    return this.request<{ events: any[] }>("/teams/events");
-  }
-
   async removeTeamMember(memberId: string): Promise<ApiResponse> {
     return this.request(`/teams/members/${memberId}`, {
       method: "DELETE",
