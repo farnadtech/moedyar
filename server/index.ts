@@ -9,6 +9,13 @@ import notificationRoutes from "./routes/notifications";
 import adminRoutes from "./routes/admin";
 import configRoutes from "./routes/config";
 import teamRoutes from "./routes/teams";
+
+// Marketplace routes
+import marketplaceAuthRoutes from "./routes/marketplace-auth";
+import productsRoutes from "./routes/products";
+import categoriesRoutes from "./routes/categories";
+import ordersRoutes from "./routes/orders";
+
 import { startNotificationScheduler } from "./lib/scheduler";
 
 // Load environment variables
@@ -31,31 +38,25 @@ export function createServer() {
 
   // API routes
   app.get("/api/ping", (_req, res) => {
-    res.json({ message: "Hello from Express server v2!" });
+    res.json({ message: "Hello from Moedyar Marketplace API!" });
   });
 
   app.get("/api/demo", handleDemo);
 
-  // Auth routes
+  // Legacy routes (for backward compatibility)
   app.use("/api/auth", authRoutes);
-
-  // Event routes
   app.use("/api/events", eventRoutes);
-
-  // Subscription routes
   app.use("/api/subscriptions", subscriptionRoutes);
-
-  // Notification routes
   app.use("/api/notifications", notificationRoutes);
-
-  // Admin routes
   app.use("/api/admin", adminRoutes);
-
-  // Config routes
   app.use("/api/config", configRoutes);
-
-  // Team routes
   app.use("/api/teams", teamRoutes);
+
+  // Marketplace routes
+  app.use("/api/marketplace/auth", marketplaceAuthRoutes);
+  app.use("/api/marketplace/products", productsRoutes);
+  app.use("/api/marketplace/categories", categoriesRoutes);
+  app.use("/api/marketplace/orders", ordersRoutes);
 
   // Error handling middleware
   app.use((err: any, req: any, res: any, next: any) => {

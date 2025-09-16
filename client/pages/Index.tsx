@@ -22,30 +22,10 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 
 export default function Index() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  // Redirect authenticated users to dashboard
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  // Show loading state while checking authentication
-  if (isLoading) {
-    return (
-      <div
-        className="min-h-screen bg-gray-50 flex items-center justify-center"
-        dir="rtl"
-      >
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">در حال بارگذاری...</p>
-        </div>
-      </div>
-    );
-  }
+  // For now, don't redirect authenticated users to allow viewing the homepage
+  // Later, this can be configured based on requirements
 
   return (
     <div className="min-h-screen bg-white" dir="rtl">
@@ -97,7 +77,7 @@ export default function Index() {
 
             {/* User Actions */}
             <div className="flex items-center gap-4">
-              <Link to="/login" className="flex items-center gap-2 text-gray-700 hover:text-blue-600">
+              <Link to="/marketplace/login" className="flex items-center gap-2 text-gray-700 hover:text-blue-600">
                 <User className="w-5 h-5" />
                 <span>ورود | ثبت‌نام</span>
               </Link>
@@ -168,12 +148,12 @@ export default function Index() {
                 بزرگترین مارکتپلیس آنلاین ایران با بیش از یک میلیون محصول اصل و با کیفیت از بهترین فروشندگان
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/register">
+                <Link to="/marketplace/register">
                   <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4">
                     عضویت رایگان
                   </Button>
                 </Link>
-                <Link to="/seller-register">
+                <Link to="/marketplace/register">
                   <Button variant="outline" className="text-lg px-8 py-4 border-blue-600 text-blue-600 hover:bg-blue-50">
                     فروشنده شوید
                   </Button>
@@ -339,7 +319,7 @@ export default function Index() {
               با پیوستن به موعدیار، محصولات خود را به میلیون‌ها خریدار معرفی کنید و فروش آنلاین خود را افزایش دهید
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/seller-register">
+              <Link to="/marketplace/register">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
                   ثبت‌نام فروشنده
                 </Button>
@@ -399,7 +379,7 @@ export default function Index() {
             <div>
               <h3 className="font-semibold text-lg mb-4">فروشندگان</h3>
               <ul className="space-y-2 text-gray-300">
-                <li><Link to="/seller-register" className="hover:text-white">فروش در موعدیار</Link></li>
+                <li><Link to="/marketplace/register" className="hover:text-white">فروش در موعدیار</Link></li>
                 <li><Link to="/seller-guide" className="hover:text-white">راهنمای فروشندگان</Link></li>
                 <li><Link to="/seller-rules" className="hover:text-white">قوانین فروشندگان</Link></li>
                 <li><Link to="/seller-support" className="hover:text-white">پشتیبانی فروشندگان</Link></li>
